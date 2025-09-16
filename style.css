@@ -36,8 +36,9 @@ header h1 {
 }
 
 header p {
-    color: #ccc;
-    font-size: 1.1em;
+    color: #BBDEFB !important; /* Світло-блакитний */
+    text-shadow: 0 0 10px rgba(33, 150, 243, 0.3);
+    font-size: 1.2em;
 }
 
 main {
