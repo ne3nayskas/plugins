@@ -303,5 +303,95 @@
             setActiveLanguage(currentLang);
         });
     </script>
+
+    <script>
+// Функція для копіювання тексту
+function copyToClipboard(text) {
+    navigator.clipboard.writeText(text).then(() => {
+        // Показуємо сповіщення про успішне копіювання
+        showNotification('Посилання скопійовано!', 'success');
+    }).catch(err => {
+        console.error('Помилка копіювання: ', err);
+        showNotification('Помилка копіювання', 'error');
+    });
+}
+
+// Функція для показу сповіщень
+function showNotification(message, type) {
+    // Створюємо елемент сповіщення
+    const notification = document.createElement('div');
+    notification.textContent = message;
+    notification.style.cssText = `
+        position: fixed;
+        top: 20px;
+        right: 20px;
+        padding: 15px 20px;
+        border-radius: 8px;
+        color: white;
+        font-weight: bold;
+        z-index: 10000;
+        transition: all 0.3s ease;
+        transform: translateX(100%);
+        opacity: 0;
+    `;
+    
+    // Встановлюємо колір в залежності від типу
+    if (type === 'success') {
+        notification.style.background = 'linear-gradient(45deg, #4CAF50, #45a049)';
+    } else {
+        notification.style.background = 'linear-gradient(45deg, #f44336, #d32f2f)';
+    }
+    
+    // Додаємо сповіщення на сторінку
+    document.body.appendChild(notification);
+    
+    // Показуємо сповіщення
+    setTimeout(() => {
+        notification.style.transform = 'translateX(0)';
+        notification.style.opacity = '1';
+    }, 100);
+    
+    // Ховаємо сповіщення через 3 секунди
+    setTimeout(() => {
+        notification.style.transform = 'translateX(100%)';
+        notification.style.opacity = '0';
+        setTimeout(() => {
+            document.body.removeChild(notification);
+        }, 300);
+    }, 3000);
+}
+
+// Додаємо обробники подій для кодів
+document.addEventListener('DOMContentLoaded', function() {
+    // Знаходимо всі блоки з кодом
+    const codeBlocks = document.querySelectorAll('code');
+    
+    // Додаємо обробник кліку для кожного блоку
+    codeBlocks.forEach(code => {
+        // Додаємо курсор-вказівник
+        code.style.cursor = 'pointer';
+        
+        // Додаємо підказку при наведенні
+        code.title = 'Клікніть для копіювання посилання';
+        
+        // Обробник кліку
+        code.addEventListener('click', function() {
+            copyToClipboard(this.textContent);
+        });
+        
+        // Змінюємо стиль при наведенні
+        code.addEventListener('mouseenter', function() {
+            this.style.background = 'rgba(0, 0, 0, 0.4)';
+            this.style.boxShadow = '0 0 10px rgba(0, 255, 0, 0.3)';
+        });
+        
+        code.addEventListener('mouseleave', function() {
+            this.style.background = 'rgba(0, 0, 0, 0.3)';
+            this.style.boxShadow = 'none';
+        });
+    });
+});
+</script>
+
 </body>
 </html>
