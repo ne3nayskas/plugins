@@ -82,8 +82,8 @@ main {
 .btn {
     display: inline-block;
     padding: 6px 12px; /* Зменшено вдвічі (було 10px 20px) */
-    background: #000000;
-    color: green;
+    background: #4A235A;
+    color: white;
     text-decoration: none;
     border-radius: 6px;
     transition: all 0.3s ease;
