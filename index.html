@@ -8,29 +8,58 @@
     <style>
         .language-switcher {
             position: absolute;
-            top: 20px;
-            right: 20px;
+            top: 15px;
+            right: 15px;
             z-index: 100;
+            display: flex;
+            gap: 5px;
         }
         
         .lang-btn {
             background: rgba(255, 255, 255, 0.1);
             border: 1px solid rgba(255, 255, 255, 0.3);
             color: #FFD700;
-            padding: 8px 15px;
-            margin: 0 5px;
-            border-radius: 5px;
+            padding: 5px 10px;
+            border-radius: 4px;
             cursor: pointer;
             transition: all 0.3s ease;
+            font-size: 12px;
+            font-weight: bold;
         }
         
         .lang-btn:hover {
             background: rgba(255, 215, 0, 0.2);
+            transform: scale(1.05);
         }
         
         .lang-btn.active {
             background: rgba(255, 215, 0, 0.3);
             border-color: #FFD700;
+            box-shadow: 0 0 8px rgba(255, 215, 0, 0.4);
+        }
+
+        /* Адаптація для мобільних пристроїв */
+        @media (max-width: 768px) {
+            .language-switcher {
+                top: 10px;
+                right: 10px;
+            }
+            
+            .lang-btn {
+                padding: 4px 8px;
+                font-size: 11px;
+            }
+            
+            header h1 {
+                margin-right: 70px; /* Місце для кнопок */
+            }
+        }
+
+        /* Для десктопу */
+        @media (min-width: 769px) {
+            header h1 {
+                margin-right: 80px; /* Місце для кнопок */
+            }
         }
     </style>
 </head>
@@ -46,6 +75,7 @@
             <p data-eng="List of available plugins for Lampa media player" data-ukr="Список доступних плагінів для медіа-плеєра Lampa">List of available plugins for Lampa media player</p>
         </header>
 
+        <!-- Залишок коду без змін -->
         <main>
             <!-- Rating Omdb -->
             <div class="plugin-card">
