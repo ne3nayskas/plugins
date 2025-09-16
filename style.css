@@ -4,6 +4,10 @@
     box-sizing: border-box;
 }
 
+html {
+    scroll-behavior: smooth;
+}
+
 body {
     font-family: 'Arial', sans-serif;
     line-height: 1.6;
@@ -36,7 +40,7 @@ header h1 {
 }
 
 header p {
-    color: #BBDEFB !important; /* Світло-блакитний */
+    color: #BBDEFB;
     text-shadow: 0 0 10px rgba(33, 150, 243, 0.3);
     font-size: 1.2em;
 }
@@ -98,6 +102,12 @@ main {
 .btn:hover {
     background: #5245c5;
     transform: translateY(-2px); /* Додано ефект підняття */
+}
+
+.btn:focus {
+    outline: 2px solid #4ecdc4;
+    outline-offset: 2px;
+    background: #5245c5;
 }
 
 code {
