@@ -80,7 +80,7 @@ main {
 .btn {
     display: inline-block;
     padding: 10px 20px;
-    background: #00ff00;
+    background: #6c5ce7;
     color: white;
     text-decoration: none;
     border-radius: 6px;
@@ -99,7 +99,7 @@ code {
     border-radius: 5px;
     font-family: 'Courier New', monospace;
     font-size: 0.9em;
-    color: #ffd700;
+    color: #00ff00;
     word-break: break-all;
 }
 
