@@ -66,30 +66,35 @@ main {
 
 .plugin-card p {
     color: #ddd;
-    margin-bottom: 20px;
+    margin-bottom: 15px; /* Зменшено відступ для кращого розміщення */
     line-height: 1.5;
 }
 
 .links {
     display: flex;
-    gap: 10px;
+    gap: 8px; /* Зменшено відступ між кнопками */
     margin-bottom: 15px;
-    flex-wrap: wrap;
+    flex-wrap: nowrap; /* Заборонено переносити на новий рядок */
+    justify-content: center; /* Центрування кнопок */
+    align-items: center;
 }
 
 .btn {
     display: inline-block;
-    padding: 10px 20px;
+    padding: 6px 12px; /* Зменшено вдвічі (було 10px 20px) */
     background: #6c5ce7;
     color: white;
     text-decoration: none;
     border-radius: 6px;
-    transition: background 0.3s ease;
+    transition: all 0.3s ease;
     font-weight: bold;
+    font-size: 0.85em; /* Зменшено розмір шрифту */
+    white-space: nowrap; /* Заборона переносу тексту */
 }
 
 .btn:hover {
     background: #5245c5;
+    transform: translateY(-2px); /* Додано ефект підняття */
 }
 
 code {
@@ -101,6 +106,7 @@ code {
     font-size: 0.9em;
     color: #00ff00;
     word-break: break-all;
+    margin-top: 10px;
 }
 
 footer {
@@ -122,10 +128,20 @@ footer {
     }
     
     .links {
-        flex-direction: column;
+        flex-direction: row; /* Залишити в рядок на мобільних */
+        flex-wrap: wrap; /* Дозволити перенос при необхідності */
+        justify-content: center;
     }
     
     .btn {
+        padding: 5px 10px; /* Ще менші кнопки на мобільних */
+        font-size: 0.8em;
+        flex: 1; /* Рівна ширина */
+        min-width: 100px; /* Мінімальна ширина */
         text-align: center;
+    }
+    
+    .plugin-card {
+        padding: 20px;
     }
 }
