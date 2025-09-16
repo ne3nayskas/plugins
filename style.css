@@ -8,11 +8,38 @@ html {
     scroll-behavior: smooth;
 }
 
+/* ==================== CSS VARIABLES ==================== */
+/* Змінні кольорів для темної теми */
+:root {
+    --bg-primary: #1a1a2e;
+    --bg-secondary: #16213e;
+    --text-primary: #ffffff;
+    --text-secondary: #BBDEFB;
+    --card-bg: rgba(255, 255, 255, 0.05);
+    --card-border: rgba(255, 255, 255, 0.1);
+    --code-bg: rgba(0, 0, 0, 0.3);
+    --code-color: #00ff00;
+    --header-bg: rgba(255, 255, 255, 0.1);
+}
+
+/* Змінні кольорів для світлої теми */
+[data-theme="light"] {
+    --bg-primary: #e9ecef;
+    --bg-secondary: #f8f9fa;
+    --text-primary: #2d3748;
+    --text-secondary: #4a5568;
+    --card-bg: rgba(255, 255, 255, 0.9);
+    --card-border: rgba(0, 0, 0, 0.1);
+    --code-bg: rgba(0, 0, 0, 0.05);
+    --code-color: #2b6cb0;
+    --header-bg: rgba(255, 255, 255, 0.95);
+}
+
 body {
     font-family: 'Arial', sans-serif;
     line-height: 1.6;
-    background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
-    color: #fff;
+    background: linear-gradient(135deg, var(--bg-primary) 0%, var(--bg-secondary) 100%);
+    color: var(--text-primary);
     min-height: 100vh;
 }
 
@@ -26,7 +53,8 @@ header {
     text-align: center;
     margin-bottom: 40px;
     padding: 20px;
-    background: rgba(255, 255, 255, 0.1);
+    background: var(--header-bg);
+    border: 1px solid var(--card-border);
     border-radius: 15px;
     backdrop-filter: blur(10px);
 }
@@ -39,8 +67,15 @@ header h1 {
     text-shadow: 0 0 20px rgba(255, 193, 7, 0.4);
 }
 
+[data-theme="light"] header h1 {
+    background: linear-gradient(45deg, #667eea, #764ba2);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
 header p {
-    color: #BBDEFB;
+    color: var(--text-secondary);
     text-shadow: 0 0 10px rgba(33, 150, 243, 0.3);
     font-size: 1.2em;
 }
@@ -53,10 +88,10 @@ main {
 }
 
 .plugin-card {
-    background: rgba(255, 255, 255, 0.05);
+    background: var(--card-bg);
     padding: 25px;
     border-radius: 12px;
-    border: 1px solid rgba(255, 255, 255, 0.1);
+    border: 1px solid var(--card-border);
     transition: transform 0.3s ease;
 }
 
@@ -73,35 +108,35 @@ main {
 
 .plugin-card p {
     color: #ddd;
-    margin-bottom: 15px; /* Зменшено відступ для кращого розміщення */
+    margin-bottom: 15px;
     line-height: 1.5;
 }
 
 .links {
     display: flex;
-    gap: 8px; /* Зменшено відступ між кнопками */
+    gap: 8px;
     margin-bottom: 15px;
-    flex-wrap: nowrap; /* Заборонено переносити на новий рядок */
-    justify-content: center; /* Центрування кнопок */
+    flex-wrap: nowrap;
+    justify-content: center;
     align-items: center;
 }
 
 .btn {
     display: inline-block;
-    padding: 6px 12px; /* Зменшено вдвічі (було 10px 20px) */
+    padding: 6px 12px;
     background: #4A235A;
     color: white;
     text-decoration: none;
     border-radius: 6px;
     transition: all 0.3s ease;
     font-weight: bold;
-    font-size: 0.85em; /* Зменшено розмір шрифту */
-    white-space: nowrap; /* Заборона переносу тексту */
+    font-size: 0.85em;
+    white-space: nowrap;
 }
 
 .btn:hover {
     background: #5245c5;
-    transform: translateY(-2px); /* Додано ефект підняття */
+    transform: translateY(-2px);
 }
 
 .btn:focus {
@@ -112,20 +147,31 @@ main {
 
 code {
     display: block;
-    background: rgba(0, 0, 0, 0.3);
+    background: var(--code-bg);
     padding: 10px;
     border-radius: 5px;
     font-family: 'Courier New', monospace;
     font-size: 0.9em;
-    color: #00ff00;
+    color: var(--code-color);
     word-break: break-all;
     margin-top: 10px;
+    transition: all 0.3s ease;
+    cursor: pointer;
+}
+
+code:hover {
+    background: rgba(0, 0, 0, 0.4) !important;
+    box-shadow: 0 0 10px rgba(0, 255, 0, 0.3);
+}
+
+code:active {
+    transform: scale(0.98);
 }
 
 footer {
     text-align: center;
     padding: 20px;
-    background: rgba(255, 255, 255, 0.05);
+    background: var(--card-bg);
     border-radius: 10px;
     color: #999;
 }
@@ -141,16 +187,16 @@ footer {
     }
     
     .links {
-        flex-direction: row; /* Залишити в рядок на мобільних */
-        flex-wrap: wrap; /* Дозволити перенос при необхідності */
+        flex-direction: row;
+        flex-wrap: wrap;
         justify-content: center;
     }
     
     .btn {
-        padding: 5px 10px; /* Ще менші кнопки на мобільних */
+        padding: 5px 10px;
         font-size: 0.8em;
-        flex: 1; /* Рівна ширина */
-        min-width: 100px; /* Мінімальна ширина */
+        flex: 1;
+        min-width: 100px;
         text-align: center;
     }
     
@@ -158,6 +204,7 @@ footer {
         padding: 20px;
     }
 }
+
 /* Стилі для сповіщень */
 .notification {
     position: fixed;
@@ -181,90 +228,7 @@ footer {
     background: linear-gradient(45deg, #f44336, #d32f2f);
 }
 
-/* Стилі для кодів при наведенні */
-code {
-    transition: all 0.3s ease;
-    cursor: pointer;
-}
-
-code:hover {
-    background: rgba(0, 0, 0, 0.4) !important;
-    box-shadow: 0 0 10px rgba(0, 255, 0, 0.3);
-}
-
-code:active {
-    transform: scale(0.98);
-}
-
 /* ==================== THEME SWITCHER ==================== */
-
-/* Кнопка перемикача теми */
-.theme-btn {
-    background: rgba(255, 255, 255, 0.1);
-    border: 1px solid rgba(255, 255, 255, 0.3);
-    color: #FFD700;
-    padding: 8px 12px;
-    border-radius: 5px;
-    cursor: pointer;
-    transition: all 0.3s ease;
-    font-size: 1.2em;
-    margin-left: 10px;
-}
-
-.theme-btn:hover {
-    background: rgba(255, 215, 0, 0.2);
-    transform: rotate(30deg);
-}
-
-/* Змінні кольорів для темної теми */
-:root {
-    --bg-primary: #1a1a2e;
-    --bg-secondary: #16213e;
-    --text-primary: #ffffff;
-    --text-secondary: #BBDEFB;
-    --card-bg: rgba(255, 255, 255, 0.05);
-    --card-border: rgba(255, 255, 255, 0.1);
-    --code-bg: rgba(0, 0, 0, 0.3);
-    --code-color: #00ff00;
-}
-
-/* Змінні кольорів для світлої теми */
-[data-theme="light"] {
-    --bg-primary: #f0f0f0;
-    --bg-secondary: #ffffff;
-    --text-primary: #333333;
-    --text-secondary: #666666;
-    --card-bg: rgba(0, 0, 0, 0.05);
-    --card-border: rgba(0, 0, 0, 0.1);
-    --code-bg: rgba(0, 0, 0, 0.1);
-    --code-color: #008800;
-}
-
-/* Оновлення існуючих стилів з використанням змінних */
-body {
-    background: linear-gradient(135deg, var(--bg-primary) 0%, var(--bg-secondary) 100%);
-    color: var(--text-primary);
-}
-
-header {
-    background: var(--card-bg);
-    border: 1px solid var(--card-border);
-}
-
-header p {
-    color: var(--text-secondary);
-}
-
-.plugin-card {
-    background: var(--card-bg);
-    border: 1px solid var(--card-border);
-}
-
-code {
-    background: var(--code-bg);
-    color: var(--code-color);
-}
-
-footer {
-    background: var(--card-bg);
+[data-theme="light"] header {
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
 }
