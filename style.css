@@ -158,3 +158,40 @@ footer {
         padding: 20px;
     }
 }
+/* Стилі для сповіщень */
+.notification {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    padding: 15px 20px;
+    border-radius: 8px;
+    color: white;
+    font-weight: bold;
+    z-index: 10000;
+    transition: all 0.3s ease;
+    transform: translateX(100%);
+    opacity: 0;
+}
+
+.notification.success {
+    background: linear-gradient(45deg, #4CAF50, #45a049);
+}
+
+.notification.error {
+    background: linear-gradient(45deg, #f44336, #d32f2f);
+}
+
+/* Стилі для кодів при наведенні */
+code {
+    transition: all 0.3s ease;
+    cursor: pointer;
+}
+
+code:hover {
+    background: rgba(0, 0, 0, 0.4) !important;
+    box-shadow: 0 0 10px rgba(0, 255, 0, 0.3);
+}
+
+code:active {
+    transform: scale(0.98);
+}
