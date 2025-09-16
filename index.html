@@ -35,6 +35,17 @@
             box-shadow: 0 0 10px rgba(255, 215, 0, 0.4);
         }
 
+        /* Фіксуємо висоту опису для всіх карток */
+        .plugin-card p {
+            min-height: 60px; /* Фіксована мінімальна висота */
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            margin-bottom: 15px;
+            line-height: 1.4;
+        }
+
         /* Адаптація для мобільних пристроїв */
         @media (max-width: 768px) {
             .language-switcher {
@@ -49,7 +60,7 @@
             }
             
             header {
-                padding-top: 50px; /* Додаємо місце для кнопок */
+                padding-top: 50px;
             }
             
             header h1 {
@@ -60,6 +71,12 @@
             
             header p {
                 text-align: center;
+            }
+            
+            /* Менша висота опису на мобільних */
+            .plugin-card p {
+                min-height: 50px;
+                font-size: 0.9em;
             }
         }
 
@@ -73,6 +90,10 @@
                 text-align: center;
                 margin: 0 auto;
                 max-width: 80%;
+            }
+            
+            .plugin-card p {
+                min-height: 70px; /* Більша висота на десктопі */
             }
         }
     </style>
@@ -89,7 +110,6 @@
             <p data-eng="List of available plugins for Lampa media player" data-ukr="Список доступних плагінів для медіа-плеєра Lampa">List of available plugins for Lampa media player</p>
         </header>
 
-        <!-- Залишок коду без змін -->
         <main>
             <!-- Rating Omdb -->
             <div class="plugin-card">
