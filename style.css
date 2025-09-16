@@ -195,3 +195,76 @@ code:hover {
 code:active {
     transform: scale(0.98);
 }
+
+/* ==================== THEME SWITCHER ==================== */
+
+/* Кнопка перемикача теми */
+.theme-btn {
+    background: rgba(255, 255, 255, 0.1);
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    color: #FFD700;
+    padding: 8px 12px;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    font-size: 1.2em;
+    margin-left: 10px;
+}
+
+.theme-btn:hover {
+    background: rgba(255, 215, 0, 0.2);
+    transform: rotate(30deg);
+}
+
+/* Змінні кольорів для темної теми */
+:root {
+    --bg-primary: #1a1a2e;
+    --bg-secondary: #16213e;
+    --text-primary: #ffffff;
+    --text-secondary: #BBDEFB;
+    --card-bg: rgba(255, 255, 255, 0.05);
+    --card-border: rgba(255, 255, 255, 0.1);
+    --code-bg: rgba(0, 0, 0, 0.3);
+    --code-color: #00ff00;
+}
+
+/* Змінні кольорів для світлої теми */
+[data-theme="light"] {
+    --bg-primary: #f0f0f0;
+    --bg-secondary: #ffffff;
+    --text-primary: #333333;
+    --text-secondary: #666666;
+    --card-bg: rgba(0, 0, 0, 0.05);
+    --card-border: rgba(0, 0, 0, 0.1);
+    --code-bg: rgba(0, 0, 0, 0.1);
+    --code-color: #008800;
+}
+
+/* Оновлення існуючих стилів з використанням змінних */
+body {
+    background: linear-gradient(135deg, var(--bg-primary) 0%, var(--bg-secondary) 100%);
+    color: var(--text-primary);
+}
+
+header {
+    background: var(--card-bg);
+    border: 1px solid var(--card-border);
+}
+
+header p {
+    color: var(--text-secondary);
+}
+
+.plugin-card {
+    background: var(--card-bg);
+    border: 1px solid var(--card-border);
+}
+
+code {
+    background: var(--code-bg);
+    color: var(--code-color);
+}
+
+footer {
+    background: var(--card-bg);
+}
