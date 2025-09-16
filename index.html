@@ -268,10 +268,14 @@
             
             // Встановлюємо активну мову
             function setActiveLanguage(lang) {
+                document.documentElement.lang = lang === 'ukr' ? 'uk' : 'en';
                 langButtons.forEach(btn => {
-                    btn.classList.remove('active');
+                btn.classList.remove('active');
+                btn.setAttribute('aria-pressed', 'false');
+    
                     if (btn.dataset.lang === lang) {
                         btn.classList.add('active');
+                        btn.setAttribute('aria-pressed', 'true');
                     }
                 });
                 
