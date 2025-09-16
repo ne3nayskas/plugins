@@ -370,21 +370,25 @@ document.addEventListener('DOMContentLoaded', function() {
     // Знаходимо всі блоки з кодом
     const codeBlocks = document.querySelectorAll('code');
     
+    // Функція для оновлення всіх підказок
+    function updateAllTooltips() {
+        const currentLang = localStorage.getItem('language') || 'eng';
+        const tooltipText = currentLang === 'ukr' 
+            ? 'Клікніть для копіювання посилання' 
+            : 'Click to copy link';
+        
+        codeBlocks.forEach(code => {
+            code.title = tooltipText;
+        });
+    }
+    
     // Додаємо обробник кліку для кожного блоку
     codeBlocks.forEach(code => {
         // Додаємо курсор-вказівник
         code.style.cursor = 'pointer';
         
-        // Оновлюємо підказку в залежності від мови
-        function updateTooltip() {
-            const currentLang = localStorage.getItem('language') || 'eng';
-            code.title = currentLang === 'ukr' 
-                ? 'Клікніть для копіювання посилання' 
-                : 'Click to copy link';
-        }
-        
         // Встановлюємо початкову підказку
-        updateTooltip();
+        updateAllTooltips();
         
         // Обробник кліку
         code.addEventListener('click', function() {
@@ -401,18 +405,16 @@ document.addEventListener('DOMContentLoaded', function() {
             this.style.background = 'rgba(0, 0, 0, 0.3)';
             this.style.boxShadow = 'none';
         });
-        
-        // Оновлюємо підказку при зміні мови
-        document.addEventListener('languageChanged', updateTooltip);
+    });
+    
+    // Слухаємо кліки на кнопки мов і оновлюємо підказки
+    document.querySelectorAll('.lang-btn').forEach(btn => {
+        btn.addEventListener('click', function() {
+            // Невелика затримка, щоб дати час змінити мову в localStorage
+            setTimeout(updateAllTooltips, 100);
+        });
     });
 });
-
-// Додаємо подію для оновлення підказок при зміні мови
-const originalSetActiveLanguage = window.setActiveLanguage;
-window.setActiveLanguage = function(lang) {
-    originalSetActiveLanguage(lang);
-    document.dispatchEvent(new CustomEvent('languageChanged'));
-};
 </script>
 
 </body>
