@@ -398,10 +398,18 @@ document.addEventListener('DOMContentLoaded', function() {
         const currentTheme = document.documentElement.getAttribute('data-theme');
         const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
         
-        // Змінюємо тему
+        // Плавна зміна теми
+        document.documentElement.style.transition = 'all 0.3s ease';
         document.documentElement.setAttribute('data-theme', newTheme);
+        
+        // Зберігаємо вибір
         localStorage.setItem('theme', newTheme);
         updateThemeIcon(newTheme);
+        
+        // Вимикаємо transition після анімації
+        setTimeout(() => {
+            document.documentElement.style.transition = '';
+        }, 300);
     });
     
     // Оновлюємо іконку та підказку
