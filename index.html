@@ -110,10 +110,7 @@
             <nav aria-label="Мова сайту" style="display: contents;">
         <button class="lang-btn" data-lang="eng" aria-label="Switch to English">ENG</button>
         <button class="lang-btn" data-lang="ukr" aria-label="Перейти на українську">UKR</button>
-            </nav>
-            <button id="theme-toggle" class="theme-btn" aria-label="Перемкнути тему">
-        🌙
-            </button>
+                </nav>
         </div>
 
         <header>
@@ -125,7 +122,7 @@
             <!-- Rating Omdb -->
             <div class="plugin-card">
                 <h2>Rating Omdb</h2>
-                <p data-eng="Plugin for adding ratings: Imdb, Tmdb, MetaCritic, RottenTomatoes" data-ukr="Плагін для додавання рейтингів: Imdb, Tmdb, MetaCritic, RottenTomatoes">Plugin for adding ratings: Imdb, Tmdb, MetaCritic, RottenTomatoes</p>
+                <p data-eng="Plugin for adding ratings: Imdb, Tmdb, MetaCritic, RottenTomatoes" data-ukr="Плагін для додавання рейтингів: Imdb, Tmdb, MetaCritic, RottenTomato">Plugin for adding ratings: Imdb, Tmdb, MetaCritic, RottenTomatoes</p>
                 <div class="links">
                     <a href="rating_omdb.js" download class="btn" data-eng="Download" data-ukr="Завантажити">Download</a>
                     <a href="https://ne3nayskas.github.io/plugins/rating_omdb.js" class="btn">URL-link</a>
@@ -306,120 +303,5 @@
             setActiveLanguage(currentLang);
         });
     </script>
-
-    <script>
-// Функція для копіювання тексту
-function copyToClipboard(text) {
-    navigator.clipboard.writeText(text).then(() => {
-        showNotification('Посилання скопійовано!', 'success');
-    }).catch(err => {
-        console.error('Помилка копіювання: ', err);
-        showNotification('Помилка копіювання', 'error');
-    });
-}
-
-// Функція для показу сповіщень
-function showNotification(message, type) {
-    const notification = document.createElement('div');
-    notification.textContent = message;
-    notification.style.cssText = `
-        position: fixed;
-        top: 20px;
-        right: 20px;
-        padding: 15px 20px;
-        border-radius: 8px;
-        color: white;
-        font-weight: bold;
-        z-index: 10000;
-        transition: all 0.3s ease;
-        transform: translateX(100%);
-        opacity: 0;
-    `;
-    
-    if (type === 'success') {
-        notification.style.background = 'linear-gradient(45deg, #4CAF50, #45a049)';
-    } else {
-        notification.style.background = 'linear-gradient(45deg, #f44336, #d32f2f)';
-    }
-    
-    document.body.appendChild(notification);
-    
-    setTimeout(() => {
-        notification.style.transform = 'translateX(0)';
-        notification.style.opacity = '1';
-    }, 100);
-    
-    setTimeout(() => {
-        notification.style.transform = 'translateX(100%)';
-        notification.style.opacity = '0';
-        setTimeout(() => {
-            document.body.removeChild(notification);
-        }, 300);
-    }, 3000);
-}
-
-// Додаємо обробники подій для кодів
-document.addEventListener('DOMContentLoaded', function() {
-    const codeBlocks = document.querySelectorAll('code');
-    
-    codeBlocks.forEach(code => {
-        code.style.cursor = 'pointer';
-        code.title = 'Клікніть для копіювання посилання';
-        
-        code.addEventListener('click', function() {
-            copyToClipboard(this.textContent);
-        });
-        
-        code.addEventListener('mouseenter', function() {
-            this.style.background = 'rgba(0, 0, 0, 0.4)';
-            this.style.boxShadow = '0 0 10px rgba(0, 255, 0, 0.3)';
-        });
-        
-        code.addEventListener('mouseleave', function() {
-            this.style.background = 'rgba(0, 0, 0, 0.3)';
-            this.style.boxShadow = 'none';
-        });
-    });
-});
-</script>
-
-<script>
-// ==================== THEME TOGGLE ====================
-document.addEventListener('DOMContentLoaded', function() {
-    const themeToggle = document.getElementById('theme-toggle');
-    const savedTheme = localStorage.getItem('theme') || 'dark';
-    
-    // Встановлюємо збережену тему
-    document.documentElement.setAttribute('data-theme', savedTheme);
-    updateThemeIcon(savedTheme);
-    
-    // Обробник кліку на перемикач
-    themeToggle.addEventListener('click', function() {
-        const currentTheme = document.documentElement.getAttribute('data-theme');
-        const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
-        
-        // Плавна зміна теми
-        document.documentElement.style.transition = 'all 0.3s ease';
-        document.documentElement.setAttribute('data-theme', newTheme);
-        
-        // Зберігаємо вибір
-        localStorage.setItem('theme', newTheme);
-        updateThemeIcon(newTheme);
-        
-        // Вимикаємо transition після анімації
-        setTimeout(() => {
-            document.documentElement.style.transition = '';
-        }, 300);
-    });
-    
-    // Оновлюємо іконку та підказку
-    function updateThemeIcon(theme) {
-        themeToggle.textContent = theme === 'dark' ? '🌙' : '☀️';
-        themeToggle.setAttribute('aria-label', 
-            theme === 'dark' ? 'Увімкнути світлу тему' : 'Увімкнути темну тему');
-    }
-});
-</script>
-
 </body>
 </html>
