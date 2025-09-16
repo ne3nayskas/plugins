@@ -382,5 +382,32 @@ document.addEventListener('DOMContentLoaded', function() {
     });
 });
 </script>
+// ==================== THEME TOGGLE ====================
+document.addEventListener('DOMContentLoaded', function() {
+    const themeToggle = document.getElementById('theme-toggle');
+    const savedTheme = localStorage.getItem('theme') || 'dark';
+    
+    // Встановлюємо збережену тему
+    document.documentElement.setAttribute('data-theme', savedTheme);
+    updateThemeIcon(savedTheme);
+    
+    // Обробник кліку на перемикач
+    themeToggle.addEventListener('click', function() {
+        const currentTheme = document.documentElement.getAttribute('data-theme');
+        const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
+        
+        // Змінюємо тему
+        document.documentElement.setAttribute('data-theme', newTheme);
+        localStorage.setItem('theme', newTheme);
+        updateThemeIcon(newTheme);
+    });
+    
+    // Оновлюємо іконку та підказку
+    function updateThemeIcon(theme) {
+        themeToggle.textContent = theme === 'dark' ? '🌙' : '☀️';
+        themeToggle.setAttribute('aria-label', 
+            theme === 'dark' ? 'Увімкнути світлу тему' : 'Увімкнути темну тему');
+    }
+});
 </body>
 </html>
