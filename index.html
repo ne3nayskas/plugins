@@ -307,12 +307,16 @@
     <script>
 // Функція для копіювання тексту
 function copyToClipboard(text) {
+    const currentLang = localStorage.getItem('language') || 'eng';
+    const successMessage = currentLang === 'ukr' ? 'Посилання скопійовано!' : 'Link copied!';
+    const errorMessage = currentLang === 'ukr' ? 'Помилка копіювання' : 'Copy error';
+    
     navigator.clipboard.writeText(text).then(() => {
         // Показуємо сповіщення про успішне копіювання
-        showNotification('Посилання скопійовано!', 'success');
+        showNotification(successMessage, 'success');
     }).catch(err => {
         console.error('Помилка копіювання: ', err);
-        showNotification('Помилка копіювання', 'error');
+        showNotification(errorMessage, 'error');
     });
 }
 
@@ -371,8 +375,16 @@ document.addEventListener('DOMContentLoaded', function() {
         // Додаємо курсор-вказівник
         code.style.cursor = 'pointer';
         
-        // Додаємо підказку при наведенні
-        code.title = 'Клікніть для копіювання посилання';
+        // Оновлюємо підказку в залежності від мови
+        function updateTooltip() {
+            const currentLang = localStorage.getItem('language') || 'eng';
+            code.title = currentLang === 'ukr' 
+                ? 'Клікніть для копіювання посилання' 
+                : 'Click to copy link';
+        }
+        
+        // Встановлюємо початкову підказку
+        updateTooltip();
         
         // Обробник кліку
         code.addEventListener('click', function() {
@@ -389,8 +401,18 @@ document.addEventListener('DOMContentLoaded', function() {
             this.style.background = 'rgba(0, 0, 0, 0.3)';
             this.style.boxShadow = 'none';
         });
+        
+        // Оновлюємо підказку при зміні мови
+        document.addEventListener('languageChanged', updateTooltip);
     });
 });
+
+// Додаємо подію для оновлення підказок при зміні мови
+const originalSetActiveLanguage = window.setActiveLanguage;
+window.setActiveLanguage = function(lang) {
+    originalSetActiveLanguage(lang);
+    document.dispatchEvent(new CustomEvent('languageChanged'));
+};
 </script>
 
 </body>
