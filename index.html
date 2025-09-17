@@ -52,6 +52,72 @@
             line-height: 1.4;
         }
 
+        /* Стилі для донат-блоків */
+        .donation-section {
+            background: rgba(0, 0, 0, 0.4);
+            border-radius: 10px;
+            padding: 20px;
+            margin: 30px 0;
+            text-align: center;
+        }
+        
+        .donation-section h2 {
+            color: #FFD700;
+            margin-bottom: 20px;
+            font-size: 1.8em;
+        }
+        
+        .wallet-info {
+            background: rgba(255, 215, 0, 0.1);
+            border-radius: 8px;
+            padding: 15px;
+            margin-bottom: 15px;
+            text-align: left;
+        }
+        
+        .wallet-info h3 {
+            color: #FFD700;
+            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .wallet-address {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            background: rgba(0, 0, 0, 0.3);
+            padding: 10px 15px;
+            border-radius: 5px;
+            margin: 10px 0;
+            font-family: monospace;
+            word-break: break-all;
+        }
+        
+        .copy-btn {
+            background: rgba(255, 215, 0, 0.2);
+            border: none;
+            color: #FFD700;
+            padding: 5px 10px;
+            border-radius: 4px;
+            cursor: pointer;
+            margin-left: 10px;
+            transition: all 0.3s ease;
+        }
+        
+        .copy-btn:hover {
+            background: rgba(255, 215, 0, 0.4);
+        }
+        
+        .qr-code {
+            max-width: 200px;
+            margin: 15px auto;
+            display: block;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0,0,0,0.5);
+        }
+
         /* Адаптація для мобільних пристроїв */
         @media (max-width: 768px) {
             .language-switcher {
@@ -83,6 +149,17 @@
             .plugin-card p {
                 min-height: 50px;
                 font-size: 0.9em;
+            }
+            
+            .wallet-address {
+                flex-direction: column;
+                text-align: center;
+            }
+            
+            .copy-btn {
+                margin-top: 10px;
+                margin-left: 0;
+                width: 100%;
             }
         }
 
@@ -250,15 +327,34 @@
             </div>
         </main>
 
-<footer>
-    <p data-eng="© 2024 ne3nayskas. All rights reserved." data-ukr="© 2024 ne3nayskas. Всі права захищені.">© 2024 ne3nayskas. All rights reserved.</p>
-    <p style="font-size: 12px; opacity: 0.7; margin-top: 10px;">
-        <span data-eng="The information presented here does not infringe any copyrights on logos, names, or content, and is provided solely for educational and programming purposes in JavaScript and HTML." 
-              data-ukr="Інформація, розміщена тут, не порушує авторських прав на логотипи, назви чи контент, і розміщена виключно з метою навчання та програмування в JavaScript та HTML.">
-            The information presented here does not infringe any copyrights on logos, names, or content, and is provided solely for educational and programming purposes in JavaScript and HTML.
-        </span>
-    </p>
-</footer>
+        <!-- Донат секція -->
+        <section class="donation-section">
+            <h2 data-eng="Support the Project" data-ukr="Підтримати проєкт">Support the Project</h2>
+            <p data-eng="Your donation helps maintain and develop new plugins" data-ukr="Ваша підтримка допомагає підтримувати та розвивати нові плагіни">Your donation helps maintain and develop new plugins</p>
+            
+            <div class="wallet-info">
+                <h3>💳 USDT (TRC-20)</h3>
+                <div class="wallet-address">
+                    <span>TBFqyUHLUrv7dsH6kC82UBBDX4gcYCu1Kk</span>
+                    <button class="copy-btn" data-eng="Copy" data-ukr="Копіювати">Copy</button>
+                </div>
+                <img src="https://s.binance.com/vEI2T505" alt="USDT QR Code" class="qr-code">
+            </div>
+            
+            <p style="font-size: 0.9em; opacity: 0.8; margin-top: 20px;">
+                <span data-eng="Thank you for your support! ❤️" data-ukr="Дякуємо за вашу підтримку! ❤️">Thank you for your support! ❤️</span>
+            </p>
+        </section>
+
+        <footer>
+            <p data-eng="© 2024 ne3nayskas. All rights reserved." data-ukr="© 2024 ne3nayskas. Всі права захищені.">© 2024 ne3nayskas. All rights reserved.</p>
+            <p style="font-size: 12px; opacity: 0.7; margin-top: 10px;">
+                <span data-eng="The information presented here does not infringe any copyrights on logos, names, or content, and is provided solely for educational and programming purposes in JavaScript and HTML." 
+                      data-ukr="Інформація, розміщена тут, не порушує авторських прав на логотипи, назви чи контент, і розміщена виключно з метою навчання та програмування в JavaScript та HTML.">
+                    The information presented here does not infringe any copyrights on logos, names, or content, and is provided solely for educational and programming purposes in JavaScript and HTML.
+                </span>
+            </p>
+        </footer>
         
     </div>
 
@@ -414,6 +510,15 @@ document.addEventListener('DOMContentLoaded', function() {
             setTimeout(updateAllTooltips, 100);
         });
     });
+    
+    // Додаємо обробник для кнопки копіювання адреси гаманця
+    const copyWalletBtn = document.querySelector('.wallet-address .copy-btn');
+    if (copyWalletBtn) {
+        copyWalletBtn.addEventListener('click', function() {
+            const walletAddress = this.parentElement.querySelector('span').textContent;
+            copyToClipboard(walletAddress);
+        });
+    }
 });
 </script>
 
