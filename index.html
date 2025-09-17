@@ -305,15 +305,30 @@
         <span style="display: flex; align-items: center; gap: 8px;">
             💳 <span data-eng="USDT (TRC-20):" data-ukr="USDT (TRC-20):">USDT (TRC-20):</span>
         </span>
-        <span style="font-family: monospace; background: rgba(255,215,0,0.1); padding: 5px 10px; border-radius: 4px; font-size: 0.9em;">
+        <span id="walletAddress" style="font-family: monospace; background: rgba(255,215,0,0.1); padding: 5px 10px; border-radius: 4px; font-size: 0.9em;">
             TBFqyUHLUrv7dsH6kC82UBBDX4gcYCu1Kk
         </span>
-        <button class="copy-btn" data-eng="Thank You" data-ukr="Подякувати" 
+        <button class="copy-btn" onclick="copyWalletAddress()" 
                 style="background: transparent; border: 1px solid #FFD700; color: #FFD700; padding: 4px 10px; border-radius: 4px; cursor: pointer; transition: all 0.3s ease; font-size: 0.85em;">
-            Copy
+            <span data-eng="Thank You" data-ukr="Подякувати">Thank You</span>
         </button>
     </div>
 </section>
+
+<script>
+function copyWalletAddress() {
+    const walletAddress = document.getElementById('walletAddress').textContent;
+    const currentLang = localStorage.getItem('language') || 'eng';
+    const successMessage = currentLang === 'ukr' ? 'Адресу скопійовано! Дякуємо!' : 'Address copied! Thank you!';
+    
+    navigator.clipboard.writeText(walletAddress).then(() => {
+        showNotification(successMessage, 'success');
+    }).catch(err => {
+        console.error('Помилка копіювання: ', err);
+        showNotification('Copy error', 'error');
+    });
+}
+</script>
 
         <footer>
             <p data-eng="© 2024 ne3nayskas. All rights reserved." data-ukr="© 2024 ne3nayskas. Всі права захищені.">© 2024 ne3nayskas. All rights reserved.</p>
