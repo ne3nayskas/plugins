@@ -319,7 +319,7 @@
 function copyWalletAddress() {
     const walletAddress = "TKj1cc4mjMnEZdJbYTYWdBPsKFqryf3mhg"; // Безпосередньо вказуємо адресу
     const currentLang = localStorage.getItem('language') || 'eng';
-    const successMessage = currentLang === 'ukr' ? 'Адресу скопійовано! Дякуємо!' : 'Address copied! Thank you!';
+    const successMessage = currentLang === 'ukr' ? 'Дякуємо!' : 'Copied!';
     
     navigator.clipboard.writeText(walletAddress).then(() => {
         showNotification(successMessage, 'success');
