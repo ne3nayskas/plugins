@@ -306,7 +306,7 @@
             💳 <span data-eng="USDT (TRC-20):" data-ukr="USDT (TRC-20):">USDT (TRC-20):</span>
         </span>
         <span id="walletAddress" style="font-family: monospace; background: rgba(255,215,0,0.1); padding: 5px 10px; border-radius: 4px; font-size: 0.9em;">
-            TBFqyUHLUrv7dsH6kC82UBBDX4gcYCu1Kk
+            TKj1cc4mjMnEZdJbYTYWdBPsKFqryf3mhg
         </span>
         <button class="copy-btn" onclick="copyWalletAddress()" 
                 style="background: transparent; border: 1px solid #FFD700; color: #FFD700; padding: 4px 10px; border-radius: 4px; cursor: pointer; transition: all 0.3s ease; font-size: 0.85em;">
@@ -317,7 +317,7 @@
 
 <script>
 function copyWalletAddress() {
-    const walletAddress = document.getElementById('walletAddress').textContent;
+    const walletAddress = "TKj1cc4mjMnEZdJbYTYWdBPsKFqryf3mhg"; // Безпосередньо вказуємо адресу
     const currentLang = localStorage.getItem('language') || 'eng';
     const successMessage = currentLang === 'ukr' ? 'Адресу скопійовано! Дякуємо!' : 'Address copied! Thank you!';
     
@@ -325,7 +325,8 @@ function copyWalletAddress() {
         showNotification(successMessage, 'success');
     }).catch(err => {
         console.error('Помилка копіювання: ', err);
-        showNotification('Copy error', 'error');
+        const errorMessage = currentLang === 'ukr' ? 'Помилка копіювання' : 'Copy error';
+        showNotification(errorMessage, 'error');
     });
 }
 </script>
