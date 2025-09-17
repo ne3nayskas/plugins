@@ -305,7 +305,7 @@
         <span style="display: flex; align-items: center; gap: 8px;">
             💳 <span data-eng="USDT (TRC-20):" data-ukr="USDT (TRC-20):">USDT (TRC-20):</span>
         </span>
-        <span id="walletAddress" style="font-family: monospace; background: rgba(255,215,0,0.1); padding: 5px 10px; border-radius: 4px; font-size: 0.9em;">
+        <span id="walletAddressText" style="font-family: monospace; background: rgba(255,215,0,0.1); padding: 5px 10px; border-radius: 4px; font-size: 0.9em;">
             TKj1cc4mjMnEZdJbYTYWdBPsKFqryf3mhg
         </span>
         <button class="copy-btn" onclick="copyWalletAddress()" 
@@ -317,9 +317,12 @@
 
 <script>
 function copyWalletAddress() {
-    const walletAddress = "TKj1cc4mjMnEZdJbYTYWdBPsKFqryf3mhg"; // Безпосередньо вказуємо адресу
+    // Отримуємо саме адресу гаманця з правильного елемента
+    const walletAddressElement = document.getElementById('walletAddressText');
+    const walletAddress = walletAddressElement.textContent;
+    
     const currentLang = localStorage.getItem('language') || 'eng';
-    const successMessage = currentLang === 'ukr' ? 'Дякуємо!' : 'Copied!';
+    const successMessage = currentLang === 'ukr' ? 'Адресу скопійовано! Дякуємо!' : 'Address copied! Thank you!';
     
     navigator.clipboard.writeText(walletAddress).then(() => {
         showNotification(successMessage, 'success');
