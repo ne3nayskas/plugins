@@ -52,70 +52,48 @@
             line-height: 1.4;
         }
 
-        /* Стилі для донат-блоків */
+        /* Мінімалістичні стилі для донат-секції */
         .donation-section {
-            background: rgba(0, 0, 0, 0.4);
-            border-radius: 10px;
-            padding: 20px;
-            margin: 30px 0;
             text-align: center;
+            margin: 30px 0;
+            padding: 15px;
         }
         
         .donation-section h2 {
             color: #FFD700;
-            margin-bottom: 20px;
-            font-size: 1.8em;
-        }
-        
-        .wallet-info {
-            background: rgba(255, 215, 0, 0.1);
-            border-radius: 8px;
-            padding: 15px;
             margin-bottom: 15px;
-            text-align: left;
-        }
-        
-        .wallet-info h3 {
-            color: #FFD700;
-            margin-bottom: 10px;
+            font-size: 1.5em;
             display: flex;
             align-items: center;
+            justify-content: center;
             gap: 10px;
         }
         
         .wallet-address {
             display: flex;
             align-items: center;
-            justify-content: space-between;
-            background: rgba(0, 0, 0, 0.3);
-            padding: 10px 15px;
-            border-radius: 5px;
+            justify-content: center;
+            gap: 10px;
             margin: 10px 0;
             font-family: monospace;
             word-break: break-all;
+            font-size: 0.9em;
+            color: #ccc;
         }
         
         .copy-btn {
-            background: rgba(255, 215, 0, 0.2);
-            border: none;
+            background: transparent;
+            border: 1px solid #FFD700;
             color: #FFD700;
-            padding: 5px 10px;
+            padding: 4px 8px;
             border-radius: 4px;
             cursor: pointer;
-            margin-left: 10px;
             transition: all 0.3s ease;
+            font-size: 0.8em;
         }
         
         .copy-btn:hover {
-            background: rgba(255, 215, 0, 0.4);
-        }
-        
-        .qr-code {
-            max-width: 200px;
-            margin: 15px auto;
-            display: block;
-            border-radius: 8px;
-            box-shadow: 0 0 10px rgba(0,0,0,0.5);
+            background: rgba(255, 215, 0, 0.2);
         }
 
         /* Адаптація для мобільних пристроїв */
@@ -154,12 +132,6 @@
             .wallet-address {
                 flex-direction: column;
                 text-align: center;
-            }
-            
-            .copy-btn {
-                margin-top: 10px;
-                margin-left: 0;
-                width: 100%;
             }
         }
 
@@ -327,22 +299,15 @@
             </div>
         </main>
 
-        <!-- Донат секція -->
+        <!-- Мінімалістична донат-секція -->
         <section class="donation-section">
-            <h2 data-eng="Support the Project" data-ukr="Підтримати проєкт">Support the Project</h2>
-            <p data-eng="Your donation helps maintain and develop new plugins" data-ukr="Ваша підтримка допомагає підтримувати та розвивати нові плагіни">Your donation helps maintain and develop new plugins</p>
-            
-            <div class="wallet-info">
-                <h3>💳 USDT (TRC-20)</h3>
-                <div class="wallet-address">
-                    <span>TBFqyUHLUrv7dsH6kC82UBBDX4gcYCu1Kk</span>
-                    <button class="copy-btn" data-eng="Copy" data-ukr="Копіювати">Copy</button>
-                </div>
-                <img src="https://s.binance.com/vEI2T505" alt="USDT QR Code" class="qr-code">
+            <h2>💳 <span data-eng="Donate" data-ukr="Донат">Donate</span></h2>
+            <div class="wallet-address">
+                <span>TBFqyUHLUrv7dsH6kC82UBBDX4gcYCu1Kk</span>
+                <button class="copy-btn" data-eng="Copy" data-ukr="Копіювати">Copy</button>
             </div>
-            
-            <p style="font-size: 0.9em; opacity: 0.8; margin-top: 20px;">
-                <span data-eng="Thank you for your support! ❤️" data-ukr="Дякуємо за вашу підтримку! ❤️">Thank you for your support! ❤️</span>
+            <p style="font-size: 0.9em; color: #999; margin-top: 10px;">
+                <span data-eng="USDT (TRC-20)" data-ukr="USDT (TRC-20)">USDT (TRC-20)</span>
             </p>
         </section>
 
