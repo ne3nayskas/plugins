@@ -92,7 +92,7 @@
                 var params = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : {};
                 var onComplete = arguments.length > 1 ? arguments[1] : undefined;
                 var onError = arguments.length > 2 ? arguments[2] : undefined;
-                var partsLimit = 10; // Менше підбірок для якості
+                var partsLimit = 12;
 
                 var partsData = [
                     function (callback) {
@@ -118,6 +118,20 @@
                             json.title = '🔥 Тренди тижня';
                             callback(json);
                         }, callback);
+                    },
+                    function (callback) {
+                        // Топ фільми за весь час
+                        var baseUrl = 'discover/movie?sort_by=vote_average.desc&vote_count.gte=1000';
+                        baseUrl = buildApiUrl(baseUrl);
+                        owner.get(baseUrl, params, function (json) {
+                            if (json.results) {
+                                json.results = json.results.filter(function(item) {
+                                    return filterContent(item);
+                                }).slice(0, 20);
+                            }
+                            json.title = '🏆 Найкращі фільми усіх часів';
+                            callback(json);
+                        }, callback);
                     }
                 ];
 
@@ -133,7 +147,7 @@
                             if (json.results) {
                                 json.results = json.results.filter(function(item) {
                                     return filterContent(item, {ukrainian: true});
-                                }).slice(0, 20); // Обмежуємо кількість
+                                }).slice(0, 20);
                             }
                             json.title = title;
                             callback(json);
@@ -144,23 +158,6 @@
                 // Додаємо українські підбірки
                 CustomData.push(getUkrainianContent('movie', '🎬 Українські фільми'));
                 CustomData.push(getUkrainianContent('tv', '📺 Українські серіали'));
-
-                // Топ фільми за весь час (без російського контенту)
-                function getTopMovies() {
-                    return function (callback) {
-                        var baseUrl = 'discover/movie?sort_by=vote_average.desc&vote_count.gte=1000';
-                        baseUrl = buildApiUrl(baseUrl);
-                        owner.get(baseUrl, params, function (json) {
-                            if (json.results) {
-                                json.results = json.results.filter(function(item) {
-                                    return filterContent(item);
-                                }).slice(0, 20);
-                            }
-                            json.title = '🏆 Найкращі фільми';
-                            callback(json);
-                        }, callback);
-                    };
-                }
 
                 // Топ серіали за весь час
                 function getTopTVShows() {
@@ -179,7 +176,6 @@
                     };
                 }
 
-                CustomData.push(getTopMovies());
                 CustomData.push(getTopTVShows());
 
                 // Новинки (останні 6 місяців)
@@ -210,7 +206,7 @@
                 CustomData.push(getNewReleases('movie', '🎉 Нові фільми'));
                 CustomData.push(getNewReleases('tv', '🎉 Нові серіали'));
 
-                // Мультфільми та анімація (без азійської)
+                // Мультфільми та анімація
                 function getAnimation() {
                     return function (callback) {
                         var apiUrl = 'discover/movie?with_genres=16&sort_by=vote_average.desc&vote_count.gte=200';
@@ -267,7 +263,26 @@
 
                 CustomData.push(getSciFiFantasy());
 
-                // Перемішуємо підбірки (крім перших двох)
+                // Комедії
+                function getComedies() {
+                    return function (callback) {
+                        var apiUrl = 'discover/movie?with_genres=35&sort_by=popularity.desc';
+                        apiUrl = buildApiUrl(apiUrl);
+                        owner.get(apiUrl, params, function (json) {
+                            if (json.results) {
+                                json.results = json.results.filter(function(item) {
+                                    return filterContent(item);
+                                }).slice(0, 15);
+                            }
+                            json.title = '😂 Комедії';
+                            callback(json);
+                        }, callback);
+                    };
+                }
+
+                CustomData.push(getComedies());
+
+                // Перемішуємо підбірки
                 function shuffleArray(array) {
                     for (var i = array.length - 1; i > 0; i--) {
                         var j = Math.floor(Math.random() * (i + 1));
@@ -278,9 +293,6 @@
                 }
 
                 shuffleArray(CustomData);
-
-                // Беремо тільки 8 найкращих підбірок
-                CustomData = CustomData.slice(0, 8);
 
                 var combinedData = partsData.concat(CustomData);
 
@@ -295,10 +307,12 @@
 
         function add() {
             if (typeof Lampa === 'undefined' || !Lampa.Storage || !Lampa.Api || !Lampa.Params) {
+                console.log('Lampa API not available');
                 return;
             }
 
             if (!Lampa.Api.sources || !Lampa.Api.sources.tmdb) {
+                console.log('TMDB source not available');
                 return;
             }
 
@@ -318,46 +332,58 @@
                 return target;
             }
 
-            var surs_mod = assign({}, Lampa.Api.sources.tmdb, new SourceTMDB(Lampa.Api.sources.tmdb));
-
-            Lampa.Api.sources[sourceName] = surs_mod;
-
-            var newSourceOptions = {};
-            newSourceOptions[sourceName] = sourceName;
-
-            var mergedOptions = assign({}, Lampa.Params.values['source'], newSourceOptions);
-
             try {
+                var surs_mod = assign({}, Lampa.Api.sources.tmdb, new SourceTMDB(Lampa.Api.sources.tmdb));
+                Lampa.Api.sources[sourceName] = surs_mod;
+
+                var newSourceOptions = {};
+                newSourceOptions[sourceName] = sourceName;
+
+                var mergedOptions = assign({}, Lampa.Params.values['source'], newSourceOptions);
                 Lampa.Params.select('source', mergedOptions, 'tmdb');
+                
+                console.log('SURS plugin successfully added');
             } catch (e) {
-                console.error('Error updating source params: ', e);
+                console.error('Error adding SURS plugin: ', e);
             }
         }
 
-        // Мінімальні переклади тільки для української
+        // Додаємо переклади для всіх мов
         Lampa.Lang.add({
             surs_title_trend_week: {
+                ru: "Тренды недели",
+                en: "Trending This Week", 
                 uk: "Тренди тижня"
             },
             surs_top_movies: {
+                ru: "Лучшие фильмы",
+                en: "Top Movies",
                 uk: "Найкращі фільми"
             },
             surs_top_tv: {
+                ru: "Лучшие сериалы", 
+                en: "Top TV Shows",
                 uk: "Найкращі серіали"
             }
         });
 
         if (window.appready) {
+            console.log('App ready, adding SURS plugin');
             add();
         } else {
+            console.log('Waiting for app ready');
             Lampa.Listener.follow('app', function (e) {
                 if (e.type == 'ready') {
+                    console.log('App ready event received, adding SURS plugin');
                     add();
                 }
             });
         }
     }
 
-    if (!window.plugin_surs_ready) startPlugin();
+    if (!window.plugin_surs_ready) {
+        console.log('Starting SURS plugin');
+        startPlugin();
+    }
 
 })();
