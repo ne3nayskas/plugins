@@ -8,17 +8,96 @@
             this.network = new Lampa.Reguest();
             this.discovery = false;
 
+            // Функція для побудови URL з фільтрами
+            function buildApiUrl(baseUrl, options) {
+                options = options || {};
+                
+                // Фільтр по мінімальній кількості голосів
+                baseUrl += '&vote_count.gte=50';
+                
+                // Фільтр по мінімальному рейтингу
+                baseUrl += '&vote_average.gte=6.5';
+                
+                // Виключення російського та азійського контенту
+                var excludedKeywords = [
+                    '210024', // Аніме
+                    '13141',  // Манга
+                    '345822', // 4-кома манга
+                    '315535', // Донхуа
+                    '290667', // Маньхуа
+                    '323477', // Манхва
+                    '290609', // Корейська манхва
+                    '207317', // Хентай
+                    '346488', // Російська політика
+                    '158718'  // Російська пропаганда
+                ];
+                baseUrl += '&without_keywords=' + excludedKeywords.join(',');
+                
+                // Виключення країн
+                baseUrl += '&without_origin_country=RU&without_origin_country=JP&without_origin_country=KR&without_origin_country=CN';
+                
+                // Для українського контенту - інші налаштування
+                if (options.ukrainian) {
+                    baseUrl += '&with_origin_country=UA';
+                    // Менш строгі вимоги для українського контенту
+                    baseUrl = baseUrl.replace('vote_count.gte=50', 'vote_count.gte=10');
+                    baseUrl = baseUrl.replace('vote_average.gte=6.5', 'vote_average.gte=5.0');
+                }
+                
+                // Фільтр якості
+                baseUrl += '&with_images=true';
+                
+                return baseUrl;
+            }
+
+            // Функція для фільтрації контенту
+            function filterContent(item, options) {
+                options = options || {};
+                
+                // Для українського контенту - менш строгі вимоги
+                var minRating = options.ukrainian ? 5.0 : 6.5;
+                var minVotes = options.ukrainian ? 10 : 50;
+                
+                // Фільтр по рейтингу
+                if ((item.vote_average || 0) < minRating) return false;
+                
+                // Фільтр по кількості голосів
+                if ((item.vote_count || 0) < minVotes) return false;
+                
+                // Виключення російської та азійської мови
+                var excludedLanguages = ['ru', 'ja', 'ko', 'zh', 'th', 'vi', 'hi'];
+                if (excludedLanguages.includes(item.original_language)) return false;
+                
+                // Виключення країн походження
+                if (item.origin_country) {
+                    var excludedCountries = ['RU', 'JP', 'KR', 'CN', 'TW', 'HK', 'TH', 'VN', 'IN'];
+                    if (item.origin_country.some(function(country) { return excludedCountries.includes(country); })) {
+                        return false;
+                    }
+                }
+                
+                // Фільтр по якості - має бути постер
+                if (!item.poster_path) return false;
+                
+                // Фільтр по року - не старіші 1970 року
+                var releaseYear = item.release_date ? parseInt(item.release_date.substring(0, 4)) : 
+                                 item.first_air_date ? parseInt(item.first_air_date.substring(0, 4)) : 0;
+                if (releaseYear < 1970) return false;
+                
+                return true;
+            }
+
             this.main = function () {
                 var owner = this;
                 var params = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : {};
                 var onComplete = arguments.length > 1 ? arguments[1] : undefined;
                 var onError = arguments.length > 2 ? arguments[2] : undefined;
-                var partsLimit = 12;
+                var partsLimit = 10; // Менше підбірок для якості
 
                 var partsData = [
                     function (callback) {
                         var json = {
-                            title: Lampa.Lang.translate(''),
+                            title: '',
                             results: [],
                             small: true,
                             collection: true,
@@ -27,9 +106,16 @@
                         callback(json);
                     },
                     function (callback) {
+                        // Тренди тижня (без російського контенту)
                         var baseUrl = 'trending/all/week';
+                        baseUrl = buildApiUrl(baseUrl);
                         owner.get(baseUrl, params, function (json) {
-                            json.title = Lampa.Lang.translate('surs_title_trend_week');
+                            if (json.results) {
+                                json.results = json.results.filter(function(item) {
+                                    return filterContent(item);
+                                });
+                            }
+                            json.title = '🔥 Тренди тижня';
                             callback(json);
                         }, callback);
                     }
@@ -37,61 +123,151 @@
 
                 var CustomData = [];
 
-                // Жанри фільмів
-                var allGenres = [
-                    { id: 28, title: 'surs_genre_action' },
-                    { id: 35, title: 'surs_genre_comedy' },
-                    { id: 18, title: 'surs_genre_drama' },
-                    { id: 10749, title: 'surs_genre_romance' },
-                    { id: 16, title: 'surs_genre_animation' },
-                    { id: 12, title: 'surs_genre_adventure' },
-                    { id: 80, title: 'surs_genre_crime' },
-                    { id: 9648, title: 'surs_genre_mystery' },
-                    { id: 878, title: 'surs_genre_sci_fi' },
-                    { id: 53, title: 'surs_genre_thriller' },
-                    { id: 10751, title: 'surs_genre_family' },
-                    { id: 14, title: 'surs_genre_fantasy' }
-                ];
-
-                // Опції сортування
-                var allSortOptions = [
-                    { id: 'vote_count.desc', title: 'surs_vote_count_desc' },
-                    { id: 'vote_average.desc', title: 'surs_vote_average_desc' },
-                    { id: 'first_air_date.desc', title: 'surs_first_air_date_desc' },
-                    { id: 'popularity.desc', title: 'surs_popularity_desc' }
-                ];
-
-                function getMovies(genre) {
+                // Українські підбірки
+                function getUkrainianContent(type, title) {
                     return function (callback) {
-                        var sort = allSortOptions[Math.floor(Math.random() * allSortOptions.length)];
-                        var apiUrl = 'discover/movie?with_genres=' + genre.id + '&sort_by=' + sort.id;
+                        var apiUrl = 'discover/' + type + '?sort_by=popularity.desc&with_origin_country=UA';
+                        apiUrl = buildApiUrl(apiUrl, {ukrainian: true});
 
                         owner.get(apiUrl, params, function (json) {
-                            json.title = Lampa.Lang.translate(sort.title) + ' (' + Lampa.Lang.translate(genre.title) + ')';
+                            if (json.results) {
+                                json.results = json.results.filter(function(item) {
+                                    return filterContent(item, {ukrainian: true});
+                                }).slice(0, 20); // Обмежуємо кількість
+                            }
+                            json.title = title;
                             callback(json);
                         }, callback);
                     };
                 }
 
-                function getTVShows(genre) {
-                    return function (callback) {
-                        var sort = allSortOptions[Math.floor(Math.random() * allSortOptions.length)];
-                        var apiUrl = 'discover/tv?with_genres=' + genre.id + '&sort_by=' + sort.id;
+                // Додаємо українські підбірки
+                CustomData.push(getUkrainianContent('movie', '🎬 Українські фільми'));
+                CustomData.push(getUkrainianContent('tv', '📺 Українські серіали'));
 
-                        owner.get(apiUrl, params, function (json) {
-                            json.title = Lampa.Lang.translate(sort.title) + ' ' + Lampa.Lang.translate('surs_tv_shows') + ' (' + Lampa.Lang.translate(genre.title) + ')';
+                // Топ фільми за весь час (без російського контенту)
+                function getTopMovies() {
+                    return function (callback) {
+                        var baseUrl = 'discover/movie?sort_by=vote_average.desc&vote_count.gte=1000';
+                        baseUrl = buildApiUrl(baseUrl);
+                        owner.get(baseUrl, params, function (json) {
+                            if (json.results) {
+                                json.results = json.results.filter(function(item) {
+                                    return filterContent(item);
+                                }).slice(0, 20);
+                            }
+                            json.title = '🏆 Найкращі фільми';
                             callback(json);
                         }, callback);
                     };
                 }
 
-                // Додаємо підбірки для кожного жанру
-                allGenres.forEach(function (genre) {
-                    CustomData.push(getMovies(genre));
-                    CustomData.push(getTVShows(genre));
-                });
+                // Топ серіали за весь час
+                function getTopTVShows() {
+                    return function (callback) {
+                        var baseUrl = 'discover/tv?sort_by=vote_average.desc&vote_count.gte=500';
+                        baseUrl = buildApiUrl(baseUrl);
+                        owner.get(baseUrl, params, function (json) {
+                            if (json.results) {
+                                json.results = json.results.filter(function(item) {
+                                    return filterContent(item);
+                                }).slice(0, 20);
+                            }
+                            json.title = '🏆 Найкращі серіали';
+                            callback(json);
+                        }, callback);
+                    };
+                }
 
-                // Перемішуємо підбірки
+                CustomData.push(getTopMovies());
+                CustomData.push(getTopTVShows());
+
+                // Новинки (останні 6 місяців)
+                function getNewReleases(type, title) {
+                    return function (callback) {
+                        var currentDate = new Date();
+                        var sixMonthsAgo = new Date();
+                        sixMonthsAgo.setMonth(currentDate.getMonth() - 6);
+                        
+                        var dateField = type === 'movie' ? 'primary_release_date' : 'first_air_date';
+                        var apiUrl = 'discover/' + type + '?sort_by=popularity.desc&' + 
+                                    dateField + '.gte=' + sixMonthsAgo.toISOString().split('T')[0] + 
+                                    '&' + dateField + '.lte=' + currentDate.toISOString().split('T')[0];
+                        apiUrl = buildApiUrl(apiUrl);
+
+                        owner.get(apiUrl, params, function (json) {
+                            if (json.results) {
+                                json.results = json.results.filter(function(item) {
+                                    return filterContent(item);
+                                }).slice(0, 15);
+                            }
+                            json.title = title;
+                            callback(json);
+                        }, callback);
+                    };
+                }
+
+                CustomData.push(getNewReleases('movie', '🎉 Нові фільми'));
+                CustomData.push(getNewReleases('tv', '🎉 Нові серіали'));
+
+                // Мультфільми та анімація (без азійської)
+                function getAnimation() {
+                    return function (callback) {
+                        var apiUrl = 'discover/movie?with_genres=16&sort_by=vote_average.desc&vote_count.gte=200';
+                        apiUrl = buildApiUrl(apiUrl);
+                        owner.get(apiUrl, params, function (json) {
+                            if (json.results) {
+                                json.results = json.results.filter(function(item) {
+                                    return filterContent(item);
+                                }).slice(0, 15);
+                            }
+                            json.title = '🐭 Мультфільми та анімація';
+                            callback(json);
+                        }, callback);
+                    };
+                }
+
+                CustomData.push(getAnimation());
+
+                // Драматичні серіали
+                function getDramaTV() {
+                    return function (callback) {
+                        var apiUrl = 'discover/tv?with_genres=18&sort_by=popularity.desc';
+                        apiUrl = buildApiUrl(apiUrl);
+                        owner.get(apiUrl, params, function (json) {
+                            if (json.results) {
+                                json.results = json.results.filter(function(item) {
+                                    return filterContent(item);
+                                }).slice(0, 15);
+                            }
+                            json.title = '🎭 Драматичні серіали';
+                            callback(json);
+                        }, callback);
+                    };
+                }
+
+                CustomData.push(getDramaTV());
+
+                // Фантастика та фентезі
+                function getSciFiFantasy() {
+                    return function (callback) {
+                        var apiUrl = 'discover/movie?with_genres=878,14&sort_by=popularity.desc';
+                        apiUrl = buildApiUrl(apiUrl);
+                        owner.get(apiUrl, params, function (json) {
+                            if (json.results) {
+                                json.results = json.results.filter(function(item) {
+                                    return filterContent(item);
+                                }).slice(0, 15);
+                            }
+                            json.title = '🚀 Фантастика та фентезі';
+                            callback(json);
+                        }, callback);
+                    };
+                }
+
+                CustomData.push(getSciFiFantasy());
+
+                // Перемішуємо підбірки (крім перших двох)
                 function shuffleArray(array) {
                     for (var i = array.length - 1; i > 0; i--) {
                         var j = Math.floor(Math.random() * (i + 1));
@@ -102,6 +278,9 @@
                 }
 
                 shuffleArray(CustomData);
+
+                // Беремо тільки 8 найкращих підбірок
+                CustomData = CustomData.slice(0, 8);
 
                 var combinedData = partsData.concat(CustomData);
 
@@ -155,97 +334,16 @@
             }
         }
 
-        // Додаємо переклади
+        // Мінімальні переклади тільки для української
         Lampa.Lang.add({
-            surs_vote_count_desc: {
-                ru: "Много голосов",
-                en: "Most Votes",
-                uk: "Багато голосів"
-            },
-            surs_vote_average_desc: {
-                ru: "Высокий рейтинг",
-                en: "High Rating",
-                uk: "Високий рейтинг"
-            },
-            surs_first_air_date_desc: {
-                ru: "Новинки",
-                en: "New Releases",
-                uk: "Новинки"
-            },
-            surs_popularity_desc: {
-                ru: "Популярные",
-                en: "Popular",
-                uk: "Популярні"
-            },
-            surs_genre_action: {
-                ru: "боевики",
-                en: "action",
-                uk: "бойовики"
-            },
-            surs_genre_comedy: {
-                ru: "комедии",
-                en: "comedies",
-                uk: "комедії"
-            },
-            surs_genre_drama: {
-                ru: "драмы",
-                en: "dramas",
-                uk: "драми"
-            },
-            surs_genre_romance: {
-                ru: "мелодрамы",
-                en: "romance",
-                uk: "мелодрами"
-            },
-            surs_genre_animation: {
-                ru: "анимация",
-                en: "animations",
-                uk: "мультфільми"
-            },
-            surs_genre_adventure: {
-                ru: "приключения",
-                en: "adventures",
-                uk: "пригоди"
-            },
-            surs_genre_crime: {
-                ru: "криминал",
-                en: "crime",
-                uk: "кримінал"
-            },
-            surs_genre_mystery: {
-                ru: "детективы",
-                en: "mysteries",
-                uk: "детективи"
-            },
-            surs_genre_sci_fi: {
-                ru: "фантастика",
-                en: "sci-fi",
-                uk: "фантастика"
-            },
-            surs_genre_thriller: {
-                ru: "триллеры",
-                en: "thrillers",
-                uk: "трилери"
-            },
-            surs_genre_family: {
-                ru: "семейные",
-                en: "family",
-                uk: "сімейні"
-            },
-            surs_genre_fantasy: {
-                ru: "фэнтези",
-                en: "fantasy",
-                uk: "фентезі"
-            },
             surs_title_trend_week: {
-                ru: "Тренды недели",
-                en: "Trending This Week",
                 uk: "Тренди тижня"
             },
-            surs_tv_shows: {
-                ru: "сериалы",
-                en: "TV shows",
-                uk: "серіали"
+            surs_top_movies: {
+                uk: "Найкращі фільми"
+            },
+            surs_top_tv: {
+                uk: "Найкращі серіали"
             }
         });
 
