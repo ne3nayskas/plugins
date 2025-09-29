@@ -48,7 +48,7 @@
           title: data.title,
           component: 'prisma_collections_view',
           page: 1,
-          genre: data.genre_id,
+          query: data.query,
           type: data.type
         });
       });
@@ -79,164 +79,124 @@
   }
 
   var network = new Lampa.Reguest();
-  var api_key = '3baac7c58b4daea1999d615c5d12b226';
+  var api_key = '6b99e7a05e71dcb06c1a284826bfc8c7';
   var api_url = 'https://api.themoviedb.org/3/';
 
-  // Розширені підбірки
+  // Тематичні підбірки як у Prisma
   var customCollections = [
-    // Популярні категорії
     {
-      id: 'popular_movies',
-      title: '🍿 Популярні фільми',
-      poster_path: '/q6y0Go1tsGEsmtFryDOJo3dEmqu.jpg',
-      genre_id: 'popular',
-      type: 'movie'
-    },
-    {
-      id: 'top_rated_movies',
-      title: '⭐ Найкращі фільми',
-      poster_path: '/kXfqcdQKsToO0OUXHcrrNCHDBzO.jpg',
-      genre_id: 'top_rated',
-      type: 'movie'
-    },
-    {
-      id: 'upcoming_movies',
-      title: '🎬 Очікувані фільми',
-      poster_path: '/8Vt6mWEReuy4Of61Lnj5Xj704m8.jpg',
-      genre_id: 'upcoming',
-      type: 'movie'
-    },
-    {
-      id: 'now_playing_movies',
-      title: '🎭 Зараз у кіно',
-      poster_path: '/gavyCu1UaTaTNPsVaGXT6pe5u24.jpg',
-      genre_id: 'now_playing',
-      type: 'movie'
-    },
-
-    // Відомі франшизи
-    {
-      id: 'marvel_movies',
-      title: '🦸 Marvel',
+      id: 'superhero_collection',
+      title: '🦸 Супергерої',
       poster_path: '/r7vmZjiyZw9rpJMQJdXpjgiCOk9.jpg',
-      genre_id: 'marvel',
-      type: 'collection'
+      query: 'superhero',
+      type: 'theme'
     },
     {
-      id: 'star_wars_movies',
-      title: '🌌 Зоряні Війни',
-      poster_path: '/6FfCtAuVAW8XJjZ7eWeLibRLWTw.jpg',
-      genre_id: 'star_wars',
-      type: 'collection'
-    },
-    {
-      id: 'dc_movies',
-      title: '🦇 DC Comics',
-      poster_path: '/5Kg76ldv7VxeX9YlcQXiowHgdX6.jpg',
-      genre_id: 'dc',
-      type: 'collection'
-    },
-    {
-      id: 'harry_potter_movies',
-      title: '⚡ Гаррі Поттер',
-      poster_path: '/wuMc08IPKEatf9rnMNXvIDxqP4W.jpg',
-      genre_id: 'harry_potter',
-      type: 'collection'
-    },
-
-    // Жанри
-    {
-      id: 'action_movies',
-      title: '💥 Бойовики',
-      poster_path: '/gavyCu1UaTaTNPsVaGXT6pe5u24.jpg',
-      genre_id: 28,
-      type: 'movie'
-    },
-    {
-      id: 'comedy_movies',
-      title: '😂 Комедії',
-      poster_path: '/tVxDe01Zy3kZqaZRNiXFGDICdZk.jpg',
-      genre_id: 35,
-      type: 'movie'
-    },
-    {
-      id: 'drama_movies',
-      title: '🎭 Драми',
-      poster_path: '/k0ThmZQl5nHe4JefC2bXjqtgYp0.jpg',
-      genre_id: 18,
-      type: 'movie'
-    },
-    {
-      id: 'animation_movies',
-      title: '🐭 Мультфільми',
-      poster_path: '/y5Z0WesTjvn59jP6yo459eUsbli.jpg',
-      genre_id: 16,
-      type: 'movie'
-    },
-    {
-      id: 'thriller_movies',
-      title: '🔪 Трилери',
-      poster_path: '/8Vt6mWEReuy4Of61Lnj5Xj704m8.jpg',
-      genre_id: 53,
-      type: 'movie'
-    },
-    {
-      id: 'fantasy_movies',
-      title: '🧙 Фентезі',
+      id: 'fantasy_worlds',
+      title: '🧙 Фентезі світи',
       poster_path: '/8UlWHLMpgI9Kay6KArRZbCYtVVb.jpg',
-      genre_id: 14,
-      type: 'movie'
+      query: 'fantasy',
+      type: 'theme'
     },
     {
-      id: 'sci_fi_movies',
-      title: '🚀 Наукова фантастика',
-      poster_path: '/gavyCu1UaTaTNPsVaGXT6pe5u24.jpg',
-      genre_id: 878,
-      type: 'movie'
+      id: 'space_adventures',
+      title: '🚀 Космічні пригоди',
+      poster_path: '/6FfCtAuVAW8XJjZ7eWeLibRLWTw.jpg',
+      query: 'space',
+      type: 'theme'
     },
     {
-      id: 'horror_movies',
-      title: '👻 Хоррори',
+      id: 'crime_thrillers',
+      title: '🔫 Кримінальні трилери',
+      poster_path: '/kXfqcdQKsToO0OUXHcrrNCHDBzO.jpg',
+      query: 'crime thriller',
+      type: 'theme'
+    },
+    {
+      id: 'romantic_stories',
+      title: '💖 Романтичні історії',
       poster_path: '/tVxDe01Zy3kZqaZRNiXFGDICdZk.jpg',
-      genre_id: 27,
-      type: 'movie'
+      query: 'romance',
+      type: 'theme'
     },
     {
-      id: 'adventure_movies',
-      title: '🗺️ Пригоди',
-      poster_path: '/k0ThmZQl5nHe4JefC2bXjqtgYp0.jpg',
-      genre_id: 12,
-      type: 'movie'
+      id: 'historical_dramas',
+      title: '🏰 Історичні драми',
+      poster_path: '/q6y0Go1tsGEsmtFryDOJo3dEmqu.jpg',
+      query: 'historical drama',
+      type: 'theme'
     },
     {
-      id: 'family_movies',
-      title: '👨‍👩‍👧‍👦 Сімейні',
+      id: 'family_animation',
+      title: '👨‍👩‍👧‍👦 Сімейна анімація',
       poster_path: '/y5Z0WesTjvn59jP6yo459eUsbli.jpg',
-      genre_id: 10751,
-      type: 'movie'
+      query: 'family animation',
+      type: 'theme'
+    },
+    {
+      id: 'action_adventures',
+      title: '💥 Екшн пригоди',
+      poster_path: '/gavyCu1UaTaTNPsVaGXT6pe5u24.jpg',
+      query: 'action adventure',
+      type: 'theme'
+    },
+    {
+      id: 'sci_fi_future',
+      title: '🤖 Наукова фантастика',
+      poster_path: '/5Kg76ldv7VxeX9YlcQXiowHgdX6.jpg',
+      query: 'science fiction',
+      type: 'theme'
+    },
+    {
+      id: 'mystery_horror',
+      title: '👻 Містичні жахи',
+      poster_path: '/8Vt6mWEReuy4Of61Lnj5Xj704m8.jpg',
+      query: 'mystery horror',
+      type: 'theme'
+    },
+    {
+      id: 'comedy_films',
+      title: '😂 Комедійні фільми',
+      poster_path: '/k0ThmZQl5nHe4JefC2bXjqtgYp0.jpg',
+      query: 'comedy',
+      type: 'theme'
+    },
+    {
+      id: 'drama_stories',
+      title: '🎭 Драматичні історії',
+      poster_path: '/wuMc08IPKEatf9rnMNXvIDxqP4W.jpg',
+      query: 'drama',
+      type: 'theme'
+    },
+    {
+      id: 'ukrainian_cinema',
+      title: '🇺🇦 Українське кіно',
+      poster_path: '/A1f0Wk8fQzZJCmYxH5Z4kW41L9.jpg',
+      query: 'ukrainian',
+      type: 'theme'
+    },
+    {
+      id: 'european_cinema',
+      title: '🇪🇺 Європейське кіно',
+      poster_path: '/bQ2aUVIgOlgJSmZFWn80wVfJ3yB.jpg',
+      query: 'european',
+      type: 'theme'
     }
   ];
 
   // Функція для фільтрації азійського контенту
   function filterAsianContent(movies) {
     return movies.filter(function(movie) {
-      // Фільтруємо фільми без рейтингу
-      if (!movie.vote_average || movie.vote_average < 1) return false;
+      if (!movie.vote_average || movie.vote_average < 5) return false;
       
-      // Фільтруємо азійські мови (китайська, японська, корейська)
       var originalTitle = movie.original_title || '';
       var title = movie.title || '';
       
-      // Регулярний вираз для виявлення ієрогліфів та корейських символів
       var asianChars = /[\u3040-\u30ff\u3100-\u312f\u3400-\u4dbf\u4e00-\u9fff\uac00-\ud7af]/;
       
-      // Виключаємо якщо оригінальна назва містить азійські символи
       if (asianChars.test(originalTitle) || asianChars.test(title)) {
         return false;
       }
-      
-      // Виключаємо фільми з дуже низьким рейтингом
-      if (movie.vote_average < 5.0) return false;
       
       return true;
     });
@@ -252,9 +212,9 @@
           title: item.title,
           img: item.poster_path,
           poster_path: item.poster_path,
-          overview: item.title + ' українською мовою',
+          overview: item.title,
           hpu: item.id,
-          genre_id: item.genre_id,
+          query: item.query,
           type: item.type,
           backdrop_path: item.poster_path
         };
@@ -270,72 +230,103 @@
     oncomplite(result);
   }
 
-  // Функція для отримання фільмів
+  // Функція для пошуку фільмів за темою
   function full(params, oncomplite, onerror) {
-    var genreId = params.genre || params.url;
-    var type = params.type || 'movie';
+    var query = params.query;
     var page = params.page || 1;
-    var url = '';
-
-    if (type === 'collection') {
-      // Для відомих франшиз
-      switch(genreId) {
-        case 'marvel':
-          url = api_url + 'collection/86311?api_key=' + api_key + '&language=uk';
-          break;
-        case 'star_wars':
-          url = api_url + 'collection/10?api_key=' + api_key + '&language=uk';
-          break;
-        case 'dc':
-          url = api_url + 'collection/263?api_key=' + api_key + '&language=uk';
-          break;
-        case 'harry_potter':
-          url = api_url + 'collection/1241?api_key=' + api_key + '&language=uk';
-          break;
-        default:
-          url = api_url + 'discover/movie?api_key=' + api_key + '&language=uk&sort_by=popularity.desc&page=' + page;
-      }
-    } else {
-      // Для звичайних категорій
-      switch(genreId) {
-        case 'popular':
-          url = api_url + 'movie/popular?api_key=' + api_key + '&language=uk&page=' + page;
-          break;
-        case 'top_rated':
-          url = api_url + 'movie/top_rated?api_key=' + api_key + '&language=uk&page=' + page;
-          break;
-        case 'upcoming':
-          url = api_url + 'movie/upcoming?api_key=' + api_key + '&language=uk&page=' + page;
-          break;
-        case 'now_playing':
-          url = api_url + 'movie/now_playing?api_key=' + api_key + '&language=uk&page=' + page;
-          break;
-        default:
-          url = api_url + 'discover/movie?api_key=' + api_key + '&language=uk&with_genres=' + genreId + '&sort_by=popularity.desc&page=' + page;
-      }
+    
+    if (!query) {
+      onerror('No query provided');
+      return;
     }
 
-    console.log('Loading from:', url);
+    var url = api_url + 'search/movie?api_key=' + api_key + '&language=uk&query=' + encodeURIComponent(query) + '&page=' + page + '&include_adult=false';
+
+    console.log('Searching movies for theme:', query, 'URL:', url);
 
     network.silent(url, function (data) {
-      var movies = [];
-      
-      if (type === 'collection' && data.parts) {
-        // Для колекцій
-        movies = data.parts || [];
-      } else {
-        // Для звичайних запитів
-        movies = data.results || [];
-      }
+      var movies = data.results || [];
       
       // Фільтруємо контент
+      var filteredMovies = filterAsianContent(movies);
+      
+      // Сортуємо за популярністю
+      filteredMovies.sort(function(a, b) {
+        return b.popularity - a.popularity;
+      });
+
+      var formattedMovies = filteredMovies.map(function (movie) {
+        return {
+          id: movie.id,
+          title: movie.title,
+          name: movie.title,
+          original_title: movie.original_title,
+          poster_path: movie.poster_path,
+          backdrop_path: movie.backdrop_path,
+          overview: movie.overview,
+          release_date: movie.release_date,
+          vote_average: movie.vote_average,
+          popularity: movie.popularity,
+          genre_ids: movie.genre_ids,
+          media_type: 'movie'
+        };
+      });
+
+      var result = {
+        id: params.url,
+        title: getCollectionTitle(query),
+        overview: 'Тематична підбірка: ' + query,
+        poster_path: formattedMovies[0] ? formattedMovies[0].poster_path : customCollections.find(c => c.query === query)?.poster_path || '',
+        backdrop_path: formattedMovies[0] ? formattedMovies[0].backdrop_path : '',
+        results: formattedMovies,
+        page: data.page,
+        total_pages: Math.min(data.total_pages, 5), // Обмежуємо кількість сторінок
+        total_results: formattedMovies.length
+      };
+      
+      console.log('Found movies for theme', query, ':', formattedMovies.length);
+      oncomplite(result);
+    }, function (error) {
+      console.error('Search API Error:', error);
+      // Якщо пошук не вдався, використовуємо жанровий підхід як запасний варіант
+      fallbackSearch(query, page, oncomplite, onerror);
+    }, false);
+  }
+
+  // Запасний варіант пошуку через жанри
+  function fallbackSearch(query, page, oncomplite, onerror) {
+    var genreMap = {
+      'superhero': 28, // action
+      'fantasy': 14,
+      'space': 878, // sci-fi
+      'crime thriller': 80, // crime
+      'romance': 10749,
+      'historical drama': 18, // drama
+      'family animation': 16, // animation
+      'action adventure': 12, // adventure
+      'science fiction': 878,
+      'mystery horror': 27, // horror
+      'comedy': 35,
+      'drama': 18,
+      'ukrainian': 18, // drama for ukrainian
+      'european': 18 // drama for european
+    };
+
+    var genreId = genreMap[query] || 28; // action by default
+    
+    var url = api_url + 'discover/movie?api_key=' + api_key + '&language=uk&with_genres=' + genreId + '&sort_by=popularity.desc&page=' + page;
+
+    console.log('Fallback to genre search:', query, '->', genreId);
+
+    network.silent(url, function (data) {
+      var movies = data.results || [];
       var filteredMovies = filterAsianContent(movies);
       
       var formattedMovies = filteredMovies.map(function (movie) {
         return {
           id: movie.id,
-          title: movie.title || movie.name,
-          name: movie.title || movie.name,
+          title: movie.title,
+          name: movie.title,
           original_title: movie.original_title,
           poster_path: movie.poster_path,
           backdrop_path: movie.backdrop_path,
@@ -348,47 +339,39 @@
       });
 
       var result = {
-        id: genreId,
-        title: getCollectionTitle(genreId),
-        overview: 'Фільми українською мовою',
+        id: query,
+        title: getCollectionTitle(query),
+        overview: 'Тематична підбірка: ' + query,
         poster_path: formattedMovies[0] ? formattedMovies[0].poster_path : '',
         backdrop_path: formattedMovies[0] ? formattedMovies[0].backdrop_path : '',
         results: formattedMovies,
-        page: data.page || 1,
-        total_pages: data.total_pages || 1,
+        page: data.page,
+        total_pages: Math.min(data.total_pages, 5),
         total_results: formattedMovies.length
       };
       
-      console.log('Loaded movies:', formattedMovies.length, 'Filtered from:', movies.length);
       oncomplite(result);
-    }, function (error) {
-      console.error('API Error:', error);
-      onerror(error);
-    }, false);
+    }, onerror, false);
   }
 
-  function getCollectionTitle(genreId) {
+  function getCollectionTitle(query) {
     var titles = {
-      'popular': 'Популярні фільми',
-      'top_rated': 'Найкращі фільми',
-      'upcoming': 'Очікувані фільми',
-      'now_playing': 'Зараз у кіно',
-      'marvel': 'Marvel',
-      'star_wars': 'Зоряні Війни',
-      'dc': 'DC Comics',
-      'harry_potter': 'Гаррі Поттер',
-      '28': 'Бойовики',
-      '35': 'Комедії',
-      '18': 'Драми',
-      '16': 'Мультфільми',
-      '53': 'Трилери',
-      '14': 'Фентезі',
-      '878': 'Наукова фантастика',
-      '27': 'Хоррори',
-      '12': 'Пригоди',
-      '10751': 'Сімейні фільми'
+      'superhero': 'Супергерої',
+      'fantasy': 'Фентезі світи',
+      'space': 'Космічні пригоди',
+      'crime thriller': 'Кримінальні трилери',
+      'romance': 'Романтичні історії',
+      'historical drama': 'Історичні драми',
+      'family animation': 'Сімейна анімація',
+      'action adventure': 'Екшн пригоди',
+      'science fiction': 'Наукова фантастика',
+      'mystery horror': 'Містичні жахи',
+      'comedy': 'Комедійні фільми',
+      'drama': 'Драматичні історії',
+      'ukrainian': 'Українське кіно',
+      'european': 'Європейське кіно'
     };
-    return titles[genreId] || 'Підбірка фільмів';
+    return titles[query] || query;
   }
 
   function clear() {
@@ -439,7 +422,7 @@
           title: element.title,
           component: 'prisma_collections_view',
           page: 1,
-          genre: element.genre_id,
+          query: element.query,
           type: element.type
         });
       };
@@ -455,8 +438,8 @@
     var manifest = {
       type: 'video',
       version: '1.0.0',
-      name: 'Підбірки',
-      description: 'Фільми українською мовою',
+      name: 'Тематичні підбірки',
+      description: 'Фільми за темами українською',
       component: 'prisma_collections'
     };
 
@@ -480,8 +463,6 @@
           position: relative; 
           margin: 8px;
           width: calc(25% - 16px) !important;
-          min-width: calc(25% - 16px) !important;
-          max-width: calc(25% - 16px) !important;
         }
         .prisma-collection-card .card__title { 
           text-align: center; 
@@ -503,31 +484,16 @@
           height: 180px !important;
           object-fit: cover;
         }
-        .category-full .prisma-collection-card { 
-          padding-bottom: 1em; 
-        }
         
         @media screen and (max-width: 1200px) {
-          .prisma-collection-card { 
-            width: calc(33.333% - 16px) !important;
-            min-width: calc(33.333% - 16px) !important;
-            max-width: calc(33.333% - 16px) !important;
-          }
+          .prisma-collection-card { width: calc(33.333% - 16px) !important; }
         }
-        
         @media screen and (max-width: 767px) {
-          .prisma-collection-card { 
-            width: calc(50% - 16px) !important;
-            min-width: calc(50% - 16px) !important;
-            max-width: calc(50% - 16px) !important;
-          }
+          .prisma-collection-card { width: calc(50% - 16px) !important; }
         }
-        
         @media screen and (max-width: 480px) {
           .prisma-collection-card { 
             width: calc(50% - 12px) !important;
-            min-width: calc(50% - 12px) !important;
-            max-width: calc(50% - 12px) !important;
             margin: 6px;
           }
           .prisma-collection-card .card__view {
@@ -535,10 +501,6 @@
           }
           .prisma-collection-card .card__img {
             height: 160px !important;
-          }
-          .prisma-collection-card .card__title {
-            font-size: 11px;
-            padding: 6px 3px;
           }
         }
       </style>
