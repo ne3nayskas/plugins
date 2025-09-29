@@ -47,7 +47,8 @@
           collection: data,
           title: data.title,
           component: 'prisma_collections_view',
-          page: 1
+          page: 1,
+          genre: data.genre_id
         });
       });
       this.image();
@@ -77,80 +78,104 @@
   }
 
   var network = new Lampa.Reguest();
-  var api_key = '3baac7c58b4daea1999d615c5d12b226'; // TMDB API key
+  var api_key = '3baac7c58b4daea1999d615c5d12b226';
   var api_url = 'https://api.themoviedb.org/3/';
 
-  // Функція для отримання популярних колекцій
-  function main(params, oncomplite, onerror) {
-    var url = api_url + 'collection/popular?api_key=' + api_key + '&language=uk&page=' + (params.page || 1);
-    
-    network.silent(url, function (data) {
-      var collections = data.results || [];
-      var fulldata = collections.map(function (collection) {
-        return {
-          id: collection.id,
-          title: collection.name,
-          img: collection.poster_path,
-          overview: collection.overview,
-          backdrop_path: collection.backdrop_path,
-          hpu: collection.id.toString(),
-          cardClass: function (elem, param) {
-            return new Collection(elem, param);
-          }
-        };
-      });
-      
-      var result = {
-        results: fulldata,
-        page: data.page,
-        total_pages: data.total_pages,
-        collection: true
-      };
-      
-      oncomplite(result);
-    }, onerror, false);
-  }
+  // Створюємо власні підбірки за жанрами
+  var customCollections = [
+    {
+      id: 'popular_movies',
+      title: 'Популярні фільми',
+      poster_path: '/q6y0Go1tsGEsmtFryDOJo3dEmqu.jpg',
+      genre_id: 'popular'
+    },
+    {
+      id: 'top_rated_movies',
+      title: 'Найкращі фільми',
+      poster_path: '/kXfqcdQKsToO0OUXHcrrNCHDBzO.jpg',
+      genre_id: 'top_rated'
+    },
+    {
+      id: 'upcoming_movies',
+      title: 'Очікувані фільми',
+      poster_path: '/8Vt6mWEReuy4Of61Lnj5Xj704m8.jpg',
+      genre_id: 'upcoming'
+    },
+    {
+      id: 'action_movies',
+      title: 'Екшн фільми',
+      poster_path: '/gavyCu1UaTaTNPsVaGXT6pe5u24.jpg',
+      genre_id: 28
+    },
+    {
+      id: 'comedy_movies',
+      title: 'Комедії',
+      poster_path: '/tVxDe01Zy3kZqaZRNiXFGDICdZk.jpg',
+      genre_id: 35
+    },
+    {
+      id: 'drama_movies',
+      title: 'Драми',
+      poster_path: '/k0ThmZQl5nHe4JefC2bXjqtgYp0.jpg',
+      genre_id: 18
+    },
+    {
+      id: 'animation_movies',
+      title: 'Мультфільми',
+      poster_path: '/y5Z0WesTjvn59jP6yo459eUsbli.jpg',
+      genre_id: 16
+    }
+  ];
 
-  // Функція для отримання списку колекцій
   function collection(params, oncomplite, onerror) {
     params.page = params.page || 1;
     
-    // Отримуємо популярні колекції
-    var url = api_url + 'collection/popular?api_key=' + api_key + '&language=uk&page=' + params.page;
-
-    network.silent(url, function (data) {
-      var formattedData = {
-        results: (data.results || []).map(function (item) {
-          return {
-            id: item.id,
-            title: item.name,
-            img: item.poster_path,
-            overview: item.overview,
-            hpu: item.id.toString(),
-            backdrop_path: item.backdrop_path,
-            parts: item.parts || []
-          };
-        }),
-        page: data.page,
-        total_pages: data.total_pages || 10,
-        collection: true,
-        cardClass: function (elem, param) {
-          return new Collection(elem, param);
-        }
-      };
-      
-      oncomplite(formattedData);
-    }, onerror, false);
+    // Повертаємо наші кастомні колекції
+    var result = {
+      results: customCollections.map(function(item, index) {
+        return {
+          id: item.id,
+          title: item.title,
+          img: item.poster_path,
+          poster_path: item.poster_path,
+          overview: item.title + ' українською мовою',
+          hpu: item.id,
+          genre_id: item.genre_id,
+          backdrop_path: item.poster_path
+        };
+      }),
+      page: 1,
+      total_pages: 1,
+      collection: true,
+      cardClass: function (elem, param) {
+        return new Collection(elem, param);
+      }
+    };
+    
+    oncomplite(result);
   }
 
-  // Функція для отримання повної інформації про колекцію
+  // Функція для отримання фільмів за жанром
   function full(params, oncomplite, onerror) {
-    var collectionId = params.url || params.id;
-    var url = api_url + 'collection/' + collectionId + '?api_key=' + api_key + '&language=uk';
+    var genreId = params.genre || params.url;
+    var page = params.page || 1;
+    var url = '';
+
+    // Визначаємо URL в залежності від типу підбірки
+    if (genreId === 'popular') {
+      url = api_url + 'movie/popular?api_key=' + api_key + '&language=uk&page=' + page;
+    } else if (genreId === 'top_rated') {
+      url = api_url + 'movie/top_rated?api_key=' + api_key + '&language=uk&page=' + page;
+    } else if (genreId === 'upcoming') {
+      url = api_url + 'movie/upcoming?api_key=' + api_key + '&language=uk&page=' + page;
+    } else {
+      url = api_url + 'discover/movie?api_key=' + api_key + '&language=uk&with_genres=' + genreId + '&page=' + page;
+    }
+
+    console.log('Loading movies from:', url);
 
     network.silent(url, function (data) {
-      // Форматуємо фільми в колекції
-      var movies = (data.parts || []).map(function (movie) {
+      var movies = (data.results || []).map(function (movie) {
         return {
           id: movie.id,
           title: movie.title,
@@ -167,19 +192,36 @@
       });
 
       var result = {
-        id: data.id,
-        title: data.name,
-        overview: data.overview,
-        poster_path: data.poster_path,
-        backdrop_path: data.backdrop_path,
+        id: genreId,
+        title: getCollectionTitle(genreId),
+        overview: 'Фільми українською мовою',
+        poster_path: data.results && data.results[0] ? data.results[0].poster_path : '',
+        backdrop_path: data.results && data.results[0] ? data.results[0].backdrop_path : '',
         results: movies,
-        page: params.page || 1,
-        total_pages: 1,
-        total_results: movies.length
+        page: data.page,
+        total_pages: data.total_pages,
+        total_results: data.total_results
       };
       
+      console.log('Loaded movies:', movies.length);
       oncomplite(result);
-    }, onerror, false);
+    }, function (error) {
+      console.error('API Error:', error);
+      onerror(error);
+    }, false);
+  }
+
+  function getCollectionTitle(genreId) {
+    var titles = {
+      'popular': 'Популярні фільми',
+      'top_rated': 'Найкращі фільми',
+      'upcoming': 'Очікувані фільми',
+      '28': 'Екшн фільми',
+      '35': 'Комедії',
+      '18': 'Драми',
+      '16': 'Мультфільми'
+    };
+    return titles[genreId] || 'Підбірка фільмів';
   }
 
   function clear() {
@@ -187,7 +229,6 @@
   }
 
   var Api = {
-    main: main,
     collection: collection,
     full: full,
     clear: clear,
@@ -199,6 +240,7 @@
 
     comp.create = function () {
       this.activity.loader(true);
+      console.log('Loading collection view:', object);
       Api.full(object, this.build.bind(this), this.empty.bind(this));
     };
 
@@ -218,15 +260,6 @@
       Api.collection(object, this.build.bind(this), this.empty.bind(this));
     };
 
-    comp.next = function () {
-      var _this2 = this;
-      object.page++;
-      Api.collection(object, function (result) {
-        _this2.append(result, true);
-      }, function () {
-      });
-    }
-
     comp.nextPageReuest = function (object, resolve, reject) {
       Api.collection(object, resolve.bind(comp), reject.bind(comp));
     };
@@ -238,8 +271,9 @@
         Lampa.Activity.push({
           url: element.id,
           title: element.title,
-          component: 'prisma_collection',
-          page: 1
+          component: 'prisma_collections_view',
+          page: 1,
+          genre: element.genre_id
         });
       };
     };
@@ -255,7 +289,7 @@
       type: 'video',
       version: '1.0.0',
       name: 'Підбірки',
-      description: 'Колекції фільмів українською',
+      description: 'Фільми українською мовою',
       component: 'prisma_collections'
     };
 
@@ -275,14 +309,21 @@
     
     var style = `
       <style>
-        .prisma-collection-card { position: relative; }
+        .prisma-collection-card { 
+          position: relative; 
+          margin: 10px;
+        }
         .prisma-collection-card .card__title { 
           text-align: center; 
           padding: 10px 5px; 
           font-size: 14px; 
-          line-height: 1.2; 
+          line-height: 1.2;
+          color: white;
+          font-weight: 500;
         }
-        .category-full .prisma-collection-card { padding-bottom: 2em; }
+        .category-full .prisma-collection-card { 
+          padding-bottom: 2em; 
+        }
         
         @media screen and (max-width: 767px) {
           .category-full .prisma-collection-card { width: 33.3%; }
