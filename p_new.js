@@ -79,10 +79,41 @@
         Lampa.Storage.set('porborki_first_run', 'false');
     }
 
+    // Функція для показу діалогового вікна з підтвердженням перезавантаження
+    function showReloadDialog() {
+        if (Lampa.Dialog && Lampa.Dialog.has('porborki-reload-dialog')) {
+            return;
+        }
+
+        Lampa.Dialog.add({
+            id: 'porborki-reload-dialog',
+            title: 'Плагін підбірок',
+            text: 'Для коректної роботи плагіна необхідно перевантажити Lampa. Натисніть "ОК" для перезавантаження.',
+            component: 'confirm',
+            onback: () => {
+                // При натисканні "Назад" все одно перезавантажуємо
+                reloadLampa();
+            },
+            onselect: (result) => {
+                if (result) {
+                    reloadLampa();
+                } else {
+                    // Якщо користувач скасував, все одно перезавантажуємо через 3 секунди
+                    setTimeout(reloadLampa, 3000);
+                }
+            }
+        });
+    }
+
     // Функція для перезавантаження Lampa
     function reloadLampa() {
         if (typeof Lampa !== 'undefined' && Lampa.Activity) {
             Lampa.Activity.reload();
+        } else {
+            // Альтернативний спосіб перезавантаження
+            setTimeout(() => {
+                window.location.reload();
+            }, 500);
         }
     }
 
@@ -94,8 +125,8 @@
             // Увімкнути всі підбірки
             enableAllCollections();
             
-            // Перезавантажити Lampa після невеликої затримки
-            setTimeout(reloadLampa, 1000);
+            // Показати діалогове вікно з підтвердженням перезавантаження
+            setTimeout(showReloadDialog, 1000);
         }
 
         // Додаємо компонент в налаштування
