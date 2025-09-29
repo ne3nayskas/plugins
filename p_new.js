@@ -64,19 +64,19 @@
 
     const menuElements = {};
 
-    // Функція для перевірки першого запуску
-    function isFirstRun() {
-        return Lampa.Storage.get('porborki_first_run') === null;
-    }
-
     // Функція для автоматичного увімкнення всіх підбірок
     function enableAllCollections() {
+        let needReload = false;
+        
         menuItems.forEach(item => {
-            Lampa.Storage.set(`porborki_${item.id}`, '1', 'porborki');
+            const currentValue = Lampa.Storage.get(`porborki_${item.id}`, 'porborki');
+            if (currentValue !== '1') {
+                Lampa.Storage.set(`porborki_${item.id}`, '1', 'porborki');
+                needReload = true;
+            }
         });
         
-        // Позначаємо, що перший запуск вже відбувся
-        Lampa.Storage.set('porborki_first_run', 'false');
+        return needReload;
     }
 
     // Функція для показу діалогового вікна з підтвердженням перезавантаження
@@ -88,45 +88,37 @@
         Lampa.Dialog.add({
             id: 'porborki-reload-dialog',
             title: 'Плагін підбірок',
-            text: 'Для коректної роботи плагіна необхідно перевантажити Lampa. Натисніть "ОК" для перезавантаження.',
+            text: 'Плагін успішно встановлено! Всі підбірки додано в меню. Натисніть "ОК" для перезавантаження.',
             component: 'confirm',
             onback: () => {
-                // При натисканні "Назад" все одно перезавантажуємо
                 reloadLampa();
             },
             onselect: (result) => {
-                if (result) {
-                    reloadLampa();
-                } else {
-                    // Якщо користувач скасував, все одно перезавантажуємо через 3 секунди
-                    setTimeout(reloadLampa, 3000);
-                }
+                reloadLampa();
             }
         });
     }
 
     // Функція для перезавантаження Lampa
     function reloadLampa() {
-        if (typeof Lampa !== 'undefined' && Lampa.Activity) {
-            Lampa.Activity.reload();
-        } else {
-            // Альтернативний спосіб перезавантаження
-            setTimeout(() => {
+        setTimeout(() => {
+            if (typeof Lampa !== 'undefined' && Lampa.Activity && typeof Lampa.Activity.reload === 'function') {
+                Lampa.Activity.reload();
+            } else {
                 window.location.reload();
-            }, 500);
-        }
+            }
+        }, 300);
     }
 
     function initPlugin() {
         if (window.plugin_podbor_ready) return;
 
-        // Перевіряємо чи це перший запуск
-        if (isFirstRun()) {
-            // Увімкнути всі підбірки
-            enableAllCollections();
-            
-            // Показати діалогове вікно з підтвердженням перезавантаження
-            setTimeout(showReloadDialog, 1000);
+        // Автоматично увімкнути всі підбірки
+        const needReload = enableAllCollections();
+        
+        // Якщо були зміни в налаштуваннях - показати діалог перезавантаження
+        if (needReload) {
+            setTimeout(showReloadDialog, 1500);
         }
 
         // Додаємо компонент в налаштування
@@ -155,7 +147,7 @@
                     name: `porborki_${item.id}`,
                     type: "select",
                     values: { 1: "Показати", 0: "Приховати" },
-                    default: 1 // Змінюємо значення за замовчуванням на 1 (увімкнено)
+                    default: 1
                 },
                 field: { name: item.title }
             });
@@ -180,7 +172,7 @@
 
         menuItems.forEach(item => {
             const menuItem = $(`
-                <li class="menu__item selector" data-action="${item.id}" style="display: none;">
+                <li class="menu__item selector" data-action="${item.id}">
                     <div class="menu__ico">${item.icon}</div>
                     <div class="menu__text">${item.title}</div>
                 </li>
@@ -202,6 +194,7 @@
             menuElements[item.id] = menuItem;
         });
 
+        // Відразу показуємо всі пункти меню
         updateMenuItems();
     }
 
