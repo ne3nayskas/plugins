@@ -152,7 +152,7 @@
     var CACHE_TIME = 3 * 24 * 60 * 60 * 1000; // 3 дні
     var OMDB_CACHE = 'maxsm_rating_omdb';
     var ID_MAPPING_CACHE = 'maxsm_rating_id_mapping';
-    var OMDB_API_KEY = window.RATINGS_PLUGIN_TOKENS?.OMDB_API_KEY || '12c9249c';
+    var OMDB_API_KEY = window.RATINGS_PLUGIN_TOKENS?.OMDB_API_KEY || ''; 
 
     // Словник вікових рейтингів
     var AGE_RATINGS = {
