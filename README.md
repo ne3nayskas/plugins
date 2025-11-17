@@ -1,1 +1,1 @@
-https://github.com/ne3nayskas/plugins
+https://ne3nayskas.github.io/plugins/
