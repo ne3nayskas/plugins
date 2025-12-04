@@ -1525,11 +1525,11 @@ langAdd('max_ch_in_group_desc',
 );
 langAdd('default_playlist',
 	{
-		ru: '',
-		uk: '',
-		be: '',
-		en: '',
-		zh: ''
+		ru: 'https://tsynik.github.io/tv.m3u',
+		uk: 'https://raw.githubusercontent.com/Free-TV/IPTV/master/playlist.m3u8',
+		be: 'https://raw.githubusercontent.com/Free-TV/IPTV/master/playlist.m3u8',
+		en: 'https://raw.githubusercontent.com/Free-TV/IPTV/master/playlist.m3u8',
+		zh: 'https://raw.iqiq.io/Free-TV/IPTV/master/playlist.m3u8'
 	}
 );
 langAdd('default_playlist_cat',
