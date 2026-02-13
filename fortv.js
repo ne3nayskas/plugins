@@ -1525,11 +1525,11 @@ langAdd('max_ch_in_group_desc',
 );
 langAdd('default_playlist',
 	{
-		ru: 'http://portal.geniptv.com:8080/get.php?username=dmtndmtnkimo&password=a7GPMeArdf&type=m3u_plus',
-		uk: 'http://portal.geniptv.com:8080/get.php?username=dmtndmtnkimo&password=a7GPMeArdf&type=m3u_plus',
-		be: 'http://portal.geniptv.com:8080/get.php?username=dmtndmtnkimo&password=a7GPMeArdf&type=m3u_plus',
-		en: 'http://portal.geniptv.com:8080/get.php?username=dmtndmtnkimo&password=a7GPMeArdf&type=m3u_plus',
-		zh: 'http://portal.geniptv.com:8080/get.php?username=dmtndmtnkimo&password=a7GPMeArdf&type=m3u_plus'
+		ru: 'http://portal.geniptv.com:8080/get.php?username=dmtndmtnkimo&password=a7GPMeArdf&type=m3u8',
+		uk: 'http://portal.geniptv.com:8080/get.php?username=dmtndmtnkimo&password=a7GPMeArdf&type=m3u8',
+		be: 'http://portal.geniptv.com:8080/get.php?username=dmtndmtnkimo&password=a7GPMeArdf&type=m3u8',
+		en: 'http://portal.geniptv.com:8080/get.php?username=dmtndmtnkimo&password=a7GPMeArdf&type=m3u8',
+		zh: 'http://portal.geniptv.com:8080/get.php?username=dmtndmtnkimo&password=a7GPMeArdf&type=m3u8'
 	}
 );
 langAdd('default_playlist_cat',
