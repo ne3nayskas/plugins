@@ -1525,11 +1525,11 @@ langAdd('max_ch_in_group_desc',
 );
 langAdd('default_playlist',
 	{
-		ru: 'http://fortv.cc:8080/get.php?username=Gus337&password=4473821&type=m3u_plus',
-		uk: 'http://fortv.cc:8080/get.php?username=Gus337&password=4473821&type=m3u_plus',
-		be: 'http://fortv.cc:8080/get.php?username=Gus337&password=4473821&type=m3u_plus',
-		en: 'http://fortv.cc:8080/get.php?username=Gus337&password=4473821&type=m3u_plus',
-		zh: 'http://fortv.cc:8080/get.php?username=Gus337&password=4473821&type=m3u_plus'
+		ru: 'http://portal.geniptv.com:8080/get.php?username=dmtndmtnkimo&password=a7GPMeArdf&type=m3u_plus',
+		uk: 'http://portal.geniptv.com:8080/get.php?username=dmtndmtnkimo&password=a7GPMeArdf&type=m3u_plus',
+		be: 'http://portal.geniptv.com:8080/get.php?username=dmtndmtnkimo&password=a7GPMeArdf&type=m3u_plus',
+		en: 'http://portal.geniptv.com:8080/get.php?username=dmtndmtnkimo&password=a7GPMeArdf&type=m3u_plus',
+		zh: 'http://portal.geniptv.com:8080/get.php?username=dmtndmtnkimo&password=a7GPMeArdf&type=m3u_plus'
 	}
 );
 langAdd('default_playlist_cat',
