@@ -1526,7 +1526,7 @@ langAdd('max_ch_in_group_desc',
 langAdd('default_playlist',
 	{
 		ru: 'http://portal.geniptv.com:8080/get.php?username=dmtndmtnkimo&password=a7GPMeArdf&type=m3u8',
-		uk: 'http://portal.geniptv.com:8080/get.php?username=dmtndmtnkimo&password=a7GPMeArdf&type=m3u8',
+		uk: 'http://206.212.244.47:8080/get.php?username=DRIPTV0021&password=TDi6gVVnTs&type=m3u',
 		be: 'http://portal.geniptv.com:8080/get.php?username=dmtndmtnkimo&password=a7GPMeArdf&type=m3u8',
 		en: 'http://portal.geniptv.com:8080/get.php?username=dmtndmtnkimo&password=a7GPMeArdf&type=m3u8',
 		zh: 'http://portal.geniptv.com:8080/get.php?username=dmtndmtnkimo&password=a7GPMeArdf&type=m3u8'
