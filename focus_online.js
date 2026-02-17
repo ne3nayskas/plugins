@@ -9,7 +9,7 @@ function startFocusOnlinePlugin() {
         version: '1.0.0',  
         name: 'Focus Online',  
         description: 'Гарантує фокус на кнопці онлайн на сторінці деталей',  
-        author: 'Oleksandr'  
+        author: 'ne3nayskas'  
     };  
       
     Lampa.Manifest.plugins = manifest;  
