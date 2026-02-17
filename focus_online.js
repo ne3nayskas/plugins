@@ -3,7 +3,7 @@ function startFocusOnlinePlugin() {
     if (window.plugin_focus_online_ready) return;  
     window.plugin_focus_online_ready = true;  
   
-    // Реєстрація плагіна в системі  
+     
     const manifest = {  
         type: 'component',  
         version: '1.0.0',  
@@ -18,20 +18,20 @@ function startFocusOnlinePlugin() {
         const container = $('.buttons--container');  
         if (!container.length) return;  
   
-        // Очищуємо пріоритет для забезпечення правильного порядку  
+         
         Lampa.Storage.set('full_btn_priority', '');  
   
-        // Знаходимо всі кнопки  
+        
         const onlineBtns = container.find('.view--online');  
         const torrentBtns = container.find('.view--torrent').not('.hide');  
         const trailerBtns = container.find('.view--trailer');  
   
-        // Видаляємо дублікати онлайн-кнопок  
+         
         if (onlineBtns.length > 1) {  
             onlineBtns.slice(1).remove();  
         }  
   
-        // Переміщуємо кнопки в правильному порядку  
+         
         const firstOnline = onlineBtns.first();  
         const firstTorrent = torrentBtns.first();  
         const firstTrailer = trailerBtns.first();  
@@ -40,7 +40,7 @@ function startFocusOnlinePlugin() {
         if (firstTorrent.length) container.append(firstTorrent);  
         if (firstTrailer.length) container.append(firstTrailer);  
   
-        // ГАРАНТОВАНЕ встановлення фокусу на кнопку онлайн  
+         
         if (firstOnline.length) {  
             const hasStoredFocus = Lampa.Storage.get('full_btn_priority', '') !== '';  
             if (!hasStoredFocus) {  
