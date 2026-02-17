@@ -593,4 +593,5 @@
     }
 
     if (!window.combined_ratings_plugin) startPlugin();
+
 })();
