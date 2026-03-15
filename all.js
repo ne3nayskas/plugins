@@ -20,39 +20,18 @@ function startPlugin() {
   
             let all = Lampa.Favorite.all()  
             let history = all.history || []  
-            let movies = history.filter(item => !item.original_name).slice(0, 50)  
-            let tv = history.filter(item => item.original_name).slice(0, 50)  
   
-            let data = {  
-                results: []  
-            }  
-  
-            if(movies.length) {  
-                data.results.push({  
-                    title: Lampa.Lang.translate('title_watched') + ' - ' + Lampa.Lang.translate('menu_movies'),  
-                    results: movies,  
-                    nomore: true,  
-                    type: 'watched_movies'  
-                })  
-            }  
-  
-            if(tv.length) {  
-                data.results.push({  
-                    title: Lampa.Lang.translate('title_watched') + ' - ' + Lampa.Lang.translate('menu_tv'),  
-                    results: tv,  
-                    nomore: true,  
-                    type: 'watched_tv'  
-                })  
-            }  
-  
-            this.build(data)  
+            this.build({  
+                results: history.slice(0, 50),  
+                title: Lampa.Lang.translate('title_watched')  
+            })  
             return this.render()  
         }  
   
         comp.onMore = function(data){  
             Lampa.Activity.push({  
-                url: data.type,  
-                title: data.title,  
+                url: 'history',  
+                title: Lampa.Lang.translate('menu_history'),  
                 component: 'favorite',  
                 page: 2  
             })  
@@ -61,12 +40,12 @@ function startPlugin() {
         return comp  
     }  
   
-    // Додаємо контент на головний екран через ContentRows  
+    // Додаємо контент на головний екран - ПЕРШИЙ канал  
     if(Lampa.Manifest.app_digital >= 300){  
         Lampa.ContentRows.add({  
             name: 'watched_main',  
             title: Lampa.Lang.translate('title_watched'),  
-            index: 3,  
+            index: 0, // ПЕРШИЙ канал на головній  
             screen: ['main'],  
             call: (params, screen)=>{  
                 let all = Lampa.Favorite.all()  
@@ -75,30 +54,8 @@ function startPlugin() {
                 if(!history.length) return  
   
                 return function(call){  
-                    let movies = history.filter(item => !item.original_name).slice(0, 20)  
-                    let tv = history.filter(item => item.original_name).slice(0, 20)  
-                    let results = []  
-  
-                    if(movies.length) {  
-                        results.push({  
-                            title: Lampa.Lang.translate('title_watched') + ' - ' + Lampa.Lang.translate('menu_movies'),  
-                            results: movies,  
-                            nomore: true,  
-                            type: 'history'  
-                        })  
-                    }  
-  
-                    if(tv.length) {  
-                        results.push({  
-                            title: Lampa.Lang.translate('title_watched') + ' - ' + Lampa.Lang.translate('menu_tv'),  
-                            results: tv,  
-                            nomore: true,  
-                            type: 'history'  
-                        })  
-                    }  
-  
                     call({  
-                        results: results,  
+                        results: history.slice(0, 20), // Об'єднаний список фільмів і серіалів  
                         title: Lampa.Lang.translate('title_watched')  
                     })  
                 }  
