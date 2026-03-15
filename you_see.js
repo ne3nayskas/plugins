@@ -1,5 +1,7 @@
 function startPlugin() {  
     window.plugin_watched_ready = true  
+
+    Lampa.Params.trigger('watched_view_in_main', true)
   
     let manifest = {  
         type: 'video',  
