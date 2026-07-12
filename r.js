@@ -63,7 +63,7 @@
 
   _defineProperty(Api, "network", new Lampa.Reguest());
 
-  _defineProperty(Api, "api_url", 'https://www.radiorecord.ru/api/stations/');
+  _defineProperty(Api, "api_url", 'https://openradioplayer.com/api/v1/stations/healthy');
 
   var Favorites = /*#__PURE__*/function () {
     function Favorites() {
