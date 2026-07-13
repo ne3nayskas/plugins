@@ -152,7 +152,7 @@
       tooltip: 'Тільки українські хіти',
       stream: 'https://online.hitfm.ua/HitFM_Ukr',
       bg_image_mobile: 'https://cdn-profiles.tunein.com/s6122/images/logog.png',
-      genre: [{ id: 'ukr', name: 'Українське' }]
+      genre: [{ id: 'pop', name: 'Поп' }]
     },
     {
       id: 'nasheradio',
@@ -160,7 +160,7 @@
       tooltip: 'Все буде добре',
       stream: 'https://online.nasheradio.ua/NasheRadio',
       bg_image_mobile: 'https://cdn-profiles.tunein.com/s9542/images/logog.jpg',
-      genre: [{ id: 'rock', name: 'Рок' }]
+      genre: [{ id: 'pop', name: 'Поп' }]
     },
     {
       id: 'radiorelax',
