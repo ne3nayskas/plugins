@@ -88,7 +88,7 @@
       tooltip: 'Тільки українська музика',
       stream: 'https://online.kissfm.ua/KissFM_Ukr_HD',
       bg_image_mobile: 'https://dvw7f7sqjk3ag.cloudfront.net/images/radio/59463.jpg',
-      genre: [{ id: 'pop', name: 'Поп' }, { id: 'ukr', name: 'Українське' }]
+      genre: [{ id: 'pop', name: 'Поп' }]
     },
     {
       id: 'radiojazz',
