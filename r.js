@@ -94,7 +94,7 @@
       id: 'nrj',
       title: 'NRJ Україна',
       tooltip: 'Енергійна музика',
-      stream: 'http://cast.radiogroup.com.ua/nrj',
+      stream: 'https://cast.mediaonline.net.ua/nrj320',
       bg_image_mobile: '',
       genre: [{ id: 'pop', name: 'Поп' }]
     },
