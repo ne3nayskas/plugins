@@ -50,6 +50,14 @@
       genre: [{ id: 'ukr', name: 'Українське' }]
     },
     {
+      id: 'radiopromin',
+      title: 'Радіо Промінь',
+      tooltip: 'UR2 Promin',
+      stream: 'http://radio.ukr.radio/ur2-mp3',
+      bg_image_mobile: 'https://static2.mytuner.mobi/media/tvos_radios/001/radio-promin-radio-promin.e8cbf570.jpg',
+      genre: [{ id: 'ukr', name: 'Українське' }]
+    },
+    {
       id: 'radiobayraktar',
       title: 'Radio Bayraktar',
       tooltip: 'Музика української перемоги',
@@ -120,6 +128,14 @@
       stream: 'https://online.radioplayer.ua/RadioIndieUA',
       bg_image_mobile: 'https://play.tavr.media/static/image/header_menu/Radio_IndieUA_logo_220x220.png',
       genre: [{ id: 'indie', name: 'Інді' }]
+    },
+    {
+      id: 'technobucharadio',
+      title: 'Techno-Bucha Radio',
+      tooltip: 'The Air Symphony of Bucha ...',
+      stream: 'https://a4.asurahosting.com:7230/radio.mp3',
+      bg_image_mobile: 'https://cdn-profiles.tunein.com/s335554/images/logog.png',
+      genre: [{ id: 'Techno', name: 'Techno' }]
     },
     {
       id: 'technolovers',
