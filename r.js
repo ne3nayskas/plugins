@@ -114,11 +114,11 @@
       genre: [{ id: 'indie', name: 'Інді' }]
     },
     {
-      id: 'radioshizoid',
-      title: 'Radio Schizoid',
-      tooltip: 'Psychedelic Trance',
-      stream: 'http://schizoid.in/schizoid-psy.pls',
-      bg_image_mobile: 'https://cdn-radiotime-logos.tunein.com/s87991g.png',
+      id: 'technolovers',
+      title: 'Technolovers',
+      tooltip: 'Non-Stop 140 Beats per minute. Technolovers Psytrance!',
+      stream: 'https://stream.technolovers.fm/psytrance',
+      bg_image_mobile: 'https://cdn.imgbin.com/11/16/17/imgbin-stock-photography-psychedelic-trance-hanuman-sun-illustration-4jswC6KhA8d6Zdy2sfsUN5KUh.jpg',
       genre: [{ id: 'Psy Trance', name: 'Psy Trance' }]
     }
   ];
