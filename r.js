@@ -50,6 +50,14 @@
       genre: [{ id: 'ukr', name: 'Українське' }]
     },
     {
+      id: 'radiobayraktar',
+      title: 'Radio Bayraktar',
+      tooltip: 'Музика української перемоги',
+      stream: 'https://tavr.tvstitch.com/RadioBayraktar',
+      bg_image_mobile: 'https://cdn-profiles.tunein.com/s124167/images/logog.png',
+      genre: [{ id: 'ukr', name: 'Українське' }]
+    },
+    {
       id: 'radioroks',
       title: 'Radio ROKS',
       tooltip: 'Рок. Тільки рок.',
