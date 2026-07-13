@@ -187,38 +187,6 @@
       genre: [{ id: 'Psy Trance', name: 'Psy Trance' }]
     },
     {
-      id: 'tranceathens',
-      title: 'Trance Athens',
-      tooltip: 'Trance Music 24/7',
-      stream: 'https://radio.tranceathens.com:8443/stream',
-      bg_image_mobile: 'https://tranceathens.com/wp-content/uploads/2020/03/logo.png',
-      genre: [{ id: 'trance', name: 'Trance' }]
-    },
-    {
-      id: 'ahfm',
-      title: 'AH.FM',
-      tooltip: 'Afterhours FM',
-      stream: 'https://stream.ah.fm/192k',
-      bg_image_mobile: 'https://ah.fm/assets/images/logo.png',
-      genre: [{ id: 'trance', name: 'Trance' }]
-    },
-    {
-      id: 'di_trance',
-      title: 'DI.FM Trance',
-      tooltip: 'Digitally Imported Trance',
-      stream: 'https://prem4.di.fm/trance_hi',
-      bg_image_mobile: 'https://www.di.fm/assets/logo-di-fm.png',
-      genre: [{ id: 'trance', name: 'Trance' }]
-    },
-    {
-      id: 'di_chillout',
-      title: 'DI.FM Chillout',
-     tooltip: 'Ambient & Chill',
-      stream: 'https://prem4.di.fm/chillouthi',
-      bg_image_mobile: 'https://www.di.fm/assets/logo-di-fm.png',
-      genre: [{ id: 'chillout', name: 'Chillout' }]
-    },
-    {
       id: 'groovesalad',
       title: 'SomaFM Groove Salad',
       tooltip: 'Ambient & Downtempo',
@@ -235,19 +203,11 @@
       genre: [{ id: 'chillout', name: 'Chillout' }]
     },
     {
-      id: 'metalfm',
-      title: 'MetalFM',
-      tooltip: 'Heavy Metal',
-      stream: 'https://stream.metalfm.com.ua/metalfm',
-      bg_image_mobile: 'https://metalfm.com.ua/wp-content/uploads/logo.png',
-      genre: [{ id: 'metal', name: 'Metal' }]
-    },
-    {
       id: 'rockantenne',
       title: 'Rock Antenne',
       tooltip: 'Classic Rock',
       stream: 'https://stream.rockantenne.de/rockantenne',
-      bg_image_mobile: 'https://www.rockantenne.de/assets/logo.png',
+      bg_image_mobile: 'https://cdn.freebiesupply.com/logos/large/2x/rock-antenne-logo-png-transparent.png',
       genre: [{ id: 'rock', name: 'Rock' }]
     },
     {
@@ -255,7 +215,7 @@
       title: 'bigFM Deep',
       tooltip: 'Deep House',
       stream: 'https://streams.bigfm.de/bigfm-deep-128-mp3',
-      bg_image_mobile: 'https://www.bigfm.de/sites/default/files/styles/logo/public/logo.png',
+      bg_image_mobile: 'https://m.media-amazon.com/images/I/51MpthsMrVL.png',
       genre: [{ id: 'deephouse', name: 'Deep House' }]
     },
     {
@@ -263,7 +223,7 @@
       title: 'Ibiza Global Radio',
       tooltip: 'House & Electronic',
       stream: 'https://ibizaglobalradio.streaming-pro.com:8024/stream',
-      bg_image_mobile: 'https://www.ibizaglobalradio.com/wp-content/uploads/logo.png',
+      bg_image_mobile: 'https://www.ibizabynight.net/wp-content/uploads/2017/12/ibiza-global-radio-2.png',
       genre: [{ id: 'house', name: 'House' }]
     }
   ];
