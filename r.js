@@ -511,7 +511,7 @@
       played = station;
       var player = new Player(station);
       player.create();
-      html.find('.radio-content').hide();
+      // html.find('.radio-content').hide();
       document.body.addClass('ambience--enable');
 
       var move = function move(d) {
@@ -527,7 +527,7 @@
         invisible: true,
         toggle: function toggle() { Lampa.Controller.clear(); },
         back: function back() {
-          html.find('.radio-content').show();
+          // html.find('.radio-content').show();
           document.body.removeClass('ambience--enable');
           player.destroy();
           _this6.activity.toggle();
