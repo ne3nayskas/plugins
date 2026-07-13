@@ -46,7 +46,7 @@
       title: 'Radio Free Ukraine',
       tooltip: 'Proud to be Ukrainian, We are Radio Free Ukraine',
       stream: 'https://stream.zenolive.com/vn4r1hp339duv',
-      bg_image_mobile: 'https://cdn-radiotime-logos.tunein.com/s276836d.png',
+      bg_image_mobile: 'https://m.media-amazon.com/images/I/81erDOWoEPS.png',
       genre: [{ id: 'ukr', name: 'Українське' }]
     },
     {
