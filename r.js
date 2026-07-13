@@ -86,8 +86,8 @@
       id: 'classicradio',
       title: 'Classic Radio',
       tooltip: 'Класична музика',
-      stream: 'https://online.classicradio.com.ua/ClassicRadio',
-      bg_image_mobile: '',
+      stream: 'https://online.classicradio.ua/ClassicRadio',
+      bg_image_mobile: 'https://cdn-profiles.tunein.com/s224284/images/logog.jpg',
       genre: [{ id: 'classical', name: 'Класика' }]
     },
     {
