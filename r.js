@@ -45,7 +45,7 @@
     {
       id: 'ukrradio',
       title: 'Українське Радіо',
-      tooltip: 'UR1',
+      tooltip: 'UR1 Українське Радіо',
       stream: 'http://radio.ukr.radio/ur1-mp3',
       bg_image_mobile: 'https://cdn-profiles.tunein.com/s20311/images/logog.png',
       genre: [{ id: 'news', name: 'Новини' }]
@@ -53,7 +53,7 @@
     {
       id: 'radiopromin',
       title: 'Радіо Промінь',
-      tooltip: 'UR2 Promin',
+      tooltip: 'UR2 Радіо Промінь',
       stream: 'http://radio.ukr.radio/ur2-mp3',
       bg_image_mobile: 'https://static2.mytuner.mobi/media/tvos_radios/001/radio-promin-radio-promin.e8cbf570.jpg',
       genre: [{ id: 'ukr', name: 'Українське' }]
@@ -61,7 +61,7 @@
     {
       id: 'radioculture',
       title: 'Радіо Культура',
-      tooltip: 'UR3 Культура',
+      tooltip: 'UR3 Радіо Культура',
       stream: 'http://radio.ukr.radio/ur3-mp3',
       bg_image_mobile: 'https://cdn-profiles.tunein.com/s55575/images/logog.png',
       genre: [{ id: 'culture', name: 'Культура' }]
@@ -93,7 +93,7 @@
     {
       id: 'kissfm_ukr',
       title: 'Kiss FM (Україна)',
-      tooltip: 'Тільки українська музика',
+      tooltip: 'Тільки українский Dance',
       stream: 'https://online.kissfm.ua/KissFM_Ukr_HD',
       bg_image_mobile: 'https://dvw7f7sqjk3ag.cloudfront.net/images/radio/59463.jpg',
       genre: [{ id: 'pop', name: 'Поп' }]
@@ -125,7 +125,7 @@
     {
       id: 'nrj',
       title: 'NRJ Україна',
-      tooltip: 'Енергійна музика',
+      tooltip: 'Енергія музики',
       stream: 'https://cast.mediaonline.net.ua/nrj320',
       bg_image_mobile: 'https://upload.wikimedia.org/wikipedia/commons/4/44/NRJ_Radio.png',
       genre: [{ id: 'pop', name: 'Поп' }]
@@ -141,7 +141,7 @@
     {
       id: 'hitfm',
       title: 'Хіт FM',
-      tooltip: 'Найбільші хіти',
+      tooltip: 'Найкращі хіти',
       stream: 'https://online.hitfm.ua/HitFM',
       bg_image_mobile: 'https://static2.mytuner.mobi/media/tvos_radios/9tfwwwb9hkc2.png',
       genre: [{ id: 'pop', name: 'Поп' }]
@@ -173,7 +173,7 @@
     {
       id: 'technobucharadio',
       title: 'Techno-Bucha Radio',
-      tooltip: 'The Air Symphony of Bucha ...',
+      tooltip: 'The Air Symphony of Bucha',
       stream: 'https://a4.asurahosting.com:7230/radio.mp3',
       bg_image_mobile: 'https://cdn-profiles.tunein.com/s335554/images/logog.png',
       genre: [{ id: 'Techno', name: 'Techno' }]
@@ -181,7 +181,7 @@
     {
       id: 'technolovers',
       title: 'Technolovers',
-      tooltip: 'Non-Stop 140 Beats per minute. Technolovers Psytrance!',
+      tooltip: 'Psychedelic & Goa Trance Non-Stop!',
       stream: 'https://stream.technolovers.fm/psytrance',
       bg_image_mobile: 'https://i1.sndcdn.com/artworks-000167796203-imv5x9-t500x500.png',
       genre: [{ id: 'Psy Trance', name: 'Psy Trance' }]
