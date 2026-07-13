@@ -112,6 +112,14 @@
       stream: 'https://online.radioplayer.ua/RadioIndieUA',
       bg_image_mobile: 'https://play.tavr.media/static/image/header_menu/Radio_IndieUA_logo_220x220.png',
       genre: [{ id: 'indie', name: 'Інді' }]
+    },
+    {
+      id: 'radioshizoid',
+      title: 'Radio Schizoid',
+      tooltip: 'Psychedelic Trance',
+      stream: 'http://schizoid.in/schizoid-psy.pls',
+      bg_image_mobile: 'https://cdn-radiotime-logos.tunein.com/s87991g.png',
+      genre: [{ id: 'Psy Trance', name: 'Psy Trance' }]
     }
   ];
 
