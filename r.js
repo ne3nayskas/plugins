@@ -47,7 +47,7 @@
       title: 'Radio ROKS',
       tooltip: 'Рок. Тільки рок.',
       stream: 'https://online.radioroks.ua/RadioROKS_HD',
-      bg_image_mobile: '',
+      bg_image_mobile: 'https://cdn-profiles.tunein.com/s103802/images/logog.png',
       genre: [{ id: 'rock', name: 'Рок' }]
     },
     {
