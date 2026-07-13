@@ -107,6 +107,14 @@
       genre: [{ id: 'classical', name: 'Класика' }]
     },
     {
+      id: 'nasheradio',
+      title: 'Наше Радіо Україна',
+      tooltip: 'Українські хіти',
+      stream: 'https://tochka.net/ua/radio/nashe-radio',
+      bg_image_mobile: 'https://static2.mytuner.mobi/media/tvos_radios/d3gTzTkrGq.png',
+      genre: [{ id: 'pop', name: 'Поп' }]
+    },
+    {
       id: 'nrj',
       title: 'NRJ Україна',
       tooltip: 'Енергійна музика',
