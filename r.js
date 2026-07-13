@@ -39,7 +39,6 @@
 
   // ==========================================
   // СТАТИЧНИЙ СПИСОК УКРАЇНСЬКИХ СТАНЦІЙ
-  // Заміна RadioRecord API — жодних зовнішніх запитів
   // ==========================================
   var UKRAINIAN_STATIONS = [
     {
@@ -53,7 +52,7 @@
     {
       id: 'kissfm',
       title: 'Kiss FM',
-      tooltip: 'Українські хіти',
+      tooltip: 'The Best Dance Radio',
       stream: 'https://online.kissfm.ua/KissFM_HD',
       bg_image_mobile: 'https://static2.mytuner.mobi/media/tvos_radios/96yXWbMDkH.png',
       genre: [{ id: 'pop', name: 'Поп' }]
@@ -108,9 +107,7 @@
     }
   ];
 
-  // ==========================================
-  // API — статичний список замість зовнішнього запиту
-  // ==========================================
+  // ========================================
   var Api = /*#__PURE__*/function () {
     function Api() {
       _classCallCheck(this, Api);
