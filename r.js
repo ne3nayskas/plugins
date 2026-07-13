@@ -143,7 +143,7 @@
       title: 'Technolovers',
       tooltip: 'Non-Stop 140 Beats per minute. Technolovers Psytrance!',
       stream: 'https://stream.technolovers.fm/psytrance',
-      bg_image_mobile: 'https://cdn.imgbin.com/11/16/17/imgbin-stock-photography-psychedelic-trance-hanuman-sun-illustration-4jswC6KhA8d6Zdy2sfsUN5KUh.jpg',
+      bg_image_mobile: 'https://i1.sndcdn.com/artworks-000167796203-imv5x9-t500x500.jpg',
       genre: [{ id: 'Psy Trance', name: 'Psy Trance' }]
     }
   ];
