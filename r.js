@@ -47,7 +47,7 @@
       tooltip: 'Proud to be Ukrainian, We are Radio Free Ukraine',
       stream: 'https://stream.zenolive.com/vn4r1hp339duv',
       bg_image_mobile: 'https://cdn-radiotime-logos.tunein.com/s276836d.png',
-      genre: [{ id: 'rock', name: 'Рок' }]
+      genre: [{ id: 'ukr', name: 'Українське' }]
     },
     {
       id: 'radioroks',
