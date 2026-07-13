@@ -80,7 +80,7 @@
       tooltip: 'Рок. Тільки рок.',
       stream: 'https://online.radioroks.ua/RadioROKS_HD',
       bg_image_mobile: 'https://cdn-profiles.tunein.com/s103802/images/logog.png',
-      genre: [{ id: 'rock', name: 'Рок' }]
+      genre: [{ id: 'rock', name: 'Rock' }]
     },
     {
       id: 'kissfm',
@@ -88,7 +88,7 @@
       tooltip: 'The Best Dance Radio',
       stream: 'https://online.kissfm.ua/KissFM_HD',
       bg_image_mobile: 'https://static2.mytuner.mobi/media/tvos_radios/96yXWbMDkH.png',
-      genre: [{ id: 'pop', name: 'Поп' }]
+      genre: [{ id: 'dance', name: 'Dance' }]
     },
     {
       id: 'kissfm_ukr',
@@ -96,7 +96,7 @@
       tooltip: 'Тільки українский Dance',
       stream: 'https://online.kissfm.ua/KissFM_Ukr_HD',
       bg_image_mobile: 'https://dvw7f7sqjk3ag.cloudfront.net/images/radio/59463.jpg',
-      genre: [{ id: 'pop', name: 'Поп' }]
+      genre: [{ id: 'dance', name: 'Dance' }]
     },
     {
       id: 'radiojazz',
@@ -104,7 +104,7 @@
       tooltip: 'Джазова хвиля',
       stream: 'https://online.radiojazz.ua/RadioJazz_Gold',
       bg_image_mobile: 'https://upload.wikimedia.org/wikipedia/commons/thumb/1/1a/Radio_Jazz.svg/1280px-Radio_Jazz.svg.png',
-      genre: [{ id: 'jazz', name: 'Джаз' }]
+      genre: [{ id: 'jazz', name: 'Jazz' }]
     },
     {
       id: 'radiojazz_light',
@@ -112,7 +112,7 @@
       tooltip: 'Легкий джаз',
       stream: 'https://online.radiojazz.ua/RadioJazz_Light',
       bg_image_mobile: 'https://cdn.103fm.com.ua/images/51-radio-jazz-light.jpg',
-      genre: [{ id: 'jazz', name: 'Джаз' }]
+      genre: [{ id: 'jazz', name: 'Jazz' }]
     },
     {
       id: 'classicradio',
@@ -184,7 +184,7 @@
       tooltip: 'Psychedelic & Goa Trance Non-Stop!',
       stream: 'https://stream.technolovers.fm/psytrance',
       bg_image_mobile: 'https://i1.sndcdn.com/artworks-000167796203-imv5x9-t500x500.png',
-      genre: [{ id: 'Psy Trance', name: 'Psy Trance' }]
+      genre: [{ id: 'psytrance', name: 'Psy Trance' }]
     },
     {
       id: 'groovesalad',
