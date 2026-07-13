@@ -506,11 +506,12 @@
       filtred.slice(start, start + views).forEach(_this6.append.bind(_this6));
       Lampa.Layer.visible(scroll.render(true));
     };
-
+// Фон плеера при програванні станції
     this.play = function (station) {
       played = station;
       var player = new Player(station);
       player.create();
+      html.find('.radio-content').hide();
       document.body.addClass('ambience--enable');
 
       var move = function move(d) {
@@ -526,6 +527,7 @@
         invisible: true,
         toggle: function toggle() { Lampa.Controller.clear(); },
         back: function back() {
+          html.find('.radio-content').show();
           document.body.removeClass('ambience--enable');
           player.destroy();
           _this6.activity.toggle();
@@ -657,7 +659,7 @@
 
     Lampa.Lang.add({
       radio_station: {
-        uk: 'Радіостанція',
+        uk: 'Радіо.з.танцями',
         ru: 'Радиостанция',
         en: 'Radio station'
       },
