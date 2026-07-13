@@ -143,7 +143,7 @@
       title: 'Хіт FM',
       tooltip: 'Найбільші хіти',
       stream: 'https://online.hitfm.ua/HitFM',
-      bg_image_mobile: '',
+      bg_image_mobile: 'https://static2.mytuner.mobi/media/tvos_radios/9tfwwwb9hkc2.png',
       genre: [{ id: 'pop', name: 'Поп' }]
     },
     {
@@ -151,7 +151,7 @@
       title: 'Хіт FM Українські Хіти',
       tooltip: 'Тільки українські хіти',
       stream: 'https://online.hitfm.ua/HitFM_Ukr',
-      bg_image_mobile: '',
+      bg_image_mobile: 'https://cdn-profiles.tunein.com/s6122/images/logog.png',
       genre: [{ id: 'ukr', name: 'Українське' }]
     },
     {
@@ -159,63 +159,23 @@
       title: 'Наше Радіо',
       tooltip: 'Все буде добре',
       stream: 'https://online.nasheradio.ua/NasheRadio',
-      bg_image_mobile: '',
+      bg_image_mobile: 'https://cdn-profiles.tunein.com/s9542/images/logog.jpg',
       genre: [{ id: 'rock', name: 'Рок' }]
-    },
-    {
-      id: 'luxfm',
-      title: 'Люкс FM',
-      tooltip: 'Максимум хітів',
-      stream: 'https://stream.luxnet.ua/luxfm',
-      bg_image_mobile: '',
-      genre: [{ id: 'pop', name: 'Поп' }]
     },
     {
       id: 'radiorelax',
       title: 'Radio Relax',
       tooltip: 'Музика для відпочинку',
       stream: 'https://online.radiorelax.ua/RadioRelax',
-      bg_image_mobile: '',
+      bg_image_mobile: 'https://static2.mytuner.mobi/media/tvos_radios/nzlwtbcukj7y.png',
       genre: [{ id: 'relax', name: 'Relax' }]
-    },
-    {
-      id: 'radiorelax_int',
-      title: 'Radio Relax International',
-      tooltip: 'Світові хіти для релаксу',
-      stream: 'https://online.radiorelax.ua/RadioRelax_International',
-      bg_image_mobile: '',
-      genre: [{ id: 'relax', name: 'Relax' }]
-    },
-    {
-      id: 'melodiafm',
-      title: 'Мелодія FM',
-      tooltip: 'Улюблені пісні',
-      stream: 'https://cast.mediaonline.net.ua/melodiafm',
-      bg_image_mobile: '',
-      genre: [{ id: 'pop', name: 'Поп' }]
-    },
-    {
-      id: 'maximumm',
-      title: 'Радіо Максимум',
-      tooltip: 'Більше року',
-      stream: 'https://radio.nv.ua/maximum.mp3',
-      bg_image_mobile: '',
-      genre: [{ id: 'rock', name: 'Рок' }]
-    },
-    {
-      id: 'armyfm',
-      title: 'Army FM',
-      tooltip: 'Військове радіо',
-      stream: 'https://stream.armyfm.com.ua/armyfm',
-      bg_image_mobile: '',
-      genre: [{ id: 'ukr', name: 'Українське' }]
     },
     {
       id: 'radioculture',
       title: 'Радіо Культура',
       tooltip: 'UR3 Культура',
       stream: 'http://radio.ukr.radio/ur3-mp3',
-      bg_image_mobile: '',
+      bg_image_mobile: 'https://cdn-profiles.tunein.com/s55575/images/logog.png',
       genre: [{ id: 'culture', name: 'Культура' }]
     },
     {
@@ -223,16 +183,8 @@
       title: 'Українське Радіо',
       tooltip: 'UR1',
       stream: 'http://radio.ukr.radio/ur1-mp3',
-      bg_image_mobile: '',
+      bg_image_mobile: 'https://cdn-profiles.tunein.com/s20311/images/logog.png',
       genre: [{ id: 'news', name: 'Новини' }]
-    },
-    {
-      id: 'mfm',
-      title: 'MFM',
-      tooltip: 'Українська музика',
-      stream: 'https://cast.mediaonline.net.ua/mfm',
-      bg_image_mobile: '',
-      genre: [{ id: 'ukr', name: 'Українське' }]
     }
   ];
 
