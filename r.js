@@ -42,6 +42,14 @@
   // ==========================================
   var UKRAINIAN_STATIONS = [
     {
+      id: 'radio_free_ukraine',
+      title: 'Radio Free Ukraine',
+      tooltip: 'Proud to be Ukrainian, We are Radio Free Ukraine',
+      stream: 'https://stream.zenolive.com/vn4r1hp339duv',
+      bg_image_mobile: 'https://cdn-radiotime-logos.tunein.com/s276836d.png',
+      genre: [{ id: 'rock', name: 'Рок' }]
+    },
+    {
       id: 'radioroks',
       title: 'Radio ROKS',
       tooltip: 'Рок. Тільки рок.',
@@ -102,7 +110,7 @@
       title: 'RadioIndieUA',
       tooltip: 'Незалежна музика',
       stream: 'https://online.radioplayer.ua/RadioIndieUA',
-      bg_image_mobile: 'https://bestradio.fm/uploads/posts/2023-03/thumbs/radio-indie-ua-kyiv-ukraine-min.jpg',
+      bg_image_mobile: 'https://play.tavr.media/static/image/header_menu/Radio_IndieUA_logo_220x220.png',
       genre: [{ id: 'indie', name: 'Інді' }]
     }
   ];
