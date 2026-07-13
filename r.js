@@ -111,7 +111,7 @@
       title: 'Наше Радіо Україна',
       tooltip: 'Українські хіти',
       stream: 'https://tochka.net/ua/radio/nashe-radio',
-      bg_image_mobile: 'https://static2.mytuner.mobi/media/tvos_radios/d3gTzTkrGq.png',
+      bg_image_mobile: 'https://online.nasheradio.ua/NasheRadio',
       genre: [{ id: 'pop', name: 'Поп' }]
     },
     {
