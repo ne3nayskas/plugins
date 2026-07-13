@@ -43,12 +43,28 @@
   
   var UKRAINIAN_STATIONS = [
     {
+      id: 'ukrradio',
+      title: 'Українське Радіо',
+      tooltip: 'UR1',
+      stream: 'http://radio.ukr.radio/ur1-mp3',
+      bg_image_mobile: 'https://cdn-profiles.tunein.com/s20311/images/logog.png',
+      genre: [{ id: 'news', name: 'Новини' }]
+    },
+    {
       id: 'radiopromin',
       title: 'Радіо Промінь',
       tooltip: 'UR2 Promin',
       stream: 'http://radio.ukr.radio/ur2-mp3',
       bg_image_mobile: 'https://static2.mytuner.mobi/media/tvos_radios/001/radio-promin-radio-promin.e8cbf570.jpg',
       genre: [{ id: 'ukr', name: 'Українське' }]
+    },
+    {
+      id: 'radioculture',
+      title: 'Радіо Культура',
+      tooltip: 'UR3 Культура',
+      stream: 'http://radio.ukr.radio/ur3-mp3',
+      bg_image_mobile: 'https://cdn-profiles.tunein.com/s55575/images/logog.png',
+      genre: [{ id: 'culture', name: 'Культура' }]
     },
     {
       id: 'radiobayraktar',
@@ -123,22 +139,6 @@
       genre: [{ id: 'indie', name: 'Інді' }]
     },
     {
-      id: 'technobucharadio',
-      title: 'Techno-Bucha Radio',
-      tooltip: 'The Air Symphony of Bucha ...',
-      stream: 'https://a4.asurahosting.com:7230/radio.mp3',
-      bg_image_mobile: 'https://cdn-profiles.tunein.com/s335554/images/logog.png',
-      genre: [{ id: 'Techno', name: 'Techno' }]
-    },
-    {
-      id: 'technolovers',
-      title: 'Technolovers',
-      tooltip: 'Non-Stop 140 Beats per minute. Technolovers Psytrance!',
-      stream: 'https://stream.technolovers.fm/psytrance',
-      bg_image_mobile: 'https://i1.sndcdn.com/artworks-000167796203-imv5x9-t500x500.png',
-      genre: [{ id: 'Psy Trance', name: 'Psy Trance' }]
-    },
-    {
       id: 'hitfm',
       title: 'Хіт FM',
       tooltip: 'Найбільші хіти',
@@ -171,20 +171,20 @@
       genre: [{ id: 'relax', name: 'Relax' }]
     },
     {
-      id: 'radioculture',
-      title: 'Радіо Культура',
-      tooltip: 'UR3 Культура',
-      stream: 'http://radio.ukr.radio/ur3-mp3',
-      bg_image_mobile: 'https://cdn-profiles.tunein.com/s55575/images/logog.png',
-      genre: [{ id: 'culture', name: 'Культура' }]
+      id: 'technobucharadio',
+      title: 'Techno-Bucha Radio',
+      tooltip: 'The Air Symphony of Bucha ...',
+      stream: 'https://a4.asurahosting.com:7230/radio.mp3',
+      bg_image_mobile: 'https://cdn-profiles.tunein.com/s335554/images/logog.png',
+      genre: [{ id: 'Techno', name: 'Techno' }]
     },
     {
-      id: 'ukrradio',
-      title: 'Українське Радіо',
-      tooltip: 'UR1',
-      stream: 'http://radio.ukr.radio/ur1-mp3',
-      bg_image_mobile: 'https://cdn-profiles.tunein.com/s20311/images/logog.png',
-      genre: [{ id: 'news', name: 'Новини' }]
+      id: 'technolovers',
+      title: 'Technolovers',
+      tooltip: 'Non-Stop 140 Beats per minute. Technolovers Psytrance!',
+      stream: 'https://stream.technolovers.fm/psytrance',
+      bg_image_mobile: 'https://i1.sndcdn.com/artworks-000167796203-imv5x9-t500x500.png',
+      genre: [{ id: 'Psy Trance', name: 'Psy Trance' }]
     }
   ];
 
