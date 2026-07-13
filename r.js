@@ -43,14 +43,6 @@
   
   var UKRAINIAN_STATIONS = [
     {
-      id: 'radio_free_ukraine',
-      title: 'Radio Free Ukraine',
-      tooltip: 'Stay connected. Stay informed. Stay Ukrainian',
-      stream: 'https://a4.asurahosting.com:8200/radio.mp3',
-      bg_image_mobile: 'https://static.mytuner.mobi/media/tvos_radios/986/radio-voices-from-ukraine.2d017364.png',
-      genre: [{ id: 'ukr', name: 'Українське' }]
-    },
-    {
       id: 'radiopromin',
       title: 'Радіо Промінь',
       tooltip: 'UR2 Promin',
