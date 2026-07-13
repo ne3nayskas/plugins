@@ -55,7 +55,7 @@
       title: 'Kiss FM',
       tooltip: 'Українські хіти',
       stream: 'https://online.kissfm.ua/KissFM_HD',
-      bg_image_mobile: '',
+      bg_image_mobile: 'https://static2.mytuner.mobi/media/tvos_radios/96yXWbMDkH.png',
       genre: [{ id: 'pop', name: 'Поп' }]
     },
     {
@@ -63,7 +63,7 @@
       title: 'Kiss FM (Україна)',
       tooltip: 'Тільки українська музика',
       stream: 'https://online.kissfm.ua/KissFM_Ukr_HD',
-      bg_image_mobile: '',
+      bg_image_mobile: 'https://dvw7f7sqjk3ag.cloudfront.net/images/radio/59463.jpg',
       genre: [{ id: 'pop', name: 'Поп' }, { id: 'ukr', name: 'Українське' }]
     },
     {
@@ -71,7 +71,7 @@
       title: 'RadioJazz',
       tooltip: 'Джазова хвиля',
       stream: 'https://online.radiojazz.ua/RadioJazz_Gold',
-      bg_image_mobile: '',
+      bg_image_mobile: 'https://upload.wikimedia.org/wikipedia/commons/thumb/1/1a/Radio_Jazz.svg/1280px-Radio_Jazz.svg.png',
       genre: [{ id: 'jazz', name: 'Джаз' }]
     },
     {
@@ -79,7 +79,7 @@
       title: 'RadioJazz Light',
       tooltip: 'Легкий джаз',
       stream: 'https://online.radiojazz.ua/RadioJazz_Light',
-      bg_image_mobile: '',
+      bg_image_mobile: 'https://cdn.103fm.com.ua/images/51-radio-jazz-light.jpg',
       genre: [{ id: 'jazz', name: 'Джаз' }]
     },
     {
@@ -95,7 +95,7 @@
       title: 'NRJ Україна',
       tooltip: 'Енергійна музика',
       stream: 'https://cast.mediaonline.net.ua/nrj320',
-      bg_image_mobile: '',
+      bg_image_mobile: 'https://upload.wikimedia.org/wikipedia/commons/4/44/NRJ_Radio.png',
       genre: [{ id: 'pop', name: 'Поп' }]
     },
     {
@@ -103,7 +103,7 @@
       title: 'RadioIndieUA',
       tooltip: 'Незалежна музика',
       stream: 'https://online.radioplayer.ua/RadioIndieUA',
-      bg_image_mobile: '',
+      bg_image_mobile: 'https://bestradio.fm/uploads/posts/2023-03/thumbs/radio-indie-ua-kyiv-ukraine-min.jpg',
       genre: [{ id: 'indie', name: 'Інді' }]
     }
   ];
