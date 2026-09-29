@@ -1,8 +1,9 @@
 // =========================================
 // Радіо для Lampa
-// Версія: 1.5.0 | 2026.07.26
+// Версія: 1.6.0 | 2026.09.29
 // Опис: Плагін для прослуховування радіостанцій
 // Aвтор - @ne3nayskas 
+// Зміни 1.6.0: свайпи та кнопки ⏮ / ⏭ у вікні відтворення (мобільні). Виправлення, оновлення стрімів станцій
 // =========================================
 
 (function () {
@@ -50,10 +51,18 @@
   
   var UKRAINIAN_STATIONS = [
     {
+      id: 'ukrpisnia',
+      title: 'Українська пісня',
+      tooltip: 'Радіо пісенної класики України',
+      stream: 'https://listen6.myradio24.com/50904',
+      bg_image_mobile: 'https://noni.org.ua/sites/default/files/pelych8.jpg',
+      genre: [{ id: 'ukr', name: 'Українське' }]
+    },
+    {
       id: 'ukrradio',
       title: 'Українське Радіо',
       tooltip: 'UR1 Українське Радіо',
-      stream: 'http://radio.ukr.radio/ur1-mp3',
+      stream: 'https://radio2.ukr.radio/ur1-mp3-m',
       bg_image_mobile: 'https://cdn-profiles.tunein.com/s20311/images/logog.png',
       genre: [{ id: 'news', name: 'Новини' }]
     },
@@ -61,7 +70,7 @@
       id: 'radiopromin',
       title: 'Радіо Промінь',
       tooltip: 'UR2 Радіо Промінь',
-      stream: 'http://radio.ukr.radio/ur2-mp3',
+      stream: 'https://radio2.ukr.radio/ur2-mp3-m',
       bg_image_mobile: 'https://static2.mytuner.mobi/media/tvos_radios/001/radio-promin-radio-promin.e8cbf570.jpg',
       genre: [{ id: 'ukr', name: 'Українське' }]
     },
@@ -69,9 +78,17 @@
       id: 'radioculture',
       title: 'Радіо Культура',
       tooltip: 'UR3 Радіо Культура',
-      stream: 'http://radio.ukr.radio/ur3-mp3',
+      stream: 'https://radio2.ukr.radio/ur3-mp3-m',
       bg_image_mobile: 'https://savaryna.com/assets/images/blog/blog-10-20-03-10/blog-post-img-00.png',
       genre: [{ id: 'culture', name: 'Культура' }]
+    },
+    {
+      id: 'radioukraineint',
+      title: 'Радіо Ukraine Int.',
+      tooltip: 'UR4 Радіо Ukraine Int.',
+      stream: 'https://radio2.ukr.radio/ur4-mp3-m',
+      bg_image_mobile: 'https://images.seeklogo.com/logo-png/47/1/radio-ukraine-international-logo-png_seeklogo-474827.png',
+      genre: [{ id: 'ukr', name: 'Українське' }]
     },
     {
       id: 'pryamyi',
@@ -157,7 +174,7 @@
       id: 'rock_radio_metal',
       title: 'Рок Радіо Metal',
       tooltip: 'Територія українського металу.',
-      stream: 'https://rockradioua.online:8433/metal_256',
+      stream: 'https://rockradioua.online:8433/metal_320',
       bg_image_mobile: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQmbRsscUXNQ-xEezj9iumfLlCdlrLuAmawsz0sC97XROMHkupdLCViPKo&s=10',
       genre: [{ id: 'rock', name: 'Rock' }]
     },
@@ -378,11 +395,27 @@
       genre: [{ id: 'chillout', name: 'Chillout' }]
     },
     {
+      id: '4everfloyd',
+      title: '4 Ever Floyd',
+      tooltip: 'Pink Floyd All Day...Everyday',
+      stream: 'https://us1.streamingpulse.com/ssl/7202',
+      bg_image_mobile: 'https://upload.wikimedia.org/wikipedia/ru/thumb/1/15/The_Dark_Side_of_the_Moon.png/330px-The_Dark_Side_of_the_Moon.png?utm_source=ru.wikipedia.org&utm_campaign=parser&utm_content=thumbnail',
+      genre: [{ id: 'rock', name: 'Rock' }]
+    },
+    {
       id: 'rockabilly',
       title: 'ROCKABILLY',
       tooltip: 'Rockabilly Music On The World',
       stream: 'https://hemnos.cdnstream.com/1881_128',
       bg_image_mobile: 'https://www.vintagerockmag.com/wp-content/uploads/2018/05/image35.png',
+      genre: [{ id: 'rock', name: 'Rock' }]
+    },
+    {
+      id: 'psychedelicrock',
+      title: '60s Psychedelic Rock',
+      tooltip: 'Psychedelic Internet Radio',
+      stream: 'https://streaming.live365.com/a01650',
+      bg_image_mobile: 'https://m.media-amazon.com/images/I/61LzhapMtLL.png',
       genre: [{ id: 'rock', name: 'Rock' }]
     },
     {
@@ -440,14 +473,6 @@
       stream: 'https://stream.laut.fm/soundtrack',
       bg_image_mobile: 'https://www.allradio.net/500/ZslQmAyzjgPZvdObXlNbS.webp',
       genre: [{ id: 'soundtrack', name: 'Soundtrack' }]
-    },
-    {
-      id: 'ukrpisnia',
-      title: 'Українська пісня',
-      tooltip: 'Радіо пісенної класики України',
-      stream: 'https://listen6.myradio24.com/50904',
-      bg_image_mobile: 'https://noni.org.ua/sites/default/files/pelych8.jpg',
-      genre: [{ id: 'ukr', name: 'Українське' }]
     }
   ];
 
@@ -762,7 +787,8 @@
   // PLAYER (повноекранний)
   // =========================================
   
-  function Player(station) {
+  function Player(station, handlers) {
+    handlers = handlers || {};
     var html = Lampa.Template.js('radio_player');
     var isDestroyed = false;
 
@@ -814,6 +840,45 @@
       html.find('.radio-player__close').on('click', function () {
         window.history.back();
       });
+
+      // Кнопки попередня / наступна
+      html.find('.radio-player__prev').on('click', function () {
+        if (handlers.prev) handlers.prev();
+      });
+      html.find('.radio-player__next').on('click', function () {
+        if (handlers.next) handlers.next();
+      });
+
+      // Свайпи
+      var sx = 0, sy = 0, st = 0, tracking = false;
+      html.addEventListener('touchstart', function (e) {
+        if (e.touches.length !== 1) { tracking = false; return; }
+        sx = e.touches[0].clientX;
+        sy = e.touches[0].clientY;
+        st = Date.now();
+        tracking = true;
+      }, { passive: true });
+
+      html.addEventListener('touchend', function (e) {
+        if (!tracking || isDestroyed) return;
+        tracking = false;
+        var t = e.changedTouches[0];
+        var dx = t.clientX - sx;
+        var dy = t.clientY - sy;
+        var absX = Math.abs(dx), absY = Math.abs(dy);
+        var TH = 50; // мінімальна довжина свайпу, px
+
+        if (Date.now() - st > 800) return;      // занадто повільний жест
+        if (Math.max(absX, absY) < TH) return;  // це тап, а не свайп
+
+        var dir;
+        if (absX > absY) dir = dx < 0 ? 1 : -1;  // вліво = наступна, вправо = попередня
+        else dir = dy < 0 ? 1 : -1;              // вгору = наступна, вниз = попередня
+
+        if (dir === 1 && handlers.next) handlers.next();
+        if (dir === -1 && handlers.prev) handlers.prev();
+      }, { passive: true });
+
       document.body.append(html);
       createWave();
 
@@ -1026,26 +1091,34 @@
 
     this.play = function (station) {
       played = station;
-      
+
       if (globalStation && globalStation.id !== station.id) {
         stopGlobalAudio();
       }
-      
+
       playGlobalAudio(station);
-      
-      var player = new Player(station);
-      player.create();
-      document.body.addClass('ambience--enable');
+
+      var player;
+      var busy = false;
 
       var move = function move(d) {
-  var total = filtred.length;
-  if (!total) return;
-  var pos = filtred.indexOf(played) + d;
-  if (pos < 0) pos = total - 1;
-  if (pos >= total) pos = 0;
-  player.destroy();
-  _this6.play(filtred[pos]);
-};
+        if (busy) return; // захист від подвійного спрацювання
+        var total = filtred.length;
+        if (!total) return;
+        busy = true;
+        var pos = filtred.indexOf(played) + d;
+        if (pos < 0) pos = total - 1;
+        if (pos >= total) pos = 0;
+        player.destroy();
+        _this6.play(filtred[pos]);
+      };
+
+      player = new Player(station, {
+        prev: function () { move(-1); },
+        next: function () { move(1); }
+      });
+      player.create();
+      document.body.addClass('ambience--enable');
 
       Lampa.Background.change(station.bg_image_mobile || img_bg);
       Lampa.Controller.add('content', {
@@ -1134,40 +1207,40 @@
       scroll.append(item);
     };
 
-this.start = function () {
-  if (Lampa.Activity.active() && Lampa.Activity.active().activity !== this.activity) return;
-  this.background();
-  Lampa.Controller.add('content', {
-    link: this,
-    invisible: true,
-toggle: function toggle() {
-  Lampa.Controller.collectionSet(html);
-  var playingEl = null;
-  try {
-    var found = html.find('.radio-item.playing');
-    if (found && found.length) playingEl = found[0];
-  } catch (e) {}
-  Lampa.Controller.collectionFocus(playingEl || last, html);
-  if (playingEl && playingEl.scrollIntoView) {
-    setTimeout(function () {
-      playingEl.scrollIntoView({ block: 'center', behavior: 'auto' });
-    }, 50);
-  }
-},
-    left: function left() {
-      if (Navigator.canmove('left')) Navigator.move('left');
-      else Lampa.Controller.toggle('menu');
-    },
-    right: function right() { Navigator.move('right'); },
-    up: function up() {
-      if (Navigator.canmove('up')) Navigator.move('up');
-      else Lampa.Controller.toggle('head');
-    },
-    down: function down() { Navigator.move('down'); },
-    back: function back() { Lampa.Activity.backward(); }
-  });
-  Lampa.Controller.toggle('content');
-};
+    this.start = function () {
+      if (Lampa.Activity.active() && Lampa.Activity.active().activity !== this.activity) return;
+      this.background();
+      Lampa.Controller.add('content', {
+        link: this,
+        invisible: true,
+        toggle: function toggle() {
+          Lampa.Controller.collectionSet(html);
+          var playingEl = null;
+          try {
+            var found = html.find('.radio-item.playing');
+            if (found && found.length) playingEl = found[0];
+          } catch (e) {}
+          Lampa.Controller.collectionFocus(playingEl || last, html);
+          if (playingEl && playingEl.scrollIntoView) {
+            setTimeout(function () {
+              playingEl.scrollIntoView({ block: 'center', behavior: 'auto' });
+            }, 50);
+          }
+        },
+        left: function left() {
+          if (Navigator.canmove('left')) Navigator.move('left');
+          else Lampa.Controller.toggle('menu');
+        },
+        right: function right() { Navigator.move('right'); },
+        up: function up() {
+          if (Navigator.canmove('up')) Navigator.move('up');
+          else Lampa.Controller.toggle('head');
+        },
+        down: function down() { Navigator.move('down'); },
+        back: function back() { Lampa.Activity.backward(); }
+      });
+      Lampa.Controller.toggle('content');
+    };
 
     this.pause = function () {};
     this.stop = function () {};
@@ -1202,7 +1275,7 @@ toggle: function toggle() {
 
     var manifest = {
       type: 'audio',
-      version: '1.4.0',
+      version: '1.6.0',
       name: Lampa.Lang.translate('radio_station'),
       description: 'Українські радіостанції',
       component: 'radio'
@@ -1215,11 +1288,11 @@ toggle: function toggle() {
     
     Lampa.Template.add('radio_list_item', "\n        <div class=\"radio-item selector layer--visible\">\n            <div class=\"radio-item__num\"></div>\n            <div class=\"radio-item__cover\">\n                <div class=\"radio-item__cover-box\">\n                    <img />\n                </div>\n            </div>\n            <div class=\"radio-item__body\">\n                <div class=\"radio-item__title\"></div>\n                <div class=\"radio-item__tooltip\"></div>\n            </div>\n            <div class=\"radio-item__wave\">\n                <i></i><i></i><i></i><i></i><i></i>\n            </div>\n            <div class=\"radio-item__icons\">\n                <div class=\"radio-item__icon-favorite\">\n                    <svg version=\"1.1\" id=\"Capa_1\" xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 477.534 477.534\" xml:space=\"preserve\">\n                        <path fill=\"currentColor\" d=\"M438.482,58.61c-24.7-26.549-59.311-41.655-95.573-41.711c-36.291,0.042-70.938,15.14-95.676,41.694l-8.431,8.909\n                            l-8.431-8.909C181.284,5.762,98.662,2.728,45.832,51.815c-2.341,2.176-4.602,4.436-6.778,6.778\n                            c-52.072,56.166-52.072,142.968,0,199.134l187.358,197.581c6.482,6.843,17.284,7.136,24.127,0.654\n                            c0.224-0.212,0.442-0.43,0.654-0.654l187.29-197.581C490.551,201.567,490.551,114.77,438.482,58.61z M413.787,234.226h-0.017\n                            L238.802,418.768L63.818,234.226c-39.78-42.916-39.78-109.233,0-152.149c36.125-39.154,97.152-41.609,136.306-5.484\n                            c1.901,1.754,3.73,3.583,5.484,5.484l20.804,21.948c6.856,6.812,17.925,6.812,24.781,0l20.804-21.931\n                            c36.125-39.154,97.152-41.609,136.306-5.484c1.901,1.754,3.73,3.583,5.484,5.484C453.913,125.078,454.207,191.516,413.787,234.226\n                            z\"/>\n                    </svg>\n                </div>\n                <div class=\"radio-item__icon-play\">\n                    <svg width=\"22\" height=\"25\" viewBox=\"0 0 22 25\" fill=\"none\" xmlns=\"http://www.w3.org/2000/svg\">\n                        <path d=\"M21 10.7679C22.3333 11.5377 22.3333 13.4622 21 14.232L3.75 24.1913C2.41666 24.9611 0.75 23.9989 0.75 22.4593L0.750001 2.5407C0.750001 1.0011 2.41667 0.0388526 3.75 0.808653L21 10.7679Z\" fill=\"currentColor\"/>\n                    </svg>\n                </div>\n            </div>\n        </div>\n    ");
     
-    Lampa.Template.add('radio_player', "\n        <div class=\"radio-player\">\n            <div class=\"radio-player__content\">\n                <div class=\"radio-player__cover\"></div>\n                <div class=\"radio-player__wave\"></div>\n            </div>\n            <div class=\"radio-player__close\">\n                <svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 329.269 329\" xml:space=\"preserve\">\n                    <path d=\"M194.8 164.77 323.013 36.555c8.343-8.34 8.343-21.825 0-30.164-8.34-8.34-21.825-8.34-30.164 0L164.633 134.605 36.422 6.391c-8.344-8.34-21.824-8.34-30.164 0-8.344 8.34-8.344 21.824 0 30.164l128.21 128.215L6.259 292.984c-8.344 8.34-8.344 21.825 0 30.164a21.266 21.266 0 0 0 15.082 6.25c5.46 0 10.922-2.09 15.082-6.25l128.21-128.214 128.216 128.214a21.273 21.273 0 0 0 15.082 6.25c5.46 0 10.922-2.09 15.082-6.25 8.343-8.34 8.343-21.824 0-30.164zm0 0\" fill=\"currentColor\"></path>\n                </svg>\n            </div>\n        </div>\n    ");
+    Lampa.Template.add('radio_player', "\n        <div class=\"radio-player\">\n            <div class=\"radio-player__content\">\n                <div class=\"radio-player__cover\"></div>\n                <div class=\"radio-player__wave\"></div>\n                <div class=\"radio-player__controls\">\n                    <div class=\"radio-player__btn radio-player__prev\">\n                        <svg viewBox=\"0 0 24 24\"><path fill=\"currentColor\" d=\"M6 6h2v12H6zm3.5 6l8.5 6V6z\"/></svg>\n                    </div>\n                    <div class=\"radio-player__btn radio-player__next\">\n                        <svg viewBox=\"0 0 24 24\"><path fill=\"currentColor\" d=\"M6 18l8.5-6L6 6v12zM16 6v12h2V6h-2z\"/></svg>\n                    </div>\n                </div>\n            </div>\n            <div class=\"radio-player__close\">\n                <svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 329.269 329\" xml:space=\"preserve\">\n                    <path d=\"M194.8 164.77 323.013 36.555c8.343-8.34 8.343-21.825 0-30.164-8.34-8.34-21.825-8.34-30.164 0L164.633 134.605 36.422 6.391c-8.344-8.34-21.824-8.34-30.164 0-8.344 8.34-8.344 21.824 0 30.164l128.21 128.215L6.259 292.984c-8.344 8.34-8.344 21.825 0 30.164a21.266 21.266 0 0 0 15.082 6.25c5.46 0 10.922-2.09 15.082-6.25l128.21-128.214 128.216 128.214a21.273 21.273 0 0 0 15.082 6.25c5.46 0 10.922-2.09 15.082-6.25 8.343-8.34 8.343-21.824 0-30.164zm0 0\" fill=\"currentColor\"></path>\n                </svg>\n            </div>\n        </div>\n    ");
     
     Lampa.Template.add('radio_mini_player', "\n        <div class=\"selector radio-mini-player hide stop\">\n            <div class=\"radio-mini-player__button\">\n                <i></i>\n                <i></i>\n                <i></i>\n                <i></i>\n            </div>\n            <div class=\"radio-mini-player__name\"></div>\n        </div>\n    ");
 
-    Lampa.Template.add('radio_style', "\n        <style>\n        .radio-content{padding:0 1.5em}.radio-content__head{display:-webkit-box;display:-webkit-flex;display:-moz-box;display:-ms-flexbox;display:flex;padding:1.5em 0}.radio-content__body{display:-webkit-box;display:-webkit-flex;display:-moz-box;display:-ms-flexbox;display:flex}.radio-content__list{width:100%}@media screen and (max-width:576px){.radio-content__list{width:100%}}.radio-cover{text-align:center;line-height:1.4}.radio-cover__img-container{max-width:20em;margin:0 auto}.radio-cover__img-box{position:relative;padding-bottom:100%;background-color:rgba(0,0,0,0.3);-webkit-border-radius:1em;-moz-border-radius:1em;border-radius:1em}.radio-cover__img-box>img{position:absolute;top:0;left:0;width:100%;height:100%;-webkit-border-radius:1em;-moz-border-radius:1em;border-radius:1em;opacity:0}.radio-cover__img-box.loaded{background-color:transparent}.radio-cover__img-box.loaded>img{opacity:1}.radio-cover__img-box.loaded-icon{background-color:rgba(0,0,0,0.3)}.radio-cover__img-box.loaded-icon>img{left:20%;top:20%;width:60%;height:60%;opacity:.2}.radio-cover__title{font-weight:700;font-size:1.5em;margin-top:1em}.radio-cover__tooltip{font-weight:300;font-size:1.3em;margin-top:.2em}.radio-item{padding:1em;display:-webkit-box;display:-webkit-flex;display:-moz-box;display:-ms-flexbox;display:flex;-webkit-box-align:center;-webkit-align-items:center;-moz-box-align:center;-ms-flex-align:center;align-items:center;line-height:1.4}.radio-item__num{font-weight:700;margin-right:1em;font-size:1.3em;opacity:.4;-webkit-flex-shrink:0;-ms-flex-negative:0;flex-shrink:0}@media screen and (max-width:400px){.radio-item__num{display:none}}.radio-item__body{max-width:60%}.radio-item__cover{width:5em;-webkit-flex-shrink:0;-ms-flex-negative:0;flex-shrink:0;margin-right:2em}.radio-item__cover-box{position:relative;padding-bottom:100%;background-color:rgba(0,0,0,0.3);-webkit-border-radius:1em;-moz-border-radius:1em;border-radius:1em}.radio-item__cover-box>img{position:absolute;top:0;left:0;width:100%;height:100%;-webkit-border-radius:1em;-moz-border-radius:1em;border-radius:1em;opacity:0}.radio-item__cover-box.loaded{background-color:transparent}.radio-item__cover-box.loaded>img{opacity:1}.radio-item__cover-box.loaded-icon{background-color:rgba(0,0,0,0.3)}.radio-item__cover-box.loaded-icon>img{left:20%;top:20%;width:60%;height:60%;opacity:.2}\n\n/* ===== ТЕКСТ У СПИСКУ - БЕЗ ПІДКЛАДКИ ===== */\n.radio-item__title {\n    font-weight:700;\n    font-size:1.2em;\n    text-shadow: 0 1px 4px rgba(0,0,0,0.8);\n    transition: color 0.3s ease;\n}\n.radio-item__tooltip {\n    opacity:.5;\n    margin-top:.5em;\n    font-size:1.1em;\n    text-shadow: 0 1px 4px rgba(0,0,0,0.8);\n    transition: color 0.3s ease;\n}\n.radio-item__num {\n    transition: color 0.3s ease, opacity 0.3s ease;\n}\n\n/* ===== ЗЕЛЕНИЙ ТЕКСТ ДЛЯ АКТИВНОЇ СТАНЦІЇ ===== */\n.radio-item.playing .radio-item__title {\n    color: #00ff00 !important;\n    text-shadow: 0 0 20px rgba(0,255,0,0.3), 0 1px 4px rgba(0,0,0,0.8) !important;\n}\n.radio-item.playing .radio-item__tooltip {\n    color: #66ff66 !important;\n    text-shadow: 0 0 15px rgba(0,255,0,0.2), 0 1px 4px rgba(0,0,0,0.8) !important;\n    opacity: 0.9 !important;\n}\n.radio-item.playing .radio-item__num {\n    color: #00ff00 !important;\n    opacity: 1 !important;\n}\n\n.radio-item__icons{margin-left:auto;padding-left:1em;-webkit-flex-shrink:0;-ms-flex-negative:0;flex-shrink:0;display:-webkit-box;display:-webkit-flex;display:-moz-box;display:-ms-flexbox;display:flex}.radio-item__icons svg{width:1.4em !important;height:1.4em !important}.radio-item__icons>*+*{margin-left:1.5em}.radio-item__icons .radio-item__icon-favorite{display:none}.radio-item__icons .radio-item__icon-play{display:none}.radio-item.focus{background:white;color:#000;-webkit-border-radius:1em;-moz-border-radius:1em;border-radius:1em}.radio-item.focus .radio-item__icon-play{display:block}.radio-item.favorite .radio-item__icon-favorite{display:block}.radio-item.playing{background:rgba(0,255,0,0.08);border:1px solid rgba(0,255,0,0.25);border-radius:1em}.radio-item.empty--item .radio-item__title,.radio-item.empty--item .radio-item__num,.radio-item.empty--item .radio-item__tooltip{background-color:rgba(255,255,255,0.3);height:1.2em;-webkit-border-radius:.3em;-moz-border-radius:.3em;border-radius:.3em}.radio-item.empty--item .radio-item__num{width:1.4em}.radio-item.empty--item .radio-item__title{width:7em}.radio-item.empty--item .radio-item__tooltip{width:16em}.radio-item.empty--item .radio-item__icons{display:none}.radio-item.empty--item .radio-item__cover-box{background-color:rgba(255,255,255,0.3)}.radio-item.empty--item.focus{background-color:transparent;color:#fff}\n\n/* ===== ЕКВАЛАЙЗЕР В СПИСКУ ДЛЯ АКТИВНОЇ СТАНЦІЇ ===== */\n.radio-item__wave {\n    display: none;\n    -webkit-box-align: center;\n    -webkit-align-items: center;\n    -moz-box-align: center;\n    -ms-flex-align: center;\n    align-items: center;\n    -webkit-box-pack: center;\n    -webkit-justify-content: center;\n    -moz-box-pack: center;\n    -ms-flex-pack: center;\n    justify-content: center;\n    margin-left: auto;\n    padding-left: 0.5em;\n    -webkit-flex-shrink: 0;\n    -ms-flex-negative: 0;\n    flex-shrink: 0;\n    height: 2.5em;\n    gap: 2px;\n}\n\n.radio-item.playing .radio-item__wave {\n    display: -webkit-box;\n    display: -webkit-flex;\n    display: -moz-box;\n    display: -ms-flexbox;\n    display: flex;\n}\n\n.radio-item__wave i {\n    display: block;\n    width: 3px;\n    background-color: #00ff00;\n    border-radius: 1px;\n    box-shadow: 0 0 6px rgba(0,255,0,0.4);\n    height: 0.8em;\n    -webkit-animation: wavePlay 0.8s ease-in-out infinite alternate;\n    -moz-animation: wavePlay 0.8s ease-in-out infinite alternate;\n    -o-animation: wavePlay 0.8s ease-in-out infinite alternate;\n    animation: wavePlay 0.8s ease-in-out infinite alternate;\n}\n\n.radio-item__wave i:nth-child(1) { -webkit-animation-delay: 0s; animation-delay: 0s; height: 0.5em; }\n.radio-item__wave i:nth-child(2) { -webkit-animation-delay: 0.1s; animation-delay: 0.1s; height: 1.2em; }\n.radio-item__wave i:nth-child(3) { -webkit-animation-delay: 0.2s; animation-delay: 0.2s; height: 1.8em; }\n.radio-item__wave i:nth-child(4) { -webkit-animation-delay: 0.3s; animation-delay: 0.3s; height: 1.0em; }\n.radio-item__wave i:nth-child(5) { -webkit-animation-delay: 0.4s; animation-delay: 0.4s; height: 0.6em; }\n\n@-webkit-keyframes wavePlay {\n    0% { -webkit-transform: scaleY(0.3); transform: scaleY(0.3); opacity: 0.4; }\n    100% { -webkit-transform: scaleY(1); transform: scaleY(1); opacity: 1; }\n}\n@-moz-keyframes wavePlay {\n    0% { -moz-transform: scaleY(0.3); transform: scaleY(0.3); opacity: 0.4; }\n    100% { -moz-transform: scaleY(1); transform: scaleY(1); opacity: 1; }\n}\n@-o-keyframes wavePlay {\n    0% { -o-transform: scaleY(0.3); transform: scaleY(0.3); opacity: 0.4; }\n    100% { -o-transform: scaleY(1); transform: scaleY(1); opacity: 1; }\n}\n@keyframes wavePlay {\n    0% { -webkit-transform: scaleY(0.3); -moz-transform: scaleY(0.3); -o-transform: scaleY(0.3); transform: scaleY(0.3); opacity: 0.4; }\n    100% { -webkit-transform: scaleY(1); -moz-transform: scaleY(1); -o-transform: scaleY(1); transform: scaleY(1); opacity: 1; }\n}\n\n/* ===== ПОВНОЕКРАННИЙ ПЛЕЄР ===== */\n.radio-player {\n    position:fixed;\n    z-index:100;\n    left:0;\n    top:0;\n    width:100%;\n    height:100%;\n    display:-webkit-box;\n    display:-webkit-flex;\n    display:-moz-box;\n    display:-ms-flexbox;\n    display:flex;\n    -webkit-box-align:center;\n    -webkit-align-items:center;\n    -moz-box-align:center;\n    -ms-flex-align:center;\n    align-items:center;\n    -webkit-box-pack:center;\n    -webkit-justify-content:center;\n    -moz-box-pack:center;\n    -ms-flex-pack:center;\n    justify-content:center;\n}\n\n/* РОЗМИТИЙ ФОН */\n.radio-player::before {\n    content:'';\n    position:absolute;\n    top:0;\n    left:0;\n    right:0;\n    bottom:0;\n    background: inherit;\n    background-size: cover;\n    background-position: center;\n    -webkit-backdrop-filter: blur(12px);\n    backdrop-filter: blur(12px);\n    z-index:-1;\n}\n\n/* СУЦІЛЬНА ПІДКЛАДКА ДЛЯ ВСЬОГО КОНТЕНТУ */\n.radio-player__content {\n    position:relative;\n    background: rgba(0, 0, 0, 0.65);\n    padding: 2em 3em;\n    border-radius: 1.5em;\n    max-width: 30em;\n    width: 100%;\n    box-shadow: 0 20px 60px rgba(0,0,0,0.8);\n    border: 1px solid rgba(255,255,255,0.08);\n}\n\n.radio-player__cover{width:100%}.radio-player__wave{display:-webkit-box;display:-webkit-flex;display:-moz-box;display:-ms-flexbox;display:flex;-webkit-box-align:center;-webkit-align-items:center;-moz-box-align:center;-ms-flex-align:center;align-items:center;-webkit-box-pack:center;-webkit-justify-content:center;-moz-box-pack:center;-ms-flex-pack:center;justify-content:center;margin-top:1.5em;padding:1em 0}.radio-player__wave>div{width:3px;background-color:#00ff00;margin:0 0.4em;height:1em;opacity:0;border-radius:2px;box-shadow:0 0 10px rgba(0,255,0,0.3)}.radio-player__wave>div.loading{-webkit-animation:radioAnimationWaveLoading 400ms ease infinite;-moz-animation:radioAnimationWaveLoading 400ms ease infinite;-o-animation:radioAnimationWaveLoading 400ms ease infinite;animation:radioAnimationWaveLoading 400ms ease infinite}.radio-player__wave>div.play{-webkit-animation:radioAnimationWavePlay 50ms linear infinite alternate;-moz-animation:radioAnimationWavePlay 50ms linear infinite alternate;-o-animation:radioAnimationWavePlay 50ms linear infinite alternate;animation:radioAnimationWavePlay 50ms linear infinite alternate}.radio-player__close{position:fixed;top:1.5em;right:50%;margin-right:-2em;-webkit-border-radius:100%;-moz-border-radius:100%;border-radius:100%;padding:1em;display:none;background-color:rgba(255,255,255,0.1)}.radio-player__close>svg{width:1.5em;height:1.5em}body.true--mobile .radio-player__close{display:block}\n\n/* МІНІ-ПЛЕЄР В ГОЛОВІ - БЕЗ НАЗВИ */\n.radio-mini-player {\n    display:-webkit-box;display:-webkit-flex;display:-moz-box;display:-ms-flexbox;display:flex;\n    -webkit-box-align:center;-webkit-align-items:center;-moz-box-align:center;-ms-flex-align:center;align-items:center;\n    -webkit-border-radius:0.3em;-moz-border-radius:0.3em;border-radius:0.3em;\n    padding:0.2em 0.4em;\n    margin-left:0.5em;\n    margin-right:0.5em;\n    cursor:pointer;\n}\n.radio-mini-player__name {\n    display:none !important;\n}\n.radio-mini-player__button {\n    position:relative;\n    width:2.2em;\n    height:2.2em;\n    display:-webkit-box;display:-webkit-flex;display:-moz-box;display:-ms-flexbox;display:flex;\n    -webkit-box-align:center;-webkit-align-items:center;-moz-box-align:center;-ms-flex-align:center;align-items:center;\n    -webkit-box-pack:center;-webkit-justify-content:center;-moz-box-pack:center;-ms-flex-pack:center;justify-content:center;\n    -webkit-flex-shrink:0;-ms-flex-negative:0;flex-shrink:0;\n    -webkit-border-radius:0.3em;-moz-border-radius:0.3em;border-radius:0.3em;\n    border:0.15em solid rgba(255,255,255,0.8);\n    background-size:cover !important;\n    background-position:center !important;\n    cursor:pointer;\n}\n.radio-mini-player__button i {\n    display:block;\n    width:0.2em;\n    background-color:#00ff00;\n    margin:0 0.1em;\n    -webkit-animation:sound 0ms -800ms linear infinite alternate;\n    -moz-animation:sound 0ms -800ms linear infinite alternate;\n    -o-animation:sound 0ms -800ms linear infinite alternate;\n    animation:sound 0ms -800ms linear infinite alternate;\n    -webkit-flex-shrink:0;-ms-flex-negative:0;flex-shrink:0;\n    border-radius:1px;\n    box-shadow:0 0 6px rgba(0,255,0,0.3);\n}\n.radio-mini-player__button i:nth-child(1){-webkit-animation-duration:474ms;-moz-animation-duration:474ms;-o-animation-duration:474ms;animation-duration:474ms}\n.radio-mini-player__button i:nth-child(2){-webkit-animation-duration:433ms;-moz-animation-duration:433ms;-o-animation-duration:433ms;animation-duration:433ms}\n.radio-mini-player__button i:nth-child(3){-webkit-animation-duration:407ms;-moz-animation-duration:407ms;-o-animation-duration:407ms;animation-duration:407ms}\n.radio-mini-player__button i:nth-child(4){-webkit-animation-duration:458ms;-moz-animation-duration:458ms;-o-animation-duration:458ms;animation-duration:458ms}\n.radio-mini-player.stop .radio-mini-player__button i{display:none}\n.radio-mini-player.stop .radio-mini-player__button:after{\n    content:\"\";\n    width:0.6em;\n    height:0.6em;\n    background-color:rgba(255,255,255,0.9);\n    border-radius:0.1em;\n}\n.radio-mini-player.loading .radio-mini-player__button i{display:none}\n.radio-mini-player.loading .radio-mini-player__button:before{\n    content:\"\";\n    display:block;\n    border-top:0.2em solid rgba(0,255,0,0.9);\n    border-left:0.2em solid transparent;\n    border-right:0.2em solid transparent;\n    border-bottom:0.2em solid transparent;\n    -webkit-animation:sound-loading 1s linear infinite;\n    -moz-animation:sound-loading 1s linear infinite;\n    -o-animation:sound-loading 1s linear infinite;\n    animation:sound-loading 1s linear infinite;\n    width:0.9em;height:0.9em;\n    -webkit-border-radius:100%;-moz-border-radius:100%;border-radius:100%;\n    -webkit-flex-shrink:0;-ms-flex-negative:0;flex-shrink:0;\n}\n.radio-mini-player.focus{background-color:#fff;color:#000}\n.radio-mini-player.focus .radio-mini-player__button{border-color:#000}\n.radio-mini-player.focus .radio-mini-player__button i,\n.radio-mini-player.focus .radio-mini-player__button:after{background-color:#000}\n.radio-mini-player.focus .radio-mini-player__button:before{border-top-color:#000}\n.radio-mini-player.hide{display:none}\n\n@-webkit-keyframes sound{0%{height:0.1em}100%{height:1em}}\n@-moz-keyframes sound{0%{height:0.1em}100%{height:1em}}\n@-o-keyframes sound{0%{height:0.1em}100%{height:1em}}\n@keyframes sound{0%{height:0.1em}100%{height:1em}}\n@-webkit-keyframes sound-loading{0%{-webkit-transform:rotate(0deg);transform:rotate(0deg)}100%{-webkit-transform:rotate(360deg);transform:rotate(360deg)}}\n@-moz-keyframes sound-loading{0%{-moz-transform:rotate(0deg);transform:rotate(0deg)}100%{-moz-transform:rotate(360deg);transform:rotate(360deg)}}\n@-o-keyframes sound-loading{0%{-o-transform:rotate(0deg);transform:rotate(0deg)}100%{-o-transform:rotate(360deg);transform:rotate(360deg)}}\n@keyframes sound-loading{0%{-webkit-transform:rotate(0deg);-moz-transform:rotate(0deg);-o-transform:rotate(0deg);transform:rotate(0deg)}100%{-webkit-transform:rotate(360deg);-moz-transform:rotate(360deg);-o-transform:rotate(360deg);transform:rotate(360deg)}}\n\n@-webkit-keyframes radioAnimationWaveLoading{0%{-webkit-transform:scale3d(1,0.3,1);transform:scale3d(1,0.3,1);opacity:0.5}10%{-webkit-transform:scale3d(1,1.5,1);transform:scale3d(1,1.5,1);opacity:1}20%{-webkit-transform:scale3d(1,0.3,1);transform:scale3d(1,0.3,1);opacity:0.5}100%{-webkit-transform:scale3d(1,0.3,1);transform:scale3d(1,0.3,1);opacity:0.5}}\n@-moz-keyframes radioAnimationWaveLoading{0%{-moz-transform:scale3d(1,0.3,1);transform:scale3d(1,0.3,1);opacity:0.5}10%{-moz-transform:scale3d(1,1.5,1);transform:scale3d(1,1.5,1);opacity:1}20%{-moz-transform:scale3d(1,0.3,1);transform:scale3d(1,0.3,1);opacity:0.5}100%{-moz-transform:scale3d(1,0.3,1);transform:scale3d(1,0.3,1);opacity:0.5}}\n@-o-keyframes radioAnimationWaveLoading{0%{transform:scale3d(1,0.3,1);opacity:0.5}10%{transform:scale3d(1,1.5,1);opacity:1}20%{transform:scale3d(1,0.3,1);opacity:0.5}100%{transform:scale3d(1,0.3,1);opacity:0.5}}\n@keyframes radioAnimationWaveLoading{0%{-webkit-transform:scale3d(1,0.3,1);-moz-transform:scale3d(1,0.3,1);transform:scale3d(1,0.3,1);opacity:0.5}10%{-webkit-transform:scale3d(1,1.5,1);-moz-transform:scale3d(1,1.5,1);transform:scale3d(1,1.5,1);opacity:1}20%{-webkit-transform:scale3d(1,0.3,1);-moz-transform:scale3d(1,0.3,1);transform:scale3d(1,0.3,1);opacity:0.5}100%{-webkit-transform:scale3d(1,0.3,1);-moz-transform:scale3d(1,0.3,1);transform:scale3d(1,0.3,1);opacity:0.5}}\n@-webkit-keyframes radioAnimationWavePlay{0%{-webkit-transform:scale3d(1,0.3,1);transform:scale3d(1,0.3,1);opacity:0.3}100%{-webkit-transform:scale3d(1,2,1);transform:scale3d(1,2,1);opacity:1}}\n@-moz-keyframes radioAnimationWavePlay{0%{-moz-transform:scale3d(1,0.3,1);transform:scale3d(1,0.3,1);opacity:0.3}100%{-moz-transform:scale3d(1,2,1);transform:scale3d(1,2,1);opacity:1}}\n@-o-keyframes radioAnimationWavePlay{0%{transform:scale3d(1,0.3,1);opacity:0.3}100%{transform:scale3d(1,2,1);opacity:1}}\n@keyframes radioAnimationWavePlay{0%{-webkit-transform:scale3d(1,0.3,1);-moz-transform:scale3d(1,0.3,1);transform:scale3d(1,0.3,1);opacity:0.3}100%{-webkit-transform:scale3d(1,2,1);-moz-transform:scale3d(1,2,1);transform:scale3d(1,2,1);opacity:1}}\n\n        /* ===== ТЕКСТ У ПЛЕЄРІ - БЕЗ ОКРЕМИХ ПІДКЛАДОК ===== */\n        .radio-cover__title,\n        .radio-cover__tooltip {\n            background: transparent !important;\n            padding: 0.2em 0 !important;\n            border-radius: 0 !important;\n            display: block !important;\n            text-shadow: 0 2px 8px rgba(0,0,0,0.9) !important;\n        }\n        .radio-cover__title {\n            font-size: 1.8em !important;\n            margin-top: 0.8em !important;\n        }\n        .radio-cover__tooltip {\n            font-size: 1.2em !important;\n            margin-top: 0.3em !important;\n            opacity: 0.9 !important;\n        }\n        </style>\n    ");
+    Lampa.Template.add('radio_style', "\n        <style>\n        .radio-content{padding:0 1.5em}.radio-content__head{display:-webkit-box;display:-webkit-flex;display:-moz-box;display:-ms-flexbox;display:flex;padding:1.5em 0}.radio-content__body{display:-webkit-box;display:-webkit-flex;display:-moz-box;display:-ms-flexbox;display:flex}.radio-content__list{width:100%}@media screen and (max-width:576px){.radio-content__list{width:100%}}.radio-cover{text-align:center;line-height:1.4}.radio-cover__img-container{max-width:20em;margin:0 auto}.radio-cover__img-box{position:relative;padding-bottom:100%;background-color:rgba(0,0,0,0.3);-webkit-border-radius:1em;-moz-border-radius:1em;border-radius:1em}.radio-cover__img-box>img{position:absolute;top:0;left:0;width:100%;height:100%;-webkit-border-radius:1em;-moz-border-radius:1em;border-radius:1em;opacity:0}.radio-cover__img-box.loaded{background-color:transparent}.radio-cover__img-box.loaded>img{opacity:1}.radio-cover__img-box.loaded-icon{background-color:rgba(0,0,0,0.3)}.radio-cover__img-box.loaded-icon>img{left:20%;top:20%;width:60%;height:60%;opacity:.2}.radio-cover__title{font-weight:700;font-size:1.5em;margin-top:1em}.radio-cover__tooltip{font-weight:300;font-size:1.3em;margin-top:.2em}.radio-item{padding:1em;display:-webkit-box;display:-webkit-flex;display:-moz-box;display:-ms-flexbox;display:flex;-webkit-box-align:center;-webkit-align-items:center;-moz-box-align:center;-ms-flex-align:center;align-items:center;line-height:1.4}.radio-item__num{font-weight:700;margin-right:1em;font-size:1.3em;opacity:.4;-webkit-flex-shrink:0;-ms-flex-negative:0;flex-shrink:0}@media screen and (max-width:400px){.radio-item__num{display:none}}.radio-item__body{max-width:60%}.radio-item__cover{width:5em;-webkit-flex-shrink:0;-ms-flex-negative:0;flex-shrink:0;margin-right:2em}.radio-item__cover-box{position:relative;padding-bottom:100%;background-color:rgba(0,0,0,0.3);-webkit-border-radius:1em;-moz-border-radius:1em;border-radius:1em}.radio-item__cover-box>img{position:absolute;top:0;left:0;width:100%;height:100%;-webkit-border-radius:1em;-moz-border-radius:1em;border-radius:1em;opacity:0}.radio-item__cover-box.loaded{background-color:transparent}.radio-item__cover-box.loaded>img{opacity:1}.radio-item__cover-box.loaded-icon{background-color:rgba(0,0,0,0.3)}.radio-item__cover-box.loaded-icon>img{left:20%;top:20%;width:60%;height:60%;opacity:.2}\n\n/* ===== ТЕКСТ У СПИСКУ - БЕЗ ПІДКЛАДКИ ===== */\n.radio-item__title {\n    font-weight:700;\n    font-size:1.2em;\n    text-shadow: 0 1px 4px rgba(0,0,0,0.8);\n    transition: color 0.3s ease;\n}\n.radio-item__tooltip {\n    opacity:.5;\n    margin-top:.5em;\n    font-size:1.1em;\n    text-shadow: 0 1px 4px rgba(0,0,0,0.8);\n    transition: color 0.3s ease;\n}\n.radio-item__num {\n    transition: color 0.3s ease, opacity 0.3s ease;\n}\n\n/* ===== ЗЕЛЕНИЙ ТЕКСТ ДЛЯ АКТИВНОЇ СТАНЦІЇ ===== */\n.radio-item.playing .radio-item__title {\n    color: #00ff00 !important;\n    text-shadow: 0 0 20px rgba(0,255,0,0.3), 0 1px 4px rgba(0,0,0,0.8) !important;\n}\n.radio-item.playing .radio-item__tooltip {\n    color: #66ff66 !important;\n    text-shadow: 0 0 15px rgba(0,255,0,0.2), 0 1px 4px rgba(0,0,0,0.8) !important;\n    opacity: 0.9 !important;\n}\n.radio-item.playing .radio-item__num {\n    color: #00ff00 !important;\n    opacity: 1 !important;\n}\n\n.radio-item__icons{margin-left:auto;padding-left:1em;-webkit-flex-shrink:0;-ms-flex-negative:0;flex-shrink:0;display:-webkit-box;display:-webkit-flex;display:-moz-box;display:-ms-flexbox;display:flex}.radio-item__icons svg{width:1.4em !important;height:1.4em !important}.radio-item__icons>*+*{margin-left:1.5em}.radio-item__icons .radio-item__icon-favorite{display:none}.radio-item__icons .radio-item__icon-play{display:none}.radio-item.focus{background:white;color:#000;-webkit-border-radius:1em;-moz-border-radius:1em;border-radius:1em}.radio-item.focus .radio-item__icon-play{display:block}.radio-item.favorite .radio-item__icon-favorite{display:block}.radio-item.playing{background:rgba(0,255,0,0.08);border:1px solid rgba(0,255,0,0.25);border-radius:1em}.radio-item.empty--item .radio-item__title,.radio-item.empty--item .radio-item__num,.radio-item.empty--item .radio-item__tooltip{background-color:rgba(255,255,255,0.3);height:1.2em;-webkit-border-radius:.3em;-moz-border-radius:.3em;border-radius:.3em}.radio-item.empty--item .radio-item__num{width:1.4em}.radio-item.empty--item .radio-item__title{width:7em}.radio-item.empty--item .radio-item__tooltip{width:16em}.radio-item.empty--item .radio-item__icons{display:none}.radio-item.empty--item .radio-item__cover-box{background-color:rgba(255,255,255,0.3)}.radio-item.empty--item.focus{background-color:transparent;color:#fff}\n\n/* ===== ЕКВАЛАЙЗЕР В СПИСКУ ДЛЯ АКТИВНОЇ СТАНЦІЇ ===== */\n.radio-item__wave {\n    display: none;\n    -webkit-box-align: center;\n    -webkit-align-items: center;\n    -moz-box-align: center;\n    -ms-flex-align: center;\n    align-items: center;\n    -webkit-box-pack: center;\n    -webkit-justify-content: center;\n    -moz-box-pack: center;\n    -ms-flex-pack: center;\n    justify-content: center;\n    margin-left: auto;\n    padding-left: 0.5em;\n    -webkit-flex-shrink: 0;\n    -ms-flex-negative: 0;\n    flex-shrink: 0;\n    height: 2.5em;\n    gap: 2px;\n}\n\n.radio-item.playing .radio-item__wave {\n    display: -webkit-box;\n    display: -webkit-flex;\n    display: -moz-box;\n    display: -ms-flexbox;\n    display: flex;\n}\n\n.radio-item__wave i {\n    display: block;\n    width: 3px;\n    background-color: #00ff00;\n    border-radius: 1px;\n    box-shadow: 0 0 6px rgba(0,255,0,0.4);\n    height: 0.8em;\n    -webkit-animation: wavePlay 0.8s ease-in-out infinite alternate;\n    -moz-animation: wavePlay 0.8s ease-in-out infinite alternate;\n    -o-animation: wavePlay 0.8s ease-in-out infinite alternate;\n    animation: wavePlay 0.8s ease-in-out infinite alternate;\n}\n\n.radio-item__wave i:nth-child(1) { -webkit-animation-delay: 0s; animation-delay: 0s; height: 0.5em; }\n.radio-item__wave i:nth-child(2) { -webkit-animation-delay: 0.1s; animation-delay: 0.1s; height: 1.2em; }\n.radio-item__wave i:nth-child(3) { -webkit-animation-delay: 0.2s; animation-delay: 0.2s; height: 1.8em; }\n.radio-item__wave i:nth-child(4) { -webkit-animation-delay: 0.3s; animation-delay: 0.3s; height: 1.0em; }\n.radio-item__wave i:nth-child(5) { -webkit-animation-delay: 0.4s; animation-delay: 0.4s; height: 0.6em; }\n\n@-webkit-keyframes wavePlay {\n    0% { -webkit-transform: scaleY(0.3); transform: scaleY(0.3); opacity: 0.4; }\n    100% { -webkit-transform: scaleY(1); transform: scaleY(1); opacity: 1; }\n}\n@-moz-keyframes wavePlay {\n    0% { -moz-transform: scaleY(0.3); transform: scaleY(0.3); opacity: 0.4; }\n    100% { -moz-transform: scaleY(1); transform: scaleY(1); opacity: 1; }\n}\n@-o-keyframes wavePlay {\n    0% { -o-transform: scaleY(0.3); transform: scaleY(0.3); opacity: 0.4; }\n    100% { -o-transform: scaleY(1); transform: scaleY(1); opacity: 1; }\n}\n@keyframes wavePlay {\n    0% { -webkit-transform: scaleY(0.3); -moz-transform: scaleY(0.3); -o-transform: scaleY(0.3); transform: scaleY(0.3); opacity: 0.4; }\n    100% { -webkit-transform: scaleY(1); -moz-transform: scaleY(1); -o-transform: scaleY(1); transform: scaleY(1); opacity: 1; }\n}\n\n/* ===== ПОВНОЕКРАННИЙ ПЛЕЄР ===== */\n.radio-player {\n    position:fixed;\n    z-index:100;\n    left:0;\n    top:0;\n    width:100%;\n    height:100%;\n    display:-webkit-box;\n    display:-webkit-flex;\n    display:-moz-box;\n    display:-ms-flexbox;\n    display:flex;\n    -webkit-box-align:center;\n    -webkit-align-items:center;\n    -moz-box-align:center;\n    -ms-flex-align:center;\n    align-items:center;\n    -webkit-box-pack:center;\n    -webkit-justify-content:center;\n    -moz-box-pack:center;\n    -ms-flex-pack:center;\n    justify-content:center;\n}\n\n/* РОЗМИТИЙ ФОН */\n.radio-player::before {\n    content:'';\n    position:absolute;\n    top:0;\n    left:0;\n    right:0;\n    bottom:0;\n    background: inherit;\n    background-size: cover;\n    background-position: center;\n    -webkit-backdrop-filter: blur(12px);\n    backdrop-filter: blur(12px);\n    z-index:-1;\n}\n\n/* СУЦІЛЬНА ПІДКЛАДКА ДЛЯ ВСЬОГО КОНТЕНТУ */\n.radio-player__content {\n    position:relative;\n    background: rgba(0, 0, 0, 0.65);\n    padding: 2em 3em;\n    border-radius: 1.5em;\n    max-width: 30em;\n    width: 100%;\n    box-shadow: 0 20px 60px rgba(0,0,0,0.8);\n    border: 1px solid rgba(255,255,255,0.08);\n}\n\n.radio-player__cover{width:100%}.radio-player__wave{display:-webkit-box;display:-webkit-flex;display:-moz-box;display:-ms-flexbox;display:flex;-webkit-box-align:center;-webkit-align-items:center;-moz-box-align:center;-ms-flex-align:center;align-items:center;-webkit-box-pack:center;-webkit-justify-content:center;-moz-box-pack:center;-ms-flex-pack:center;justify-content:center;margin-top:1.5em;padding:1em 0}.radio-player__wave>div{width:3px;background-color:#00ff00;margin:0 0.4em;height:1em;opacity:0;border-radius:2px;box-shadow:0 0 10px rgba(0,255,0,0.3)}.radio-player__wave>div.loading{-webkit-animation:radioAnimationWaveLoading 400ms ease infinite;-moz-animation:radioAnimationWaveLoading 400ms ease infinite;-o-animation:radioAnimationWaveLoading 400ms ease infinite;animation:radioAnimationWaveLoading 400ms ease infinite}.radio-player__wave>div.play{-webkit-animation:radioAnimationWavePlay 50ms linear infinite alternate;-moz-animation:radioAnimationWavePlay 50ms linear infinite alternate;-o-animation:radioAnimationWavePlay 50ms linear infinite alternate;animation:radioAnimationWavePlay 50ms linear infinite alternate}.radio-player__close{position:fixed;top:1.5em;right:50%;margin-right:-2em;-webkit-border-radius:100%;-moz-border-radius:100%;border-radius:100%;padding:1em;display:none;background-color:rgba(255,255,255,0.1)}.radio-player__close>svg{width:1.5em;height:1.5em}body.true--mobile .radio-player__close{display:block}\n\n/* МІНІ-ПЛЕЄР В ГОЛОВІ - БЕЗ НАЗВИ */\n.radio-mini-player {\n    display:-webkit-box;display:-webkit-flex;display:-moz-box;display:-ms-flexbox;display:flex;\n    -webkit-box-align:center;-webkit-align-items:center;-moz-box-align:center;-ms-flex-align:center;align-items:center;\n    -webkit-border-radius:0.3em;-moz-border-radius:0.3em;border-radius:0.3em;\n    padding:0.2em 0.4em;\n    margin-left:0.5em;\n    margin-right:0.5em;\n    cursor:pointer;\n}\n.radio-mini-player__name {\n    display:none !important;\n}\n.radio-mini-player__button {\n    position:relative;\n    width:2.2em;\n    height:2.2em;\n    display:-webkit-box;display:-webkit-flex;display:-moz-box;display:-ms-flexbox;display:flex;\n    -webkit-box-align:center;-webkit-align-items:center;-moz-box-align:center;-ms-flex-align:center;align-items:center;\n    -webkit-box-pack:center;-webkit-justify-content:center;-moz-box-pack:center;-ms-flex-pack:center;justify-content:center;\n    -webkit-flex-shrink:0;-ms-flex-negative:0;flex-shrink:0;\n    -webkit-border-radius:0.3em;-moz-border-radius:0.3em;border-radius:0.3em;\n    border:0.15em solid rgba(255,255,255,0.8);\n    background-size:cover !important;\n    background-position:center !important;\n    cursor:pointer;\n}\n.radio-mini-player__button i {\n    display:block;\n    width:0.2em;\n    background-color:#00ff00;\n    margin:0 0.1em;\n    -webkit-animation:sound 0ms -800ms linear infinite alternate;\n    -moz-animation:sound 0ms -800ms linear infinite alternate;\n    -o-animation:sound 0ms -800ms linear infinite alternate;\n    animation:sound 0ms -800ms linear infinite alternate;\n    -webkit-flex-shrink:0;-ms-flex-negative:0;flex-shrink:0;\n    border-radius:1px;\n    box-shadow:0 0 6px rgba(0,255,0,0.3);\n}\n.radio-mini-player__button i:nth-child(1){-webkit-animation-duration:474ms;-moz-animation-duration:474ms;-o-animation-duration:474ms;animation-duration:474ms}\n.radio-mini-player__button i:nth-child(2){-webkit-animation-duration:433ms;-moz-animation-duration:433ms;-o-animation-duration:433ms;animation-duration:433ms}\n.radio-mini-player__button i:nth-child(3){-webkit-animation-duration:407ms;-moz-animation-duration:407ms;-o-animation-duration:407ms;animation-duration:407ms}\n.radio-mini-player__button i:nth-child(4){-webkit-animation-duration:458ms;-moz-animation-duration:458ms;-o-animation-duration:458ms;animation-duration:458ms}\n.radio-mini-player.stop .radio-mini-player__button i{display:none}\n.radio-mini-player.stop .radio-mini-player__button:after{\n    content:\"\";\n    width:0.6em;\n    height:0.6em;\n    background-color:rgba(255,255,255,0.9);\n    border-radius:0.1em;\n}\n.radio-mini-player.loading .radio-mini-player__button i{display:none}\n.radio-mini-player.loading .radio-mini-player__button:before{\n    content:\"\";\n    display:block;\n    border-top:0.2em solid rgba(0,255,0,0.9);\n    border-left:0.2em solid transparent;\n    border-right:0.2em solid transparent;\n    border-bottom:0.2em solid transparent;\n    -webkit-animation:sound-loading 1s linear infinite;\n    -moz-animation:sound-loading 1s linear infinite;\n    -o-animation:sound-loading 1s linear infinite;\n    animation:sound-loading 1s linear infinite;\n    width:0.9em;height:0.9em;\n    -webkit-border-radius:100%;-moz-border-radius:100%;border-radius:100%;\n    -webkit-flex-shrink:0;-ms-flex-negative:0;flex-shrink:0;\n}\n.radio-mini-player.focus{background-color:#fff;color:#000}\n.radio-mini-player.focus .radio-mini-player__button{border-color:#000}\n.radio-mini-player.focus .radio-mini-player__button i,\n.radio-mini-player.focus .radio-mini-player__button:after{background-color:#000}\n.radio-mini-player.focus .radio-mini-player__button:before{border-top-color:#000}\n.radio-mini-player.hide{display:none}\n\n@-webkit-keyframes sound{0%{height:0.1em}100%{height:1em}}\n@-moz-keyframes sound{0%{height:0.1em}100%{height:1em}}\n@-o-keyframes sound{0%{height:0.1em}100%{height:1em}}\n@keyframes sound{0%{height:0.1em}100%{height:1em}}\n@-webkit-keyframes sound-loading{0%{-webkit-transform:rotate(0deg);transform:rotate(0deg)}100%{-webkit-transform:rotate(360deg);transform:rotate(360deg)}}\n@-moz-keyframes sound-loading{0%{-moz-transform:rotate(0deg);transform:rotate(0deg)}100%{-moz-transform:rotate(360deg);transform:rotate(360deg)}}\n@-o-keyframes sound-loading{0%{-o-transform:rotate(0deg);transform:rotate(0deg)}100%{-o-transform:rotate(360deg);transform:rotate(360deg)}}\n@keyframes sound-loading{0%{-webkit-transform:rotate(0deg);-moz-transform:rotate(0deg);-o-transform:rotate(0deg);transform:rotate(0deg)}100%{-webkit-transform:rotate(360deg);-moz-transform:rotate(360deg);-o-transform:rotate(360deg);transform:rotate(360deg)}}\n\n@-webkit-keyframes radioAnimationWaveLoading{0%{-webkit-transform:scale3d(1,0.3,1);transform:scale3d(1,0.3,1);opacity:0.5}10%{-webkit-transform:scale3d(1,1.5,1);transform:scale3d(1,1.5,1);opacity:1}20%{-webkit-transform:scale3d(1,0.3,1);transform:scale3d(1,0.3,1);opacity:0.5}100%{-webkit-transform:scale3d(1,0.3,1);transform:scale3d(1,0.3,1);opacity:0.5}}\n@-moz-keyframes radioAnimationWaveLoading{0%{-moz-transform:scale3d(1,0.3,1);transform:scale3d(1,0.3,1);opacity:0.5}10%{-moz-transform:scale3d(1,1.5,1);transform:scale3d(1,1.5,1);opacity:1}20%{-moz-transform:scale3d(1,0.3,1);transform:scale3d(1,0.3,1);opacity:0.5}100%{-moz-transform:scale3d(1,0.3,1);transform:scale3d(1,0.3,1);opacity:0.5}}\n@-o-keyframes radioAnimationWaveLoading{0%{transform:scale3d(1,0.3,1);opacity:0.5}10%{transform:scale3d(1,1.5,1);opacity:1}20%{transform:scale3d(1,0.3,1);opacity:0.5}100%{transform:scale3d(1,0.3,1);opacity:0.5}}\n@keyframes radioAnimationWaveLoading{0%{-webkit-transform:scale3d(1,0.3,1);-moz-transform:scale3d(1,0.3,1);transform:scale3d(1,0.3,1);opacity:0.5}10%{-webkit-transform:scale3d(1,1.5,1);-moz-transform:scale3d(1,1.5,1);transform:scale3d(1,1.5,1);opacity:1}20%{-webkit-transform:scale3d(1,0.3,1);-moz-transform:scale3d(1,0.3,1);transform:scale3d(1,0.3,1);opacity:0.5}100%{-webkit-transform:scale3d(1,0.3,1);-moz-transform:scale3d(1,0.3,1);transform:scale3d(1,0.3,1);opacity:0.5}}\n@-webkit-keyframes radioAnimationWavePlay{0%{-webkit-transform:scale3d(1,0.3,1);transform:scale3d(1,0.3,1);opacity:0.3}100%{-webkit-transform:scale3d(1,2,1);transform:scale3d(1,2,1);opacity:1}}\n@-moz-keyframes radioAnimationWavePlay{0%{-moz-transform:scale3d(1,0.3,1);transform:scale3d(1,0.3,1);opacity:0.3}100%{-moz-transform:scale3d(1,2,1);transform:scale3d(1,2,1);opacity:1}}\n@-o-keyframes radioAnimationWavePlay{0%{transform:scale3d(1,0.3,1);opacity:0.3}100%{transform:scale3d(1,2,1);opacity:1}}\n@keyframes radioAnimationWavePlay{0%{-webkit-transform:scale3d(1,0.3,1);-moz-transform:scale3d(1,0.3,1);transform:scale3d(1,0.3,1);opacity:0.3}100%{-webkit-transform:scale3d(1,2,1);-moz-transform:scale3d(1,2,1);transform:scale3d(1,2,1);opacity:1}}\n\n        /* ===== ТЕКСТ У ПЛЕЄРІ - БЕЗ ОКРЕМИХ ПІДКЛАДОК ===== */\n        .radio-cover__title,\n        .radio-cover__tooltip {\n            background: transparent !important;\n            padding: 0.2em 0 !important;\n            border-radius: 0 !important;\n            display: block !important;\n            text-shadow: 0 2px 8px rgba(0,0,0,0.9) !important;\n        }\n        .radio-cover__title {\n            font-size: 1.8em !important;\n            margin-top: 0.8em !important;\n        }\n        .radio-cover__tooltip {\n            font-size: 1.2em !important;\n            margin-top: 0.3em !important;\n            opacity: 0.9 !important;\n        }\n\n        /* ===== КНОПКИ ПОПЕРЕДНЯ / НАСТУПНА + СВАЙПИ (МОБІЛЬНІ) ===== */\n        .radio-player__controls{display:none;-webkit-box-pack:center;-webkit-justify-content:center;justify-content:center;gap:2em;margin-top:.5em}body.true--mobile .radio-player__controls{display:-webkit-box;display:-webkit-flex;display:flex}.radio-player__btn{width:3.4em;height:3.4em;padding:.9em;border-radius:100%;background-color:rgba(255,255,255,0.12);-webkit-tap-highlight-color:transparent;transition:background-color .15s ease,transform .15s ease}.radio-player__btn:active{background-color:rgba(0,255,0,0.3);transform:scale(.92)}.radio-player__btn>svg{width:100%;height:100%}.radio-player{touch-action:none}\n        </style>\n    ");
 
     function add() {
       var button = $("<li class=\"menu__item selector\">\n            <div class=\"menu__ico\">\n                <svg width=\"38\" height=\"31\" viewBox=\"0 0 38 31\" fill=\"none\" xmlns=\"http://www.w3.org/2000/svg\">\n                    <rect x=\"17.613\" width=\"3\" height=\"16.3327\" rx=\"1.5\" transform=\"rotate(63.4707 17.613 0)\" fill=\"currentColor\"/>\n                    <circle cx=\"13\" cy=\"19\" r=\"6\" fill=\"currentColor\"/>\n                    <path fill-rule=\"evenodd\" clip-rule=\"evenodd\" d=\"M0 11C0 8.79086 1.79083 7 4 7H34C36.2091 7 38 8.79086 38 11V27C38 29.2091 36.2092 31 34 31H4C1.79083 31 0 29.2091 0 27V11ZM21 19C21 23.4183 17.4183 27 13 27C8.58173 27 5 23.4183 5 19C5 14.5817 8.58173 11 13 11C17.4183 11 21 14.5817 21 19ZM30.5 18C31.8807 18 33 16.8807 33 15.5C33 14.1193 31.8807 13 30.5 13C29.1193 13 28 14.1193 28 15.5C28 16.8807 29.1193 18 30.5 18Z\" fill=\"currentColor\"/>\n                </svg>\n            </div>\n            <div class=\"menu__text\">".concat(manifest.name, "</div>\n        </li>"));
