@@ -330,13 +330,6 @@
       genre: [{ id: 'psytrance', name: 'Psy Trance' }]
     },
     {
-      id: 'partyviberadio',
-      title: 'Party Vibe Radio',
-      tooltip: 'Morning PsyTrance',
-      stream: 'http://94.130.242.5:8010/stream',
-      genre: [{ id: 'psytrance', name: 'Psy Trance' }]
-    },
-    {
       id: 'groovesalad',
       title: 'SomaFM Groove Salad',
       tooltip: 'Ambient & Downtempo',
