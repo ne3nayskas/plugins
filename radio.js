@@ -172,14 +172,14 @@
       id: 'kissfm',
       title: 'Kiss FM',
       tooltip: 'The Best Dance Radio',
-      stream: 'https://online.kissfm.ua/KissFM_HD',
+      stream: 'https://online.kissfm.ua/KissFM',
       genre: [{ id: 'dance', name: 'Dance' }]
     },
     {
       id: 'kissfm_ukr',
       title: 'Kiss FM (Україна)',
       tooltip: 'Тільки український Dance',
-      stream: 'https://online.kissfm.ua/KissFM_Ukr_HD',
+      stream: 'https://online.kissfm.ua/KissFM_Ukr',
       genre: [{ id: 'dance', name: 'Dance' }]
     },
     {
