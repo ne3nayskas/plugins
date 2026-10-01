@@ -182,14 +182,6 @@
       genre: [{ id: 'rock', name: 'Rock' }]
     },
     {
-      id: 'djfm',
-      title: 'Dj FM',
-      tooltip: 'Твій діджей завжди з тобою!',
-      stream: 'https://cast.brg.ua/djfm_main_public_mp3_hq',
-      bg_image_mobile: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQ--8_GgyNF76-me7Y792ex_F8nGIMDKU1wqL1xQYZD083a4jdWOeVDMVY&s=10',
-      genre: [{ id: 'dance', name: 'Dance' }]
-    },
-    {
       id: 'kissfm',
       title: 'Kiss FM',
       tooltip: 'The Best Dance Radio',
@@ -347,14 +339,6 @@
       tooltip: 'Класична музика',
       stream: 'https://online.classicradio.ua/ClassicRadio',
       bg_image_mobile: 'https://cdn-profiles.tunein.com/s224284/images/logog.jpg',
-      genre: [{ id: 'classical', name: 'Classic' }]
-    },
-    {
-      id: 'raiclassicradio',
-      title: 'Rai Radio Classica',
-      tooltip: 'Radio Classica Italia',
-      stream: 'https://icestreaming.rai.it/5.mp3',
-      bg_image_mobile: 'https://static.mytuner.mobi/media/tvos_radios/535/rai-radio-classica.dc930915.png',
       genre: [{ id: 'classical', name: 'Classic' }]
     },
     {
