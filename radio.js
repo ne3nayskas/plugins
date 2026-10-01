@@ -169,13 +169,6 @@
       genre: [{ id: 'rock', name: 'Rock' }]
     },
     {
-      id: 'djfm',
-      title: 'Dj FM',
-      tooltip: 'Твій діджей завжди з тобою!',
-      stream: 'https://cast.brg.ua/djfm_main_public_mp3_hq',
-      genre: [{ id: 'dance', name: 'Dance' }]
-    },
-    {
       id: 'kissfm',
       title: 'Kiss FM',
       tooltip: 'The Best Dance Radio',
@@ -313,13 +306,6 @@
       title: 'Classic Radio',
       tooltip: 'Класична музика',
       stream: 'https://online.classicradio.ua/ClassicRadio',
-      genre: [{ id: 'classical', name: 'Classic' }]
-    },
-    {
-      id: 'raiclassicradio',
-      title: 'Rai Radio Classica',
-      tooltip: 'Radio Classica Italia',
-      stream: 'https://icestreaming.rai.it/5.mp3',
       genre: [{ id: 'classical', name: 'Classic' }]
     },
     {
