@@ -333,7 +333,7 @@
       id: 'partyviberadio',
       title: 'Party Vibe Radio',
       tooltip: 'Morning PsyTrance',
-      stream: 'http://www.partyviberadio.com:8010/stream/2/',
+      stream: 'http://94.130.242.5:8010/stream',
       genre: [{ id: 'psytrance', name: 'Psy Trance' }]
     },
     {
