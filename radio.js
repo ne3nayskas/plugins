@@ -64,32 +64,39 @@
 
   var UKRAINIAN_STATIONS = [
     {
-      id: 'ukrpisnia',
-      title: 'Українська пісня',
-      tooltip: 'Радіо пісенної класики України',
-      stream: 'https://listen6.myradio24.com/50904',
-      genre: [{ id: 'ukr', name: 'Українське' }]
+      id: 'replaynews',
+      title: 'Replay News UA',
+      tooltip: 'Новини кожні п’ять хвилин 24/7',
+      stream: 'https://replaynewsuk.ice.infomaniak.ch/replaynewsuk-128.mp3',
+      genre: [{ id: 'news', name: 'Новини' }]
     },
     {
       id: 'ukrradio',
       title: 'Українське Радіо',
       tooltip: 'UR1 Українське Радіо',
-      stream: 'http://radio.ukr.radio/ur1-mp3',
+      stream: 'https://radio2.ukr.radio/ur1-mp3-m',
       genre: [{ id: 'news', name: 'Новини' }]
     },
     {
       id: 'radiopromin',
       title: 'Радіо Промінь',
       tooltip: 'UR2 Радіо Промінь',
-      stream: 'http://radio.ukr.radio/ur2-mp3',
+      stream: 'https://radio2.ukr.radio/ur2-mp3-m',
       genre: [{ id: 'ukr', name: 'Українське' }]
     },
     {
       id: 'radioculture',
       title: 'Радіо Культура',
       tooltip: 'UR3 Радіо Культура',
-      stream: 'http://radio.ukr.radio/ur3-mp3',
+      stream: 'https://radio2.ukr.radio/ur3-mp3-m',
       genre: [{ id: 'culture', name: 'Культура' }]
+    },
+    {
+      id: 'ukrpisnia',
+      title: 'Українська пісня',
+      tooltip: 'Радіо пісенної класики України',
+      stream: 'https://listen6.myradio24.com/50904',
+      genre: [{ id: 'ukr', name: 'Українське' }]
     },
     {
       id: 'pryamyi',
@@ -103,13 +110,6 @@
       title: 'Єдині Новини',
       tooltip: 'Телемарафон',
       stream: 'https://online-news.radioplayer.ua/RadioNews',
-      genre: [{ id: 'news', name: 'Новини' }]
-    },
-    {
-      id: 'replaynews',
-      title: 'Replay News UA',
-      tooltip: 'Новини кожні п’ять хвилин 24/7',
-      stream: 'https://replaynewsuk.ice.infomaniak.ch/replaynewsuk-128.mp3',
       genre: [{ id: 'news', name: 'Новини' }]
     },
     {
