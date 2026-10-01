@@ -1,9 +1,12 @@
 // =========================================
 // Радіо для Lampa
-// Версія: 1.6.0 | 2026.09.29
+// Версія: 1.6.3 | 2026.10.01
 // Опис: Плагін для прослуховування радіостанцій
 // Aвтор - @ne3nayskas 
-// Зміни 1.6.0: свайпи та кнопки ⏮ / ⏭ у вікні відтворення (мобільні). Виправлення, оновлення стрімів станцій
+// Зміни 1.6.0: свайпи та кнопки ⏮ / ⏭ у вікні відтворення (мобільні)
+// Зміни 1.6.1: оптимізація продуктивності, виправлено подвійний запуск потоку
+// Зміни 1.6.2: після виходу з плеєра список прокручується до станції, що грає
+// Зміни 1.6.3: оптимізація для Chrome, прибрано blur і інтервал сповіщень, анімації переведено на transform, додано debounce фону, ыншы покращення
 // =========================================
 
 (function () {
@@ -587,7 +590,7 @@
   var globalPlayerHtml = null;
   var globalScreenReset = null;
   var globalHls = null;
-  var globalNotyInterval = null;
+  var globalNotyTimers = [];
 
   function clearPlayingClass() {
     document.querySelectorAll('.radio-item.playing').forEach(function(el) {
@@ -597,39 +600,24 @@
 
   function hideNoty() {
     try {
-      if (typeof $ !== 'undefined') {
-        $('.noty, .noty_layout, .noty_effects, .noty_message, .noty_container, .noty_bar').hide();
-        $('[class*="noty"]').hide();
-      }
-      if (Lampa.Noty) {
-        if (Lampa.Noty.hide) Lampa.Noty.hide();
-        if (Lampa.Noty.close) Lampa.Noty.close();
-      }
-      var notyElements = document.querySelectorAll('.noty, .noty_layout, [class*="noty"]');
-      for (var i = 0; i < notyElements.length; i++) {
-        notyElements[i].style.display = 'none';
-        notyElements[i].style.opacity = '0';
-        notyElements[i].style.visibility = 'hidden';
+      var els = document.querySelectorAll('.noty');
+      for (var i = 0; i < els.length; i++) {
+        els[i].style.display = 'none';
       }
     } catch(e) {}
   }
 
+  // Без постійного інтервалу: кілька разових перевірок після старту потоку
   function startHidingNoty() {
-    if (globalNotyInterval) {
-      clearInterval(globalNotyInterval);
-      globalNotyInterval = null;
-    }
-    hideNoty();
-    globalNotyInterval = setInterval(function() {
-      hideNoty();
-    }, 300);
+    stopHidingNoty();
+    globalNotyTimers = [0, 400, 1200].map(function(ms) {
+      return setTimeout(hideNoty, ms);
+    });
   }
 
   function stopHidingNoty() {
-    if (globalNotyInterval) {
-      clearInterval(globalNotyInterval);
-      globalNotyInterval = null;
-    }
+    globalNotyTimers.forEach(clearTimeout);
+    globalNotyTimers = [];
   }
 
   function stopGlobalAudio() {
@@ -810,13 +798,12 @@
       changeWave(globalAudio && !globalAudio.paused ? 'play' : 'loading');
     }
 
-    if (globalAudio) {
-      globalAudio.addEventListener("playing", function() {
-        if (!isDestroyed) changeWave('play');
-      });
-      globalAudio.addEventListener("waiting", function() {
-        if (!isDestroyed) changeWave('loading');
-      });
+    var audioRef = globalAudio;
+    function onAudioPlaying() { if (!isDestroyed) changeWave('play'); }
+    function onAudioWaiting() { if (!isDestroyed) changeWave('loading'); }
+    if (audioRef) {
+      audioRef.addEventListener("playing", onAudioPlaying);
+      audioRef.addEventListener("waiting", onAudioWaiting);
     }
 
     this.create = function () {
@@ -882,20 +869,15 @@
       document.body.append(html);
       createWave();
 
-      if (globalStation && globalStation.id !== station.id) {
-        stopGlobalAudio();
-        setPlayingClass(station);
-      }
-      
-      if (!globalAudio || globalAudio.paused) {
-        playGlobalAudio(station);
-      } else {
-        updateMiniPlayer(station, 'play');
-      }
+      // Потік запускає Component.play(); плеєр лише відображає стан
     };
 
     this.destroy = function () {
       isDestroyed = true;
+      if (audioRef) {
+        audioRef.removeEventListener("playing", onAudioPlaying);
+        audioRef.removeEventListener("waiting", onAudioWaiting);
+      }
       html.remove();
     };
   }
@@ -906,9 +888,34 @@
   
   function Component() {
     var _this6 = this;
-    var last, scroll, played, filtred = [], page = 0;
+    var last, scroll, played, bgTimer, filtred = [], page = 0;
+    var focusPlaying = false, firstDisplay = true;
     var html = document.createElement('div');
     var img_bg = 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACgAAAAZCAYAAABD2GxlAAAACXBIWXMAAAsTAAALEwEAmpwYAAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8YQUAAAHASURBVHgBlZaLrsMgDENXxAf3/9XHFdXNZLm2YZHQymPk4CS0277v9+ffrut62nEcn/M8nzb69cxj6le1+75f/RqrZ9fatm3F9wwMR7yhawilNke4Gis/7j9srQbdaVFBnkcQ1WrfgmIIBcTrvgqqsKiTzvpOQbUnAykVW4VVqZXyyDllYFSKx9QaVrO7nGJIB63g+FAq/xhcHWBYdwCsmAtvFZUKE0MlVZWCT4idOlyhTp3K35R/6Nzlq0uBnsKWlEzgSh1VGJxv6rmpXMO7EK+XWUPnDFRWqitQFeY2UyZVryuWlI8ulLgGf19FooAUwC9gCWLcwzWPb7Wa60qdlZxjx6ooUuUqVQsK+y1VoAJyBeJAVsLJeYmg/RIXdG2kPhwYPBUQQyYF0XC8lwP3MTCrYAXB88556peCbUUZV7WccwkUQfCZC4PXdA5hKhSVhythZqjZM0J39w5m8BRadKAcrsIpNZsLIYdOqcZ9hExhZ1MH+QL+ciFzXzmYhZr/M6yUUwp2dp5U4naZDwAF5JRSefdScJZ3SkU0nl8xpaAy+7ml1EqvMXSs1HRrZ9bc3eZUSXmGa/mdyjbmqyX7A9RaYQa9IRJ0AAAAAElFTkSuQmCC';
+
+    // Повертає елемент станції, що грає. Якщо її ще немає в DOM
+    // (список підвантажується по 10 шт.), дозавантажує потрібні сторінки.
+    function findPlayingEl() {
+      if (!globalStation || !globalAudio || !scroll) return null;
+      var sid = String(globalStation.id);
+      var idx = -1;
+      for (var i = 0; i < filtred.length; i++) {
+        if (String(filtred[i].id) === sid) { idx = i; break; }
+      }
+      if (idx < 0) return null;
+
+      var views = 10, guard = 0;
+      while ((page + 1) * views <= idx && guard++ < 100) {
+        page++;
+        _this6.next();
+      }
+
+      var items = html.querySelectorAll('.radio-item');
+      for (var j = 0; j < items.length; j++) {
+        if (items[j].dataset && items[j].dataset.sid === sid) return items[j];
+      }
+      return null;
+    }
 
     this.create = function () {
       var _this = this;
@@ -1079,6 +1086,8 @@
         }
         Lampa.Layer.visible(scroll.render(true));
       }
+      focusPlaying = firstDisplay;
+      firstDisplay = false;
       this.activity.toggle();
     };
 
@@ -1092,11 +1101,9 @@
     this.play = function (station) {
       played = station;
 
-      if (globalStation && globalStation.id !== station.id) {
-        stopGlobalAudio();
-      }
-
-      playGlobalAudio(station);
+      // Не перезапускаємо потік, якщо ця станція вже грає
+      var alreadyPlaying = globalStation && globalStation.id === station.id && globalAudio && !globalAudio.paused;
+      if (!alreadyPlaying) playGlobalAudio(station);
 
       var player;
       var busy = false;
@@ -1118,14 +1125,13 @@
         next: function () { move(1); }
       });
       player.create();
-      document.body.addClass('ambience--enable');
 
       Lampa.Background.change(station.bg_image_mobile || img_bg);
       Lampa.Controller.add('content', {
         invisible: true,
         toggle: function toggle() { Lampa.Controller.clear(); },
         back: function back() {
-          document.body.removeClass('ambience--enable');
+          focusPlaying = true;
           player.destroy();
           _this6.activity.toggle();
           Lampa.Controller.toggle('content');
@@ -1143,6 +1149,7 @@
       item.find('.radio-item__title').text(station.title);
       item.find('.radio-item__tooltip').text(station.tooltip || station.stream);
       item.background = station.bg_image_mobile || img_bg;
+      item.dataset.sid = String(station.id);
       var img_box = item.find('.radio-item__cover-box');
       var img_elm = item.find('img');
 
@@ -1160,9 +1167,12 @@
       }
 
       item.on('hover:focus hover:hover', function () {
-        if (item.background) Lampa.Background.change(item.background);
-        else _this7.background();
         last = item;
+        clearTimeout(bgTimer);
+        bgTimer = setTimeout(function () {
+          if (item.background) Lampa.Background.change(item.background);
+          else _this7.background();
+        }, 300);
       });
       item.on('hover:focus', function () { scroll.update(item); });
       item.on('hover:enter', function () { _this7.play(station); });
@@ -1214,17 +1224,19 @@
         link: this,
         invisible: true,
         toggle: function toggle() {
-          Lampa.Controller.collectionSet(html);
           var playingEl = null;
-          try {
-            var found = html.find('.radio-item.playing');
-            if (found && found.length) playingEl = found[0];
-          } catch (e) {}
+          if (focusPlaying) {
+            focusPlaying = false;
+            playingEl = findPlayingEl();
+            if (playingEl) last = playingEl;
+          }
+          Lampa.Controller.collectionSet(html);
           Lampa.Controller.collectionFocus(playingEl || last, html);
-          if (playingEl && playingEl.scrollIntoView) {
+          if (playingEl) {
+            scroll.update(playingEl, true);
             setTimeout(function () {
-              playingEl.scrollIntoView({ block: 'center', behavior: 'auto' });
-            }, 50);
+              if (playingEl.parentNode) scroll.update(playingEl, true);
+            }, 100);
           }
         },
         left: function left() {
@@ -1246,6 +1258,7 @@
     this.stop = function () {};
     this.render = function () { return html; };
     this.destroy = function () {
+      clearTimeout(bgTimer);
       if (scroll) scroll.destroy();
       html.remove();
     };
@@ -1275,7 +1288,7 @@
 
     var manifest = {
       type: 'audio',
-      version: '1.6.0',
+      version: '1.6.2',
       name: Lampa.Lang.translate('radio_station'),
       description: 'Українські радіостанції',
       component: 'radio'
@@ -1292,7 +1305,7 @@
     
     Lampa.Template.add('radio_mini_player', "\n        <div class=\"selector radio-mini-player hide stop\">\n            <div class=\"radio-mini-player__button\">\n                <i></i>\n                <i></i>\n                <i></i>\n                <i></i>\n            </div>\n            <div class=\"radio-mini-player__name\"></div>\n        </div>\n    ");
 
-    Lampa.Template.add('radio_style', "\n        <style>\n        .radio-content{padding:0 1.5em}.radio-content__head{display:-webkit-box;display:-webkit-flex;display:-moz-box;display:-ms-flexbox;display:flex;padding:1.5em 0}.radio-content__body{display:-webkit-box;display:-webkit-flex;display:-moz-box;display:-ms-flexbox;display:flex}.radio-content__list{width:100%}@media screen and (max-width:576px){.radio-content__list{width:100%}}.radio-cover{text-align:center;line-height:1.4}.radio-cover__img-container{max-width:20em;margin:0 auto}.radio-cover__img-box{position:relative;padding-bottom:100%;background-color:rgba(0,0,0,0.3);-webkit-border-radius:1em;-moz-border-radius:1em;border-radius:1em}.radio-cover__img-box>img{position:absolute;top:0;left:0;width:100%;height:100%;-webkit-border-radius:1em;-moz-border-radius:1em;border-radius:1em;opacity:0}.radio-cover__img-box.loaded{background-color:transparent}.radio-cover__img-box.loaded>img{opacity:1}.radio-cover__img-box.loaded-icon{background-color:rgba(0,0,0,0.3)}.radio-cover__img-box.loaded-icon>img{left:20%;top:20%;width:60%;height:60%;opacity:.2}.radio-cover__title{font-weight:700;font-size:1.5em;margin-top:1em}.radio-cover__tooltip{font-weight:300;font-size:1.3em;margin-top:.2em}.radio-item{padding:1em;display:-webkit-box;display:-webkit-flex;display:-moz-box;display:-ms-flexbox;display:flex;-webkit-box-align:center;-webkit-align-items:center;-moz-box-align:center;-ms-flex-align:center;align-items:center;line-height:1.4}.radio-item__num{font-weight:700;margin-right:1em;font-size:1.3em;opacity:.4;-webkit-flex-shrink:0;-ms-flex-negative:0;flex-shrink:0}@media screen and (max-width:400px){.radio-item__num{display:none}}.radio-item__body{max-width:60%}.radio-item__cover{width:5em;-webkit-flex-shrink:0;-ms-flex-negative:0;flex-shrink:0;margin-right:2em}.radio-item__cover-box{position:relative;padding-bottom:100%;background-color:rgba(0,0,0,0.3);-webkit-border-radius:1em;-moz-border-radius:1em;border-radius:1em}.radio-item__cover-box>img{position:absolute;top:0;left:0;width:100%;height:100%;-webkit-border-radius:1em;-moz-border-radius:1em;border-radius:1em;opacity:0}.radio-item__cover-box.loaded{background-color:transparent}.radio-item__cover-box.loaded>img{opacity:1}.radio-item__cover-box.loaded-icon{background-color:rgba(0,0,0,0.3)}.radio-item__cover-box.loaded-icon>img{left:20%;top:20%;width:60%;height:60%;opacity:.2}\n\n/* ===== ТЕКСТ У СПИСКУ - БЕЗ ПІДКЛАДКИ ===== */\n.radio-item__title {\n    font-weight:700;\n    font-size:1.2em;\n    text-shadow: 0 1px 4px rgba(0,0,0,0.8);\n    transition: color 0.3s ease;\n}\n.radio-item__tooltip {\n    opacity:.5;\n    margin-top:.5em;\n    font-size:1.1em;\n    text-shadow: 0 1px 4px rgba(0,0,0,0.8);\n    transition: color 0.3s ease;\n}\n.radio-item__num {\n    transition: color 0.3s ease, opacity 0.3s ease;\n}\n\n/* ===== ЗЕЛЕНИЙ ТЕКСТ ДЛЯ АКТИВНОЇ СТАНЦІЇ ===== */\n.radio-item.playing .radio-item__title {\n    color: #00ff00 !important;\n    text-shadow: 0 0 20px rgba(0,255,0,0.3), 0 1px 4px rgba(0,0,0,0.8) !important;\n}\n.radio-item.playing .radio-item__tooltip {\n    color: #66ff66 !important;\n    text-shadow: 0 0 15px rgba(0,255,0,0.2), 0 1px 4px rgba(0,0,0,0.8) !important;\n    opacity: 0.9 !important;\n}\n.radio-item.playing .radio-item__num {\n    color: #00ff00 !important;\n    opacity: 1 !important;\n}\n\n.radio-item__icons{margin-left:auto;padding-left:1em;-webkit-flex-shrink:0;-ms-flex-negative:0;flex-shrink:0;display:-webkit-box;display:-webkit-flex;display:-moz-box;display:-ms-flexbox;display:flex}.radio-item__icons svg{width:1.4em !important;height:1.4em !important}.radio-item__icons>*+*{margin-left:1.5em}.radio-item__icons .radio-item__icon-favorite{display:none}.radio-item__icons .radio-item__icon-play{display:none}.radio-item.focus{background:white;color:#000;-webkit-border-radius:1em;-moz-border-radius:1em;border-radius:1em}.radio-item.focus .radio-item__icon-play{display:block}.radio-item.favorite .radio-item__icon-favorite{display:block}.radio-item.playing{background:rgba(0,255,0,0.08);border:1px solid rgba(0,255,0,0.25);border-radius:1em}.radio-item.empty--item .radio-item__title,.radio-item.empty--item .radio-item__num,.radio-item.empty--item .radio-item__tooltip{background-color:rgba(255,255,255,0.3);height:1.2em;-webkit-border-radius:.3em;-moz-border-radius:.3em;border-radius:.3em}.radio-item.empty--item .radio-item__num{width:1.4em}.radio-item.empty--item .radio-item__title{width:7em}.radio-item.empty--item .radio-item__tooltip{width:16em}.radio-item.empty--item .radio-item__icons{display:none}.radio-item.empty--item .radio-item__cover-box{background-color:rgba(255,255,255,0.3)}.radio-item.empty--item.focus{background-color:transparent;color:#fff}\n\n/* ===== ЕКВАЛАЙЗЕР В СПИСКУ ДЛЯ АКТИВНОЇ СТАНЦІЇ ===== */\n.radio-item__wave {\n    display: none;\n    -webkit-box-align: center;\n    -webkit-align-items: center;\n    -moz-box-align: center;\n    -ms-flex-align: center;\n    align-items: center;\n    -webkit-box-pack: center;\n    -webkit-justify-content: center;\n    -moz-box-pack: center;\n    -ms-flex-pack: center;\n    justify-content: center;\n    margin-left: auto;\n    padding-left: 0.5em;\n    -webkit-flex-shrink: 0;\n    -ms-flex-negative: 0;\n    flex-shrink: 0;\n    height: 2.5em;\n    gap: 2px;\n}\n\n.radio-item.playing .radio-item__wave {\n    display: -webkit-box;\n    display: -webkit-flex;\n    display: -moz-box;\n    display: -ms-flexbox;\n    display: flex;\n}\n\n.radio-item__wave i {\n    display: block;\n    width: 3px;\n    background-color: #00ff00;\n    border-radius: 1px;\n    box-shadow: 0 0 6px rgba(0,255,0,0.4);\n    height: 0.8em;\n    -webkit-animation: wavePlay 0.8s ease-in-out infinite alternate;\n    -moz-animation: wavePlay 0.8s ease-in-out infinite alternate;\n    -o-animation: wavePlay 0.8s ease-in-out infinite alternate;\n    animation: wavePlay 0.8s ease-in-out infinite alternate;\n}\n\n.radio-item__wave i:nth-child(1) { -webkit-animation-delay: 0s; animation-delay: 0s; height: 0.5em; }\n.radio-item__wave i:nth-child(2) { -webkit-animation-delay: 0.1s; animation-delay: 0.1s; height: 1.2em; }\n.radio-item__wave i:nth-child(3) { -webkit-animation-delay: 0.2s; animation-delay: 0.2s; height: 1.8em; }\n.radio-item__wave i:nth-child(4) { -webkit-animation-delay: 0.3s; animation-delay: 0.3s; height: 1.0em; }\n.radio-item__wave i:nth-child(5) { -webkit-animation-delay: 0.4s; animation-delay: 0.4s; height: 0.6em; }\n\n@-webkit-keyframes wavePlay {\n    0% { -webkit-transform: scaleY(0.3); transform: scaleY(0.3); opacity: 0.4; }\n    100% { -webkit-transform: scaleY(1); transform: scaleY(1); opacity: 1; }\n}\n@-moz-keyframes wavePlay {\n    0% { -moz-transform: scaleY(0.3); transform: scaleY(0.3); opacity: 0.4; }\n    100% { -moz-transform: scaleY(1); transform: scaleY(1); opacity: 1; }\n}\n@-o-keyframes wavePlay {\n    0% { -o-transform: scaleY(0.3); transform: scaleY(0.3); opacity: 0.4; }\n    100% { -o-transform: scaleY(1); transform: scaleY(1); opacity: 1; }\n}\n@keyframes wavePlay {\n    0% { -webkit-transform: scaleY(0.3); -moz-transform: scaleY(0.3); -o-transform: scaleY(0.3); transform: scaleY(0.3); opacity: 0.4; }\n    100% { -webkit-transform: scaleY(1); -moz-transform: scaleY(1); -o-transform: scaleY(1); transform: scaleY(1); opacity: 1; }\n}\n\n/* ===== ПОВНОЕКРАННИЙ ПЛЕЄР ===== */\n.radio-player {\n    position:fixed;\n    z-index:100;\n    left:0;\n    top:0;\n    width:100%;\n    height:100%;\n    display:-webkit-box;\n    display:-webkit-flex;\n    display:-moz-box;\n    display:-ms-flexbox;\n    display:flex;\n    -webkit-box-align:center;\n    -webkit-align-items:center;\n    -moz-box-align:center;\n    -ms-flex-align:center;\n    align-items:center;\n    -webkit-box-pack:center;\n    -webkit-justify-content:center;\n    -moz-box-pack:center;\n    -ms-flex-pack:center;\n    justify-content:center;\n}\n\n/* РОЗМИТИЙ ФОН */\n.radio-player::before {\n    content:'';\n    position:absolute;\n    top:0;\n    left:0;\n    right:0;\n    bottom:0;\n    background: inherit;\n    background-size: cover;\n    background-position: center;\n    -webkit-backdrop-filter: blur(12px);\n    backdrop-filter: blur(12px);\n    z-index:-1;\n}\n\n/* СУЦІЛЬНА ПІДКЛАДКА ДЛЯ ВСЬОГО КОНТЕНТУ */\n.radio-player__content {\n    position:relative;\n    background: rgba(0, 0, 0, 0.65);\n    padding: 2em 3em;\n    border-radius: 1.5em;\n    max-width: 30em;\n    width: 100%;\n    box-shadow: 0 20px 60px rgba(0,0,0,0.8);\n    border: 1px solid rgba(255,255,255,0.08);\n}\n\n.radio-player__cover{width:100%}.radio-player__wave{display:-webkit-box;display:-webkit-flex;display:-moz-box;display:-ms-flexbox;display:flex;-webkit-box-align:center;-webkit-align-items:center;-moz-box-align:center;-ms-flex-align:center;align-items:center;-webkit-box-pack:center;-webkit-justify-content:center;-moz-box-pack:center;-ms-flex-pack:center;justify-content:center;margin-top:1.5em;padding:1em 0}.radio-player__wave>div{width:3px;background-color:#00ff00;margin:0 0.4em;height:1em;opacity:0;border-radius:2px;box-shadow:0 0 10px rgba(0,255,0,0.3)}.radio-player__wave>div.loading{-webkit-animation:radioAnimationWaveLoading 400ms ease infinite;-moz-animation:radioAnimationWaveLoading 400ms ease infinite;-o-animation:radioAnimationWaveLoading 400ms ease infinite;animation:radioAnimationWaveLoading 400ms ease infinite}.radio-player__wave>div.play{-webkit-animation:radioAnimationWavePlay 50ms linear infinite alternate;-moz-animation:radioAnimationWavePlay 50ms linear infinite alternate;-o-animation:radioAnimationWavePlay 50ms linear infinite alternate;animation:radioAnimationWavePlay 50ms linear infinite alternate}.radio-player__close{position:fixed;top:1.5em;right:50%;margin-right:-2em;-webkit-border-radius:100%;-moz-border-radius:100%;border-radius:100%;padding:1em;display:none;background-color:rgba(255,255,255,0.1)}.radio-player__close>svg{width:1.5em;height:1.5em}body.true--mobile .radio-player__close{display:block}\n\n/* МІНІ-ПЛЕЄР В ГОЛОВІ - БЕЗ НАЗВИ */\n.radio-mini-player {\n    display:-webkit-box;display:-webkit-flex;display:-moz-box;display:-ms-flexbox;display:flex;\n    -webkit-box-align:center;-webkit-align-items:center;-moz-box-align:center;-ms-flex-align:center;align-items:center;\n    -webkit-border-radius:0.3em;-moz-border-radius:0.3em;border-radius:0.3em;\n    padding:0.2em 0.4em;\n    margin-left:0.5em;\n    margin-right:0.5em;\n    cursor:pointer;\n}\n.radio-mini-player__name {\n    display:none !important;\n}\n.radio-mini-player__button {\n    position:relative;\n    width:2.2em;\n    height:2.2em;\n    display:-webkit-box;display:-webkit-flex;display:-moz-box;display:-ms-flexbox;display:flex;\n    -webkit-box-align:center;-webkit-align-items:center;-moz-box-align:center;-ms-flex-align:center;align-items:center;\n    -webkit-box-pack:center;-webkit-justify-content:center;-moz-box-pack:center;-ms-flex-pack:center;justify-content:center;\n    -webkit-flex-shrink:0;-ms-flex-negative:0;flex-shrink:0;\n    -webkit-border-radius:0.3em;-moz-border-radius:0.3em;border-radius:0.3em;\n    border:0.15em solid rgba(255,255,255,0.8);\n    background-size:cover !important;\n    background-position:center !important;\n    cursor:pointer;\n}\n.radio-mini-player__button i {\n    display:block;\n    width:0.2em;\n    background-color:#00ff00;\n    margin:0 0.1em;\n    -webkit-animation:sound 0ms -800ms linear infinite alternate;\n    -moz-animation:sound 0ms -800ms linear infinite alternate;\n    -o-animation:sound 0ms -800ms linear infinite alternate;\n    animation:sound 0ms -800ms linear infinite alternate;\n    -webkit-flex-shrink:0;-ms-flex-negative:0;flex-shrink:0;\n    border-radius:1px;\n    box-shadow:0 0 6px rgba(0,255,0,0.3);\n}\n.radio-mini-player__button i:nth-child(1){-webkit-animation-duration:474ms;-moz-animation-duration:474ms;-o-animation-duration:474ms;animation-duration:474ms}\n.radio-mini-player__button i:nth-child(2){-webkit-animation-duration:433ms;-moz-animation-duration:433ms;-o-animation-duration:433ms;animation-duration:433ms}\n.radio-mini-player__button i:nth-child(3){-webkit-animation-duration:407ms;-moz-animation-duration:407ms;-o-animation-duration:407ms;animation-duration:407ms}\n.radio-mini-player__button i:nth-child(4){-webkit-animation-duration:458ms;-moz-animation-duration:458ms;-o-animation-duration:458ms;animation-duration:458ms}\n.radio-mini-player.stop .radio-mini-player__button i{display:none}\n.radio-mini-player.stop .radio-mini-player__button:after{\n    content:\"\";\n    width:0.6em;\n    height:0.6em;\n    background-color:rgba(255,255,255,0.9);\n    border-radius:0.1em;\n}\n.radio-mini-player.loading .radio-mini-player__button i{display:none}\n.radio-mini-player.loading .radio-mini-player__button:before{\n    content:\"\";\n    display:block;\n    border-top:0.2em solid rgba(0,255,0,0.9);\n    border-left:0.2em solid transparent;\n    border-right:0.2em solid transparent;\n    border-bottom:0.2em solid transparent;\n    -webkit-animation:sound-loading 1s linear infinite;\n    -moz-animation:sound-loading 1s linear infinite;\n    -o-animation:sound-loading 1s linear infinite;\n    animation:sound-loading 1s linear infinite;\n    width:0.9em;height:0.9em;\n    -webkit-border-radius:100%;-moz-border-radius:100%;border-radius:100%;\n    -webkit-flex-shrink:0;-ms-flex-negative:0;flex-shrink:0;\n}\n.radio-mini-player.focus{background-color:#fff;color:#000}\n.radio-mini-player.focus .radio-mini-player__button{border-color:#000}\n.radio-mini-player.focus .radio-mini-player__button i,\n.radio-mini-player.focus .radio-mini-player__button:after{background-color:#000}\n.radio-mini-player.focus .radio-mini-player__button:before{border-top-color:#000}\n.radio-mini-player.hide{display:none}\n\n@-webkit-keyframes sound{0%{height:0.1em}100%{height:1em}}\n@-moz-keyframes sound{0%{height:0.1em}100%{height:1em}}\n@-o-keyframes sound{0%{height:0.1em}100%{height:1em}}\n@keyframes sound{0%{height:0.1em}100%{height:1em}}\n@-webkit-keyframes sound-loading{0%{-webkit-transform:rotate(0deg);transform:rotate(0deg)}100%{-webkit-transform:rotate(360deg);transform:rotate(360deg)}}\n@-moz-keyframes sound-loading{0%{-moz-transform:rotate(0deg);transform:rotate(0deg)}100%{-moz-transform:rotate(360deg);transform:rotate(360deg)}}\n@-o-keyframes sound-loading{0%{-o-transform:rotate(0deg);transform:rotate(0deg)}100%{-o-transform:rotate(360deg);transform:rotate(360deg)}}\n@keyframes sound-loading{0%{-webkit-transform:rotate(0deg);-moz-transform:rotate(0deg);-o-transform:rotate(0deg);transform:rotate(0deg)}100%{-webkit-transform:rotate(360deg);-moz-transform:rotate(360deg);-o-transform:rotate(360deg);transform:rotate(360deg)}}\n\n@-webkit-keyframes radioAnimationWaveLoading{0%{-webkit-transform:scale3d(1,0.3,1);transform:scale3d(1,0.3,1);opacity:0.5}10%{-webkit-transform:scale3d(1,1.5,1);transform:scale3d(1,1.5,1);opacity:1}20%{-webkit-transform:scale3d(1,0.3,1);transform:scale3d(1,0.3,1);opacity:0.5}100%{-webkit-transform:scale3d(1,0.3,1);transform:scale3d(1,0.3,1);opacity:0.5}}\n@-moz-keyframes radioAnimationWaveLoading{0%{-moz-transform:scale3d(1,0.3,1);transform:scale3d(1,0.3,1);opacity:0.5}10%{-moz-transform:scale3d(1,1.5,1);transform:scale3d(1,1.5,1);opacity:1}20%{-moz-transform:scale3d(1,0.3,1);transform:scale3d(1,0.3,1);opacity:0.5}100%{-moz-transform:scale3d(1,0.3,1);transform:scale3d(1,0.3,1);opacity:0.5}}\n@-o-keyframes radioAnimationWaveLoading{0%{transform:scale3d(1,0.3,1);opacity:0.5}10%{transform:scale3d(1,1.5,1);opacity:1}20%{transform:scale3d(1,0.3,1);opacity:0.5}100%{transform:scale3d(1,0.3,1);opacity:0.5}}\n@keyframes radioAnimationWaveLoading{0%{-webkit-transform:scale3d(1,0.3,1);-moz-transform:scale3d(1,0.3,1);transform:scale3d(1,0.3,1);opacity:0.5}10%{-webkit-transform:scale3d(1,1.5,1);-moz-transform:scale3d(1,1.5,1);transform:scale3d(1,1.5,1);opacity:1}20%{-webkit-transform:scale3d(1,0.3,1);-moz-transform:scale3d(1,0.3,1);transform:scale3d(1,0.3,1);opacity:0.5}100%{-webkit-transform:scale3d(1,0.3,1);-moz-transform:scale3d(1,0.3,1);transform:scale3d(1,0.3,1);opacity:0.5}}\n@-webkit-keyframes radioAnimationWavePlay{0%{-webkit-transform:scale3d(1,0.3,1);transform:scale3d(1,0.3,1);opacity:0.3}100%{-webkit-transform:scale3d(1,2,1);transform:scale3d(1,2,1);opacity:1}}\n@-moz-keyframes radioAnimationWavePlay{0%{-moz-transform:scale3d(1,0.3,1);transform:scale3d(1,0.3,1);opacity:0.3}100%{-moz-transform:scale3d(1,2,1);transform:scale3d(1,2,1);opacity:1}}\n@-o-keyframes radioAnimationWavePlay{0%{transform:scale3d(1,0.3,1);opacity:0.3}100%{transform:scale3d(1,2,1);opacity:1}}\n@keyframes radioAnimationWavePlay{0%{-webkit-transform:scale3d(1,0.3,1);-moz-transform:scale3d(1,0.3,1);transform:scale3d(1,0.3,1);opacity:0.3}100%{-webkit-transform:scale3d(1,2,1);-moz-transform:scale3d(1,2,1);transform:scale3d(1,2,1);opacity:1}}\n\n        /* ===== ТЕКСТ У ПЛЕЄРІ - БЕЗ ОКРЕМИХ ПІДКЛАДОК ===== */\n        .radio-cover__title,\n        .radio-cover__tooltip {\n            background: transparent !important;\n            padding: 0.2em 0 !important;\n            border-radius: 0 !important;\n            display: block !important;\n            text-shadow: 0 2px 8px rgba(0,0,0,0.9) !important;\n        }\n        .radio-cover__title {\n            font-size: 1.8em !important;\n            margin-top: 0.8em !important;\n        }\n        .radio-cover__tooltip {\n            font-size: 1.2em !important;\n            margin-top: 0.3em !important;\n            opacity: 0.9 !important;\n        }\n\n        /* ===== КНОПКИ ПОПЕРЕДНЯ / НАСТУПНА + СВАЙПИ (МОБІЛЬНІ) ===== */\n        .radio-player__controls{display:none;-webkit-box-pack:center;-webkit-justify-content:center;justify-content:center;gap:2em;margin-top:.5em}body.true--mobile .radio-player__controls{display:-webkit-box;display:-webkit-flex;display:flex}.radio-player__btn{width:3.4em;height:3.4em;padding:.9em;border-radius:100%;background-color:rgba(255,255,255,0.12);-webkit-tap-highlight-color:transparent;transition:background-color .15s ease,transform .15s ease}.radio-player__btn:active{background-color:rgba(0,255,0,0.3);transform:scale(.92)}.radio-player__btn>svg{width:100%;height:100%}.radio-player{touch-action:none}\n        </style>\n    ");
+    Lampa.Template.add('radio_style', "\n        <style>\n        .radio-content{padding:0 1.5em}.radio-content__head{display:-webkit-box;display:-webkit-flex;display:-moz-box;display:-ms-flexbox;display:flex;padding:1.5em 0}.radio-content__body{display:-webkit-box;display:-webkit-flex;display:-moz-box;display:-ms-flexbox;display:flex}.radio-content__list{width:100%}@media screen and (max-width:576px){.radio-content__list{width:100%}}.radio-cover{text-align:center;line-height:1.4}.radio-cover__img-container{max-width:20em;margin:0 auto}.radio-cover__img-box{position:relative;padding-bottom:100%;background-color:rgba(0,0,0,0.3);-webkit-border-radius:1em;-moz-border-radius:1em;border-radius:1em}.radio-cover__img-box>img{position:absolute;top:0;left:0;width:100%;height:100%;-webkit-border-radius:1em;-moz-border-radius:1em;border-radius:1em;opacity:0}.radio-cover__img-box.loaded{background-color:transparent}.radio-cover__img-box.loaded>img{opacity:1}.radio-cover__img-box.loaded-icon{background-color:rgba(0,0,0,0.3)}.radio-cover__img-box.loaded-icon>img{left:20%;top:20%;width:60%;height:60%;opacity:.2}.radio-cover__title{font-weight:700;font-size:1.5em;margin-top:1em}.radio-cover__tooltip{font-weight:300;font-size:1.3em;margin-top:.2em}.radio-item{padding:1em;display:-webkit-box;display:-webkit-flex;display:-moz-box;display:-ms-flexbox;display:flex;-webkit-box-align:center;-webkit-align-items:center;-moz-box-align:center;-ms-flex-align:center;align-items:center;line-height:1.4}.radio-item__num{font-weight:700;margin-right:1em;font-size:1.3em;opacity:.4;-webkit-flex-shrink:0;-ms-flex-negative:0;flex-shrink:0}@media screen and (max-width:400px){.radio-item__num{display:none}}.radio-item__body{max-width:60%}.radio-item__cover{width:5em;-webkit-flex-shrink:0;-ms-flex-negative:0;flex-shrink:0;margin-right:2em}.radio-item__cover-box{position:relative;padding-bottom:100%;background-color:rgba(0,0,0,0.3);-webkit-border-radius:1em;-moz-border-radius:1em;border-radius:1em}.radio-item__cover-box>img{position:absolute;top:0;left:0;width:100%;height:100%;-webkit-border-radius:1em;-moz-border-radius:1em;border-radius:1em;opacity:0}.radio-item__cover-box.loaded{background-color:transparent}.radio-item__cover-box.loaded>img{opacity:1}.radio-item__cover-box.loaded-icon{background-color:rgba(0,0,0,0.3)}.radio-item__cover-box.loaded-icon>img{left:20%;top:20%;width:60%;height:60%;opacity:.2}\n\n/* ===== ТЕКСТ У СПИСКУ - БЕЗ ПІДКЛАДКИ ===== */\n.radio-item__title {\n    font-weight:700;\n    font-size:1.2em;\n    text-shadow: 0 1px 2px rgba(0,0,0,0.7);\n    transition: color 0.3s ease;\n}\n.radio-item__tooltip {\n    opacity:.5;\n    margin-top:.5em;\n    font-size:1.1em;\n    text-shadow: 0 1px 2px rgba(0,0,0,0.7);\n    transition: color 0.3s ease;\n}\n.radio-item__num {\n    transition: color 0.3s ease, opacity 0.3s ease;\n}\n\n/* ===== ЗЕЛЕНИЙ ТЕКСТ ДЛЯ АКТИВНОЇ СТАНЦІЇ ===== */\n.radio-item.playing .radio-item__title {\n    color: #00ff00 !important;\n    text-shadow: 0 1px 2px rgba(0,0,0,0.7) !important;\n}\n.radio-item.playing .radio-item__tooltip {\n    color: #66ff66 !important;\n    text-shadow: 0 1px 2px rgba(0,0,0,0.7) !important;\n    opacity: 0.9 !important;\n}\n.radio-item.playing .radio-item__num {\n    color: #00ff00 !important;\n    opacity: 1 !important;\n}\n\n.radio-item__icons{margin-left:auto;padding-left:1em;-webkit-flex-shrink:0;-ms-flex-negative:0;flex-shrink:0;display:-webkit-box;display:-webkit-flex;display:-moz-box;display:-ms-flexbox;display:flex}.radio-item__icons svg{width:1.4em !important;height:1.4em !important}.radio-item__icons>*+*{margin-left:1.5em}.radio-item__icons .radio-item__icon-favorite{display:none}.radio-item__icons .radio-item__icon-play{display:none}.radio-item.focus{background:white;color:#000;-webkit-border-radius:1em;-moz-border-radius:1em;border-radius:1em}.radio-item.focus .radio-item__icon-play{display:block}.radio-item.favorite .radio-item__icon-favorite{display:block}.radio-item.playing{background:rgba(0,255,0,0.08);border:1px solid rgba(0,255,0,0.25);border-radius:1em}.radio-item.empty--item .radio-item__title,.radio-item.empty--item .radio-item__num,.radio-item.empty--item .radio-item__tooltip{background-color:rgba(255,255,255,0.3);height:1.2em;-webkit-border-radius:.3em;-moz-border-radius:.3em;border-radius:.3em}.radio-item.empty--item .radio-item__num{width:1.4em}.radio-item.empty--item .radio-item__title{width:7em}.radio-item.empty--item .radio-item__tooltip{width:16em}.radio-item.empty--item .radio-item__icons{display:none}.radio-item.empty--item .radio-item__cover-box{background-color:rgba(255,255,255,0.3)}.radio-item.empty--item.focus{background-color:transparent;color:#fff}\n\n/* ===== ЕКВАЛАЙЗЕР В СПИСКУ ДЛЯ АКТИВНОЇ СТАНЦІЇ ===== */\n.radio-item__wave {\n    display: none;\n    -webkit-box-align: center;\n    -webkit-align-items: center;\n    -moz-box-align: center;\n    -ms-flex-align: center;\n    align-items: center;\n    -webkit-box-pack: center;\n    -webkit-justify-content: center;\n    -moz-box-pack: center;\n    -ms-flex-pack: center;\n    justify-content: center;\n    margin-left: auto;\n    padding-left: 0.5em;\n    -webkit-flex-shrink: 0;\n    -ms-flex-negative: 0;\n    flex-shrink: 0;\n    height: 2.5em;\n    gap: 2px;\n}\n\n.radio-item.playing .radio-item__wave {\n    display: -webkit-box;\n    display: -webkit-flex;\n    display: -moz-box;\n    display: -ms-flexbox;\n    display: flex;\n}\n\n.radio-item__wave i {\n    display: block;\n    width: 3px;\n    background-color: #00ff00;\n    border-radius: 1px;\n    height: 0.8em;\n    -webkit-animation: wavePlay 0.8s ease-in-out infinite alternate;\n    -moz-animation: wavePlay 0.8s ease-in-out infinite alternate;\n    -o-animation: wavePlay 0.8s ease-in-out infinite alternate;\n    animation: wavePlay 0.8s ease-in-out infinite alternate;\n}\n\n.radio-item__wave i:nth-child(1) { -webkit-animation-delay: 0s; animation-delay: 0s; height: 0.5em; }\n.radio-item__wave i:nth-child(2) { -webkit-animation-delay: 0.1s; animation-delay: 0.1s; height: 1.2em; }\n.radio-item__wave i:nth-child(3) { -webkit-animation-delay: 0.2s; animation-delay: 0.2s; height: 1.8em; }\n.radio-item__wave i:nth-child(4) { -webkit-animation-delay: 0.3s; animation-delay: 0.3s; height: 1.0em; }\n.radio-item__wave i:nth-child(5) { -webkit-animation-delay: 0.4s; animation-delay: 0.4s; height: 0.6em; }\n\n@-webkit-keyframes wavePlay {\n    0% { -webkit-transform: scaleY(0.3); transform: scaleY(0.3); opacity: 0.4; }\n    100% { -webkit-transform: scaleY(1); transform: scaleY(1); opacity: 1; }\n}\n@-moz-keyframes wavePlay {\n    0% { -moz-transform: scaleY(0.3); transform: scaleY(0.3); opacity: 0.4; }\n    100% { -moz-transform: scaleY(1); transform: scaleY(1); opacity: 1; }\n}\n@-o-keyframes wavePlay {\n    0% { -o-transform: scaleY(0.3); transform: scaleY(0.3); opacity: 0.4; }\n    100% { -o-transform: scaleY(1); transform: scaleY(1); opacity: 1; }\n}\n@keyframes wavePlay {\n    0% { -webkit-transform: scaleY(0.3); -moz-transform: scaleY(0.3); -o-transform: scaleY(0.3); transform: scaleY(0.3); opacity: 0.4; }\n    100% { -webkit-transform: scaleY(1); -moz-transform: scaleY(1); -o-transform: scaleY(1); transform: scaleY(1); opacity: 1; }\n}\n\n/* ===== ПОВНОЕКРАННИЙ ПЛЕЄР ===== */\n.radio-player {\n    position:fixed;\n    z-index:100;\n    left:0;\n    top:0;\n    width:100%;\n    height:100%;\n    display:-webkit-box;\n    display:-webkit-flex;\n    display:-moz-box;\n    display:-ms-flexbox;\n    display:flex;\n    -webkit-box-align:center;\n    -webkit-align-items:center;\n    -moz-box-align:center;\n    -ms-flex-align:center;\n    align-items:center;\n    -webkit-box-pack:center;\n    -webkit-justify-content:center;\n    -moz-box-pack:center;\n    -ms-flex-pack:center;\n    justify-content:center;\n}\n\n/* ТЕМНИЙ ФОН (без blur заради продуктивності) */\n.radio-player {\n    background: rgba(0,0,0,0.85);\n}\n\n/* СУЦІЛЬНА ПІДКЛАДКА ДЛЯ ВСЬОГО КОНТЕНТУ */\n.radio-player__content {\n    position:relative;\n    background: rgba(0, 0, 0, 0.65);\n    padding: 2em 3em;\n    border-radius: 1.5em;\n    max-width: 30em;\n    width: 100%;\n    box-shadow: 0 8px 24px rgba(0,0,0,0.6);\n    border: 1px solid rgba(255,255,255,0.08);\n}\n\n.radio-player__cover{width:100%}.radio-player__wave{display:-webkit-box;display:-webkit-flex;display:-moz-box;display:-ms-flexbox;display:flex;-webkit-box-align:center;-webkit-align-items:center;-moz-box-align:center;-ms-flex-align:center;align-items:center;-webkit-box-pack:center;-webkit-justify-content:center;-moz-box-pack:center;-ms-flex-pack:center;justify-content:center;margin-top:1.5em;padding:1em 0}.radio-player__wave>div{width:3px;background-color:#00ff00;margin:0 0.4em;height:1em;opacity:0;border-radius:2px}.radio-player__wave>div.loading{-webkit-animation:radioAnimationWaveLoading 400ms ease infinite;-moz-animation:radioAnimationWaveLoading 400ms ease infinite;-o-animation:radioAnimationWaveLoading 400ms ease infinite;animation:radioAnimationWaveLoading 400ms ease infinite}.radio-player__wave>div.play{-webkit-animation:radioAnimationWavePlay 50ms linear infinite alternate;-moz-animation:radioAnimationWavePlay 50ms linear infinite alternate;-o-animation:radioAnimationWavePlay 50ms linear infinite alternate;animation:radioAnimationWavePlay 50ms linear infinite alternate}.radio-player__close{position:fixed;top:1.5em;right:50%;margin-right:-2em;-webkit-border-radius:100%;-moz-border-radius:100%;border-radius:100%;padding:1em;display:none;background-color:rgba(255,255,255,0.1)}.radio-player__close>svg{width:1.5em;height:1.5em}body.true--mobile .radio-player__close{display:block}\n\n/* МІНІ-ПЛЕЄР В ГОЛОВІ - БЕЗ НАЗВИ */\n.radio-mini-player {\n    display:-webkit-box;display:-webkit-flex;display:-moz-box;display:-ms-flexbox;display:flex;\n    -webkit-box-align:center;-webkit-align-items:center;-moz-box-align:center;-ms-flex-align:center;align-items:center;\n    -webkit-border-radius:0.3em;-moz-border-radius:0.3em;border-radius:0.3em;\n    padding:0.2em 0.4em;\n    margin-left:0.5em;\n    margin-right:0.5em;\n    cursor:pointer;\n}\n.radio-mini-player__name {\n    display:none !important;\n}\n.radio-mini-player__button {\n    position:relative;\n    width:2.2em;\n    height:2.2em;\n    display:-webkit-box;display:-webkit-flex;display:-moz-box;display:-ms-flexbox;display:flex;\n    -webkit-box-align:center;-webkit-align-items:center;-moz-box-align:center;-ms-flex-align:center;align-items:center;\n    -webkit-box-pack:center;-webkit-justify-content:center;-moz-box-pack:center;-ms-flex-pack:center;justify-content:center;\n    -webkit-flex-shrink:0;-ms-flex-negative:0;flex-shrink:0;\n    -webkit-border-radius:0.3em;-moz-border-radius:0.3em;border-radius:0.3em;\n    border:0.15em solid rgba(255,255,255,0.8);\n    background-size:cover !important;\n    background-position:center !important;\n    cursor:pointer;\n}\n.radio-mini-player__button i {\n    display:block;\n    width:0.2em;\n    height:1em;\n    background-color:#00ff00;\n    margin:0 0.1em;\n    -webkit-animation:sound 0ms -800ms linear infinite alternate;\n    -moz-animation:sound 0ms -800ms linear infinite alternate;\n    -o-animation:sound 0ms -800ms linear infinite alternate;\n    animation:sound 0ms -800ms linear infinite alternate;\n    -webkit-flex-shrink:0;-ms-flex-negative:0;flex-shrink:0;\n    border-radius:1px;\n}\n.radio-mini-player__button i:nth-child(1){-webkit-animation-duration:474ms;-moz-animation-duration:474ms;-o-animation-duration:474ms;animation-duration:474ms}\n.radio-mini-player__button i:nth-child(2){-webkit-animation-duration:433ms;-moz-animation-duration:433ms;-o-animation-duration:433ms;animation-duration:433ms}\n.radio-mini-player__button i:nth-child(3){-webkit-animation-duration:407ms;-moz-animation-duration:407ms;-o-animation-duration:407ms;animation-duration:407ms}\n.radio-mini-player__button i:nth-child(4){-webkit-animation-duration:458ms;-moz-animation-duration:458ms;-o-animation-duration:458ms;animation-duration:458ms}\n.radio-mini-player.stop .radio-mini-player__button i{display:none}\n.radio-mini-player.stop .radio-mini-player__button:after{\n    content:\"\";\n    width:0.6em;\n    height:0.6em;\n    background-color:rgba(255,255,255,0.9);\n    border-radius:0.1em;\n}\n.radio-mini-player.loading .radio-mini-player__button i{display:none}\n.radio-mini-player.loading .radio-mini-player__button:before{\n    content:\"\";\n    display:block;\n    border-top:0.2em solid rgba(0,255,0,0.9);\n    border-left:0.2em solid transparent;\n    border-right:0.2em solid transparent;\n    border-bottom:0.2em solid transparent;\n    -webkit-animation:sound-loading 1s linear infinite;\n    -moz-animation:sound-loading 1s linear infinite;\n    -o-animation:sound-loading 1s linear infinite;\n    animation:sound-loading 1s linear infinite;\n    width:0.9em;height:0.9em;\n    -webkit-border-radius:100%;-moz-border-radius:100%;border-radius:100%;\n    -webkit-flex-shrink:0;-ms-flex-negative:0;flex-shrink:0;\n}\n.radio-mini-player.focus{background-color:#fff;color:#000}\n.radio-mini-player.focus .radio-mini-player__button{border-color:#000}\n.radio-mini-player.focus .radio-mini-player__button i,\n.radio-mini-player.focus .radio-mini-player__button:after{background-color:#000}\n.radio-mini-player.focus .radio-mini-player__button:before{border-top-color:#000}\n.radio-mini-player.hide{display:none}\n\n@-webkit-keyframes sound{0%{-webkit-transform:scaleY(0.1)}100%{-webkit-transform:scaleY(1)}}\n@-moz-keyframes sound{0%{-moz-transform:scaleY(0.1)}100%{-moz-transform:scaleY(1)}}\n@-o-keyframes sound{0%{-o-transform:scaleY(0.1)}100%{-o-transform:scaleY(1)}}\n@keyframes sound{0%{transform:scaleY(0.1)}100%{transform:scaleY(1)}}\n@-webkit-keyframes sound-loading{0%{-webkit-transform:rotate(0deg);transform:rotate(0deg)}100%{-webkit-transform:rotate(360deg);transform:rotate(360deg)}}\n@-moz-keyframes sound-loading{0%{-moz-transform:rotate(0deg);transform:rotate(0deg)}100%{-moz-transform:rotate(360deg);transform:rotate(360deg)}}\n@-o-keyframes sound-loading{0%{-o-transform:rotate(0deg);transform:rotate(0deg)}100%{-o-transform:rotate(360deg);transform:rotate(360deg)}}\n@keyframes sound-loading{0%{-webkit-transform:rotate(0deg);-moz-transform:rotate(0deg);-o-transform:rotate(0deg);transform:rotate(0deg)}100%{-webkit-transform:rotate(360deg);-moz-transform:rotate(360deg);-o-transform:rotate(360deg);transform:rotate(360deg)}}\n\n@-webkit-keyframes radioAnimationWaveLoading{0%{-webkit-transform:scale3d(1,0.3,1);transform:scale3d(1,0.3,1);opacity:0.5}10%{-webkit-transform:scale3d(1,1.5,1);transform:scale3d(1,1.5,1);opacity:1}20%{-webkit-transform:scale3d(1,0.3,1);transform:scale3d(1,0.3,1);opacity:0.5}100%{-webkit-transform:scale3d(1,0.3,1);transform:scale3d(1,0.3,1);opacity:0.5}}\n@-moz-keyframes radioAnimationWaveLoading{0%{-moz-transform:scale3d(1,0.3,1);transform:scale3d(1,0.3,1);opacity:0.5}10%{-moz-transform:scale3d(1,1.5,1);transform:scale3d(1,1.5,1);opacity:1}20%{-moz-transform:scale3d(1,0.3,1);transform:scale3d(1,0.3,1);opacity:0.5}100%{-moz-transform:scale3d(1,0.3,1);transform:scale3d(1,0.3,1);opacity:0.5}}\n@-o-keyframes radioAnimationWaveLoading{0%{transform:scale3d(1,0.3,1);opacity:0.5}10%{transform:scale3d(1,1.5,1);opacity:1}20%{transform:scale3d(1,0.3,1);opacity:0.5}100%{transform:scale3d(1,0.3,1);opacity:0.5}}\n@keyframes radioAnimationWaveLoading{0%{-webkit-transform:scale3d(1,0.3,1);-moz-transform:scale3d(1,0.3,1);transform:scale3d(1,0.3,1);opacity:0.5}10%{-webkit-transform:scale3d(1,1.5,1);-moz-transform:scale3d(1,1.5,1);transform:scale3d(1,1.5,1);opacity:1}20%{-webkit-transform:scale3d(1,0.3,1);-moz-transform:scale3d(1,0.3,1);transform:scale3d(1,0.3,1);opacity:0.5}100%{-webkit-transform:scale3d(1,0.3,1);-moz-transform:scale3d(1,0.3,1);transform:scale3d(1,0.3,1);opacity:0.5}}\n@-webkit-keyframes radioAnimationWavePlay{0%{-webkit-transform:scale3d(1,0.3,1);transform:scale3d(1,0.3,1);opacity:0.3}100%{-webkit-transform:scale3d(1,2,1);transform:scale3d(1,2,1);opacity:1}}\n@-moz-keyframes radioAnimationWavePlay{0%{-moz-transform:scale3d(1,0.3,1);transform:scale3d(1,0.3,1);opacity:0.3}100%{-moz-transform:scale3d(1,2,1);transform:scale3d(1,2,1);opacity:1}}\n@-o-keyframes radioAnimationWavePlay{0%{transform:scale3d(1,0.3,1);opacity:0.3}100%{transform:scale3d(1,2,1);opacity:1}}\n@keyframes radioAnimationWavePlay{0%{-webkit-transform:scale3d(1,0.3,1);-moz-transform:scale3d(1,0.3,1);transform:scale3d(1,0.3,1);opacity:0.3}100%{-webkit-transform:scale3d(1,2,1);-moz-transform:scale3d(1,2,1);transform:scale3d(1,2,1);opacity:1}}\n\n        /* ===== ТЕКСТ У ПЛЕЄРІ - БЕЗ ОКРЕМИХ ПІДКЛАДОК ===== */\n        .radio-cover__title,\n        .radio-cover__tooltip {\n            background: transparent !important;\n            padding: 0.2em 0 !important;\n            border-radius: 0 !important;\n            display: block !important;\n            text-shadow: 0 2px 8px rgba(0,0,0,0.9) !important;\n        }\n        .radio-cover__title {\n            font-size: 1.8em !important;\n            margin-top: 0.8em !important;\n        }\n        .radio-cover__tooltip {\n            font-size: 1.2em !important;\n            margin-top: 0.3em !important;\n            opacity: 0.9 !important;\n        }\n\n        /* ===== КНОПКИ ПОПЕРЕДНЯ / НАСТУПНА + СВАЙПИ (МОБІЛЬНІ) ===== */\n        .radio-player__controls{display:none;-webkit-box-pack:center;-webkit-justify-content:center;justify-content:center;gap:2em;margin-top:.5em}body.true--mobile .radio-player__controls{display:-webkit-box;display:-webkit-flex;display:flex}.radio-player__btn{width:3.4em;height:3.4em;padding:.9em;border-radius:100%;background-color:rgba(255,255,255,0.12);-webkit-tap-highlight-color:transparent;transition:background-color .15s ease,transform .15s ease}.radio-player__btn:active{background-color:rgba(0,255,0,0.3);transform:scale(.92)}.radio-player__btn>svg{width:100%;height:100%}.radio-player{touch-action:none}\n        </style>\n    ");
 
     function add() {
       var button = $("<li class=\"menu__item selector\">\n            <div class=\"menu__ico\">\n                <svg width=\"38\" height=\"31\" viewBox=\"0 0 38 31\" fill=\"none\" xmlns=\"http://www.w3.org/2000/svg\">\n                    <rect x=\"17.613\" width=\"3\" height=\"16.3327\" rx=\"1.5\" transform=\"rotate(63.4707 17.613 0)\" fill=\"currentColor\"/>\n                    <circle cx=\"13\" cy=\"19\" r=\"6\" fill=\"currentColor\"/>\n                    <path fill-rule=\"evenodd\" clip-rule=\"evenodd\" d=\"M0 11C0 8.79086 1.79083 7 4 7H34C36.2091 7 38 8.79086 38 11V27C38 29.2091 36.2092 31 34 31H4C1.79083 31 0 29.2091 0 27V11ZM21 19C21 23.4183 17.4183 27 13 27C8.58173 27 5 23.4183 5 19C5 14.5817 8.58173 11 13 11C17.4183 11 21 14.5817 21 19ZM30.5 18C31.8807 18 33 16.8807 33 15.5C33 14.1193 31.8807 13 30.5 13C29.1193 13 28 14.1193 28 15.5C28 16.8807 29.1193 18 30.5 18Z\" fill=\"currentColor\"/>\n                </svg>\n            </div>\n            <div class=\"menu__text\">".concat(manifest.name, "</div>\n        </li>"));
