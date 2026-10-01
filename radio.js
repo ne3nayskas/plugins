@@ -1,12 +1,12 @@
 // =========================================
 // Радіо для Lampa
-// Версія: 1.6.3 | 2026.10.01
+// Версія: 1.7.0 | 2026.10.01
 // Опис: Плагін для прослуховування радіостанцій
 // Aвтор - @ne3nayskas 
 // Зміни 1.6.0: свайпи та кнопки ⏮ / ⏭ у вікні відтворення (мобільні)
 // Зміни 1.6.1: оптимізація продуктивності, виправлено подвійний запуск потоку
 // Зміни 1.6.2: після виходу з плеєра список прокручується до станції, що грає
-// Зміни 1.6.3: оптимізація для Chrome, прибрано blur і інтервал сповіщень, анімації переведено на transform, додано debounce фону, ыншы покращення
+// Зміни 1.7.0: логотипи станцій беруться з logos/<id>.webp у репозиторії (jsDelivr)
 // =========================================
 
 (function () {
@@ -52,53 +52,50 @@
   // СТАТИЧНИЙ СПИСОК УКРАЇНСЬКИХ СТАНЦІЙ
   // =========================================
   
+  // Логотипи станцій: файли logos/<id>.webp у GitHub-репозиторії (через jsDelivr).
+  // jsDelivr кешує гілку main на кілька годин; для миттєвих оновлень можна вказати
+  // тег релізу замість main, напр. @v1.7.0.
+  var LOGO_BASE = 'https://cdn.jsdelivr.net/gh/ne3nayskas/plugins@main/logos/';
+  var LOGO_EXT = '.webp';
+
+  function logoUrl(id) {
+    return LOGO_BASE + id + LOGO_EXT;
+  }
+
   var UKRAINIAN_STATIONS = [
     {
       id: 'ukrpisnia',
       title: 'Українська пісня',
       tooltip: 'Радіо пісенної класики України',
       stream: 'https://listen6.myradio24.com/50904',
-      bg_image_mobile: 'https://noni.org.ua/sites/default/files/pelych8.jpg',
       genre: [{ id: 'ukr', name: 'Українське' }]
     },
     {
       id: 'ukrradio',
       title: 'Українське Радіо',
       tooltip: 'UR1 Українське Радіо',
-      stream: 'https://radio2.ukr.radio/ur1-mp3-m',
-      bg_image_mobile: 'https://cdn-profiles.tunein.com/s20311/images/logog.png',
+      stream: 'http://radio.ukr.radio/ur1-mp3',
       genre: [{ id: 'news', name: 'Новини' }]
     },
     {
       id: 'radiopromin',
       title: 'Радіо Промінь',
       tooltip: 'UR2 Радіо Промінь',
-      stream: 'https://radio2.ukr.radio/ur2-mp3-m',
-      bg_image_mobile: 'https://static2.mytuner.mobi/media/tvos_radios/001/radio-promin-radio-promin.e8cbf570.jpg',
+      stream: 'http://radio.ukr.radio/ur2-mp3',
       genre: [{ id: 'ukr', name: 'Українське' }]
     },
     {
       id: 'radioculture',
       title: 'Радіо Культура',
       tooltip: 'UR3 Радіо Культура',
-      stream: 'https://radio2.ukr.radio/ur3-mp3-m',
-      bg_image_mobile: 'https://savaryna.com/assets/images/blog/blog-10-20-03-10/blog-post-img-00.png',
+      stream: 'http://radio.ukr.radio/ur3-mp3',
       genre: [{ id: 'culture', name: 'Культура' }]
-    },
-    {
-      id: 'radioukraineint',
-      title: 'Радіо Ukraine Int.',
-      tooltip: 'UR4 Радіо Ukraine Int.',
-      stream: 'https://radio2.ukr.radio/ur4-mp3-m',
-      bg_image_mobile: 'https://images.seeklogo.com/logo-png/47/1/radio-ukraine-international-logo-png_seeklogo-474827.png',
-      genre: [{ id: 'ukr', name: 'Українське' }]
     },
     {
       id: 'pryamyi',
       title: 'Прямий FM',
       tooltip: 'Прямий. Новини',
       stream: 'https://cast.mediaonline.net.ua/prmfm',
-      bg_image_mobile: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSZsNJiUSAS15iNFsj7YZQohEOmpLNssOD8Q11XxRka3o5thLkeEvFqf90_&s=10',
       genre: [{ id: 'news', name: 'Новини' }]
     },
     {
@@ -106,7 +103,6 @@
       title: 'Єдині Новини',
       tooltip: 'Телемарафон',
       stream: 'https://online-news.radioplayer.ua/RadioNews',
-      bg_image_mobile: 'https://static.mytuner.mobi/media/tvos_radios/ax5tb3vsm68z.png',
       genre: [{ id: 'news', name: 'Новини' }]
     },
     {
@@ -114,7 +110,6 @@
       title: 'Replay News UA',
       tooltip: 'Новини кожні п’ять хвилин 24/7',
       stream: 'https://replaynewsuk.ice.infomaniak.ch/replaynewsuk-128.mp3',
-      bg_image_mobile: 'https://static2.mytuner.mobi/media/tvos_radios/081/replay-news-ukrainian.6e66ec8c.png',
       genre: [{ id: 'news', name: 'Новини' }]
     },
     {
@@ -122,7 +117,6 @@
       title: 'Radio Bayraktar',
       tooltip: 'Музика української перемоги',
       stream: 'https://tavr.tvstitch.com/RadioBayraktar',
-      bg_image_mobile: 'https://cdn-profiles.tunein.com/s124167/images/logog.png',
       genre: [{ id: 'ukr', name: 'Українське' }]
     },
     {
@@ -130,7 +124,6 @@
       title: 'Radio ROKS',
       tooltip: 'Рок. Тільки рок.',
       stream: 'https://online.radioroks.ua/RadioROKS',
-      bg_image_mobile: 'https://cdn-profiles.tunein.com/s103802/images/logog.png',
       genre: [{ id: 'rock', name: 'Rock' }]
     },
     {
@@ -138,7 +131,6 @@
       title: 'Radio ROKS Український Рок',
       tooltip: 'Український Рок',
       stream: 'https://online.radioroks.ua/RadioROKS_Ukr',
-      bg_image_mobile: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQtesQsQ5DBskK3mqAQiz5BwOuJmdzvh5F-G1bMtwzpzYgFGx3K90E-7F0&s=10',
       genre: [{ id: 'rock', name: 'Rock' }]
     },
     {
@@ -146,7 +138,6 @@
       title: 'Radio ROKS New Rock',
       tooltip: 'New Rock',
       stream: 'https://online.radioroks.ua/RadioROKS_NewRock',
-      bg_image_mobile: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQJCTnhKqQKrfWvVb2XkTZ3mTbjWPxQnZjeQJ8ombhwyr3ISwRtYS0GEaE&s=10',
       genre: [{ id: 'rock', name: 'Rock' }]
     },
     {
@@ -154,7 +145,6 @@
       title: 'Radio ROKS Hard & Heavy',
       tooltip: 'Hard & Heavy',
       stream: 'https://online.radioroks.ua/RadioROKS_HardnHeavy',
-      bg_image_mobile: 'https://static2.mytuner.mobi/media/tvos_radios/zzbcb8umtadm.webp',
       genre: [{ id: 'rock', name: 'Rock' }]
     },
     {
@@ -162,7 +152,6 @@
       title: 'Radio ROKS Ballads',
       tooltip: 'Ballads',
       stream: 'https://online.radioroks.ua/RadioROKS_Ballads',
-      bg_image_mobile: 'https://cdn-profiles.tunein.com/s212936/images/logog.png?t=636403',
       genre: [{ id: 'rock', name: 'Rock' }]
     },
     {
@@ -170,7 +159,6 @@
       title: 'Рок Радіо UA',
       tooltip: 'Територія українського року.',
       stream: 'https://rockradioua.online:8433/rock_256',
-      bg_image_mobile: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSviXbB8x79o-23_8n7vvhVsjtdg3hz1uCR-rENRXV5D25-Y9K1Anrz1adD&s=10',
       genre: [{ id: 'rock', name: 'Rock' }]
     },
     {
@@ -178,15 +166,20 @@
       title: 'Рок Радіо Metal',
       tooltip: 'Територія українського металу.',
       stream: 'https://rockradioua.online:8433/metal_320',
-      bg_image_mobile: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQmbRsscUXNQ-xEezj9iumfLlCdlrLuAmawsz0sC97XROMHkupdLCViPKo&s=10',
       genre: [{ id: 'rock', name: 'Rock' }]
+    },
+    {
+      id: 'djfm',
+      title: 'Dj FM',
+      tooltip: 'Твій діджей завжди з тобою!',
+      stream: 'https://cast.brg.ua/djfm_main_public_mp3_hq',
+      genre: [{ id: 'dance', name: 'Dance' }]
     },
     {
       id: 'kissfm',
       title: 'Kiss FM',
       tooltip: 'The Best Dance Radio',
       stream: 'https://online.kissfm.ua/KissFM_HD',
-      bg_image_mobile: 'https://static2.mytuner.mobi/media/tvos_radios/96yXWbMDkH.png',
       genre: [{ id: 'dance', name: 'Dance' }]
     },
     {
@@ -194,7 +187,6 @@
       title: 'Kiss FM (Україна)',
       tooltip: 'Тільки український Dance',
       stream: 'https://online.kissfm.ua/KissFM_Ukr_HD',
-      bg_image_mobile: 'https://dvw7f7sqjk3ag.cloudfront.net/images/radio/59463.jpg',
       genre: [{ id: 'dance', name: 'Dance' }]
     },
     {
@@ -202,7 +194,6 @@
       title: 'Nostalgie Україна',
       tooltip: 'Скоро перемога! Радіо Ностальжі Україна',
       stream: 'https://lux.radio.tvstitch.com/kyiv/nst_adv_hd',
-      bg_image_mobile: 'https://static.mytuner.mobi/media/tvos_radios/ezzpmbnsag7h.png',
       genre: [{ id: 'nst', name: 'Nostalgie' }]
     },
     {
@@ -210,7 +201,6 @@
       title: 'Avtoradio Ukraine',
       tooltip: 'Авторадіо Україна - твій рух вперед!',
       stream: 'https://cast.mediaonline.net.ua/avtoradio',
-      bg_image_mobile: 'https://images.seeklogo.com/logo-png/47/2/avtoradio-ukraine-logo-png_seeklogo-474663.png',
       genre: [{ id: 'ukr', name: 'Українське' }]
     },
     {
@@ -218,7 +208,6 @@
       title: '109 FM Ukraine',
       tooltip: 'Stand With Ukraine',
       stream: 'http://solid48.streamupsolutions.com:8077/109fm_live',
-      bg_image_mobile: 'https://pbs.twimg.com/profile_images/655761683911081984/U2R0dNJn_400x400.png',
       genre: [{ id: 'ukr', name: 'Українське' }]
     },
     {
@@ -226,7 +215,6 @@
       title: 'URC Radio US',
       tooltip: 'Інноваційне медіа, яке об’єднує українців',
       stream: 'https://streamer.radio.co/sdff2fd6a8/listen',
-      bg_image_mobile: 'https://play-lh.googleusercontent.com/IESZkp0TDY8ihjm1V6Uwg3Pc83vjzJG4CzHzNohHUte-EqRk3A-zaiDW7eKbucI5CNp1LNn0i9sd6FzVqTia1w',
       genre: [{ id: 'ukr', name: 'Українське' }]
     },
     {
@@ -234,7 +222,6 @@
       title: 'STUD RADIO',
       tooltip: 'Independent Student Radio from Ukraine',
       stream: 'https://stream.mjoy.ua:8443/kredens-cafe-radio_mp3',
-      bg_image_mobile: 'https://static.mytuner.mobi/media/tvos_radios/rwejrfrxghk4.png',
       genre: [{ id: 'ukr', name: 'Українське' }]
     },
     {
@@ -242,7 +229,6 @@
       title: 'NRJ Україна',
       tooltip: 'Енергія музики',
       stream: 'https://cast.mediaonline.net.ua/nrj320',
-      bg_image_mobile: 'https://upload.wikimedia.org/wikipedia/commons/4/44/NRJ_Radio.png',
       genre: [{ id: 'pop', name: 'Pop' }]
     },
     {
@@ -250,7 +236,6 @@
       title: 'Lux FM',
       tooltip: 'Включай настрій!',
       stream: 'https://lux.radio.tvstitch.com/rock-24-sd?npa=1',
-      bg_image_mobile: 'https://cdn-profiles.tunein.com/s55142/images/logog.png?t=1',
       genre: [{ id: 'pop', name: 'Pop' }]
     },
     {
@@ -258,7 +243,6 @@
       title: 'Radio Indie UA',
       tooltip: 'Незалежна музика',
       stream: 'https://online.radioplayer.ua/RadioIndieUA',
-      bg_image_mobile: 'https://play.tavr.media/static/image/header_menu/Radio_IndieUA_logo_220x220.png',
       genre: [{ id: 'indie', name: 'Indie' }]
     },
     {
@@ -266,7 +250,6 @@
       title: 'REGENBOGEN 2 Indie-Rock',
       tooltip: 'Maximum Indie Rock',
       stream: 'https://stream.regenbogen2.de/indierock/mp3-128/',
-      bg_image_mobile: 'https://www.radio.de/300/rockfmdeindierock.png?version=130d3f79207dc7bced9de4728875013916422e13',
       genre: [{ id: 'indie', name: 'Indie' }]
     },
     {
@@ -274,7 +257,6 @@
       title: 'Мелодія FM',
       tooltip: 'Найкращі хіти 90-х і 2000-х!',
       stream: 'https://tavr.tvstitch.com/MelodiaFM',
-      bg_image_mobile: 'https://static.radioplayer.ua/radioplayer/logo/melodiafm/logo_melodiafm.png',
       genre: [{ id: 'nst', name: 'Nostalgie' }]
     },
     {
@@ -282,7 +264,6 @@
       title: 'Хіт FM',
       tooltip: 'Найкращі хіти',
       stream: 'https://online.hitfm.ua/HitFM',
-      bg_image_mobile: 'https://static2.mytuner.mobi/media/tvos_radios/9tfwwwb9hkc2.png',
       genre: [{ id: 'pop', name: 'Pop' }]
     },
     {
@@ -290,7 +271,6 @@
       title: 'Хіт FM Українські Хіти',
       tooltip: 'Тільки українські хіти',
       stream: 'https://online.hitfm.ua/HitFM_Ukr',
-      bg_image_mobile: 'https://cdn-profiles.tunein.com/s6122/images/logog.png',
       genre: [{ id: 'pop', name: 'Pop' }]
     },
     {
@@ -298,7 +278,6 @@
       title: 'Наше Радіо',
       tooltip: 'Все буде добре',
       stream: 'https://online.nasheradio.ua/NasheRadio',
-      bg_image_mobile: 'https://cdn-profiles.tunein.com/s9542/images/logog.jpg',
       genre: [{ id: 'pop', name: 'Pop' }]
     },
     {
@@ -306,7 +285,6 @@
       title: 'Radio Relax',
       tooltip: 'Музика для відпочинку',
       stream: 'https://online.radiorelax.ua/RadioRelax',
-      bg_image_mobile: 'https://static2.mytuner.mobi/media/tvos_radios/nzlwtbcukj7y.png',
       genre: [{ id: 'relax', name: 'Relax' }]
     },
     {
@@ -314,7 +292,6 @@
       title: 'Ванда FM',
       tooltip: 'Радіо чарівного настрою',
       stream: 'https://icecast.xtvmedia.pp.ua/radiowandafm_HD.mp3',
-      bg_image_mobile: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQFEHRN_KEOoJzpO0rTB2eMWoZrPLf1rBevOTsA_jQ4cGLjahEnMWhbT30&s=10',
       genre: [{ id: 'pop', name: 'Pop' }]
     },
     {
@@ -322,7 +299,6 @@
       title: 'RadioJazz',
       tooltip: 'Джазова хвиля',
       stream: 'https://online.radiojazz.ua/RadioJazz_Gold',
-      bg_image_mobile: 'https://upload.wikimedia.org/wikipedia/commons/thumb/1/1a/Radio_Jazz.svg/1280px-Radio_Jazz.svg.png',
       genre: [{ id: 'jazz', name: 'Jazz' }]
     },
     {
@@ -330,7 +306,6 @@
       title: 'RadioJazz Light',
       tooltip: 'Легкий джаз',
       stream: 'https://online.radiojazz.ua/RadioJazz_Light',
-      bg_image_mobile: 'https://cdn.103fm.com.ua/images/51-radio-jazz-light.jpg',
       genre: [{ id: 'jazz', name: 'Jazz' }]
     },
     {
@@ -338,7 +313,13 @@
       title: 'Classic Radio',
       tooltip: 'Класична музика',
       stream: 'https://online.classicradio.ua/ClassicRadio',
-      bg_image_mobile: 'https://cdn-profiles.tunein.com/s224284/images/logog.jpg',
+      genre: [{ id: 'classical', name: 'Classic' }]
+    },
+    {
+      id: 'raiclassicradio',
+      title: 'Rai Radio Classica',
+      tooltip: 'Radio Classica Italia',
+      stream: 'https://icestreaming.rai.it/5.mp3',
       genre: [{ id: 'classical', name: 'Classic' }]
     },
     {
@@ -346,7 +327,6 @@
       title: 'Techno-Bucha Radio',
       tooltip: 'The Air Symphony of Bucha',
       stream: 'https://a4.asurahosting.com:7230/radio.mp3',
-      bg_image_mobile: 'https://cdn-profiles.tunein.com/s335554/images/logog.png',
       genre: [{ id: 'Techno', name: 'Techno' }]
     },
     {
@@ -354,7 +334,6 @@
       title: 'Technolovers',
       tooltip: 'Psy & Goa Trance Non-Stop!',
       stream: 'https://stream.technolovers.fm/psytrance',
-      bg_image_mobile: 'https://i1.sndcdn.com/artworks-000167796203-imv5x9-t500x500.png',
       genre: [{ id: 'psytrance', name: 'Psy Trance' }]
     },
     {
@@ -362,7 +341,6 @@
       title: 'GOA FM',
       tooltip: '24H Goa & Psy Trance',
       stream: 'https://stream.laut.fm/goafm',
-      bg_image_mobile: 'https://f4.bcbits.com/img/a0725902081_16.jpg',
       genre: [{ id: 'psytrance', name: 'Psy Trance' }]
     },
     {
@@ -370,7 +348,6 @@
       title: 'SomaFM Groove Salad',
       tooltip: 'Ambient & Downtempo',
       stream: 'https://ice2.somafm.com/groovesalad-128-mp3',
-      bg_image_mobile: 'https://somafm.com/img3/groovesalad-400.jpg',
       genre: [{ id: 'ambient', name: 'Ambient' }]
     },
     {
@@ -378,7 +355,6 @@
       title: 'SomaFM Lush',
       tooltip: 'Vocal Chillout',
       stream: 'https://ice2.somafm.com/lush-128-mp3',
-      bg_image_mobile: 'https://somafm.com/img3/lush-400.jpg',
       genre: [{ id: 'chillout', name: 'Chillout' }]
     },
     {
@@ -386,7 +362,6 @@
       title: '4 Ever Floyd',
       tooltip: 'Pink Floyd All Day...Everyday',
       stream: 'https://us1.streamingpulse.com/ssl/7202',
-      bg_image_mobile: 'https://upload.wikimedia.org/wikipedia/ru/thumb/1/15/The_Dark_Side_of_the_Moon.png/330px-The_Dark_Side_of_the_Moon.png?utm_source=ru.wikipedia.org&utm_campaign=parser&utm_content=thumbnail',
       genre: [{ id: 'rock', name: 'Rock' }]
     },
     {
@@ -394,7 +369,6 @@
       title: 'ROCKABILLY',
       tooltip: 'Rockabilly Music On The World',
       stream: 'https://hemnos.cdnstream.com/1881_128',
-      bg_image_mobile: 'https://www.vintagerockmag.com/wp-content/uploads/2018/05/image35.png',
       genre: [{ id: 'rock', name: 'Rock' }]
     },
     {
@@ -402,7 +376,6 @@
       title: '60s Psychedelic Rock',
       tooltip: 'Psychedelic Internet Radio',
       stream: 'https://streaming.live365.com/a01650',
-      bg_image_mobile: 'https://m.media-amazon.com/images/I/61LzhapMtLL.png',
       genre: [{ id: 'rock', name: 'Rock' }]
     },
     {
@@ -410,7 +383,6 @@
       title: 'Rock Antenne',
       tooltip: 'Classic Rock',
       stream: 'https://stream.rockantenne.de/rockantenne',
-      bg_image_mobile: 'https://play-lh.googleusercontent.com/n0mhe1PN0laXoH6xlNw4tbuL7qpplcqL6OUGGwAk31hgZDiCiwW41P8N1zr2nrSjpJK2Yb0ywCIr4xENwqaK',
       genre: [{ id: 'rock', name: 'Rock' }]
     },
     {
@@ -418,7 +390,6 @@
       title: 'Flux FM',
       tooltip: 'Radio so bunt wie Berlin',
       stream: 'https://51-210-189-143-c12fb8.sfn.edge-ovh-gra5.streams.radiosphere.io/557b7263-9216-46b5-a813-a156ffbc9acb/channels/7efc3ff2-4804-431f-aaa9-7d1f8a7727c7/stream.mp3',
-      bg_image_mobile: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRqAVprso82mL2srFIccIX2i4H-7evFQ91AK4fMXZtuUQ&s=10',
       genre: [{ id: 'altrock', name: 'Alternative Rock' }]
     },
     {
@@ -426,7 +397,6 @@
       title: 'bigFM Deep',
       tooltip: 'Deep House',
       stream: 'https://streams.bigfm.de/bigfm-deep-128-mp3',
-      bg_image_mobile: 'https://play-lh.googleusercontent.com/3ATVux_tlzrYTEq6GdEy4Oh80u_Zi5f0Cprp-eugEBibKwtvBXb43GsiGEYiwCs-BQdB6eK0rjNClWy_LCQXug',
       genre: [{ id: 'deephouse', name: 'Deep House' }]
     },
     {
@@ -434,7 +404,6 @@
       title: 'Ibiza Global Radio',
       tooltip: 'House & Electronic',
       stream: 'https://ibizaglobalradio.streaming-pro.com:8024/stream',
-      bg_image_mobile: 'https://www.ibizabynight.net/wp-content/uploads/2017/12/ibiza-global-radio-2.png',
       genre: [{ id: 'house', name: 'House' }]
     },
     {
@@ -442,7 +411,6 @@
       title: 'Anime Radio',
       tooltip: '24/7 Anime Music',
       stream: 'https://stream.laut.fm/anime-radio-switzerland',
-      bg_image_mobile: 'https://play-lh.googleusercontent.com/MK5WKhVHZvZOyb9AnxOhWomvYNgq-HQ-MPsqu9FXG0GAdgODAm0nLQEhVofwqwBdToSdhkDp4PWAOt8hBIzp',
       genre: [{ id: 'altrock', name: 'Alternative Rock' }]
     },
     {
@@ -450,7 +418,6 @@
       title: 'Classic FM Soundtracks',
       tooltip: 'Klassiek voor iedereen',
       stream: 'https://stream.classic.nl/classicnl-soundtracks.mp3',
-      bg_image_mobile: 'https://tse1.mm.bing.net/th/id/OIP.Set457vs4fh4_oWOgtgYEQHaHa?r=0&rs=1&pid=ImgDetMain&o=7&rm=3',
       genre: [{ id: 'soundtrack', name: 'Soundtrack' }]
     },
     {
@@ -458,10 +425,13 @@
       title: 'Soundtracks',
       tooltip: 'Hier gibt es die besten TV und Film musik',
       stream: 'https://stream.laut.fm/soundtrack',
-      bg_image_mobile: 'https://www.allradio.net/500/ZslQmAyzjgPZvdObXlNbS.webp',
       genre: [{ id: 'soundtrack', name: 'Soundtrack' }]
     }
   ];
+
+  UKRAINIAN_STATIONS.forEach(function (s) {
+    s.bg_image_mobile = logoUrl(s.id);
+  });
 
   // =========================================
   // API
@@ -1272,7 +1242,7 @@
 
     var manifest = {
       type: 'audio',
-      version: '1.6.3',
+      version: '1.7.0',
       name: Lampa.Lang.translate('radio_station'),
       description: 'Українські радіостанції',
       component: 'radio'
