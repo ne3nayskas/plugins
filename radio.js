@@ -284,7 +284,7 @@
       id: 'wandafm',
       title: 'Ванда FM',
       tooltip: 'Радіо чарівного настрою',
-      stream: 'https://icecast.xtvmedia.pp.ua/radiowandafm_HD.mp3',
+      stream: 'https://icecast.xtvmedia.pp.ua/radiowandafm_hq.mp3',
       genre: [{ id: 'pop', name: 'Pop' }]
     },
     {
