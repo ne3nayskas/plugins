@@ -330,6 +330,13 @@
       genre: [{ id: 'psytrance', name: 'Psy Trance' }]
     },
     {
+      id: 'goabase',
+      title: 'GOA-Base',
+      tooltip: 'Best Psychedelic & Progressive Goa',
+      stream: 'https://goa-base.stream.laut.fm/goa-base',
+      genre: [{ id: 'psytrance', name: 'Psy Trance' }]
+    },
+    {
       id: 'groovesalad',
       title: 'SomaFM Groove Salad',
       tooltip: 'Ambient & Downtempo',
