@@ -183,6 +183,13 @@
       genre: [{ id: 'dance', name: 'Dance' }]
     },
     {
+      id: 'lvivfm',
+      title: 'Львівська Хвиля',
+      tooltip: '100.8 FM',
+      stream: 'https://onair.lviv.fm/lviv.fm.hd',
+      genre: [{ id: 'ukr', name: 'Українське' }]
+    },
+    {
       id: 'nostalgie',
       title: 'Nostalgie Україна',
       tooltip: 'Скоро перемога! Радіо Ностальжі Україна',
