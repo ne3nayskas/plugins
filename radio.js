@@ -421,13 +421,6 @@
       genre: [{ id: 'soundtrack', name: 'Soundtrack' }]
     },
     {
-      id: 'fluxfm',
-      title: 'Flux FM',
-      tooltip: 'Radio so bunt wie Berlin',
-      stream: 'https://51-210-189-143-c12fb8.sfn.edge-ovh-gra5.streams.radiosphere.io/557b7263-9216-46b5-a813-a156ffbc9acb/channels/7efc3ff2-4804-431f-aaa9-7d1f8a7727c7/stream.mp3',
-      genre: [{ id: 'altrock', name: 'Alternative Rock' }]
-    },
-    {
       id: 'flux_live',
       title: 'FluxFM',
       tooltip: 'Radio so bunt wie Berlin',
