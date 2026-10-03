@@ -1061,7 +1061,7 @@
       }
       if (idx < 0) return null;
 
-      var views = 15, guard = 0;
+      var views = 10, guard = 0;
       while ((page + 1) * views <= idx && guard++ < 100) {
         page++;
         _this6.next();
