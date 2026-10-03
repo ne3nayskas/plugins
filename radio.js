@@ -386,13 +386,6 @@
       genre: [{ id: 'rock', name: 'Rock' }]
     },
     {
-      id: 'fluxfm',
-      title: 'Flux FM',
-      tooltip: 'Radio so bunt wie Berlin',
-      stream: 'https://51-210-189-143-c12fb8.sfn.edge-ovh-gra5.streams.radiosphere.io/557b7263-9216-46b5-a813-a156ffbc9acb/channels/7efc3ff2-4804-431f-aaa9-7d1f8a7727c7/stream.mp3',
-      genre: [{ id: 'altrock', name: 'Alternative Rock' }]
-    },
-    {
       id: 'bigfm',
       title: 'bigFM Deep',
       tooltip: 'Deep House',
@@ -426,7 +419,224 @@
       tooltip: 'Hier gibt es die besten TV und Film musik',
       stream: 'https://stream.laut.fm/soundtrack',
       genre: [{ id: 'soundtrack', name: 'Soundtrack' }]
-    }
+    },
+    {
+      id: 'fluxfm',
+      title: 'Flux FM',
+      tooltip: 'Radio so bunt wie Berlin',
+      stream: 'https://51-210-189-143-c12fb8.sfn.edge-ovh-gra5.streams.radiosphere.io/557b7263-9216-46b5-a813-a156ffbc9acb/channels/7efc3ff2-4804-431f-aaa9-7d1f8a7727c7/stream.mp3',
+      genre: [{ id: 'altrock', name: 'Alternative Rock' }]
+    },
+    {
+      id: 'flux_live',
+      title: 'FluxFM',
+      tooltip: 'Radio so bunt wie Berlin',
+      stream: 'https://streams.fluxfm.de/live/mp3-128/streams.fluxfm.de/',
+      genre: [{ id: 'indie', name: 'Indie' }]
+    },
+    {
+      id: 'flux_finest',
+      title: 'FluxFM Finest',
+      tooltip: 'Berlin · Indie',
+      stream: 'https://streams.fluxfm.de/fluxkompensator/mp3-128/streams.fluxfm.de/',
+      genre: [{ id: 'indie', name: 'Indie' }]
+    },
+    {
+      id: 'flux_lounge',
+      title: 'FluxLounge',
+      tooltip: 'Berlin · Relax',
+      stream: 'https://streams.fluxfm.de/lounge/mp3-128/streams.fluxfm.de/',
+      genre: [{ id: 'relax', name: 'Relax' }]
+    },
+    {
+      id: 'flux_clubsandwich',
+      title: 'FluxFM Clubsandwich',
+      tooltip: 'Berlin · Dance',
+      stream: 'https://streams.fluxfm.de/clubsandwich/mp3-128/streams.fluxfm.de/',
+      genre: [{ id: 'dance', name: 'Dance' }]
+    },
+    {
+      id: 'flux_electronic_chillout',
+      title: 'FluxFM Electronic Chillout',
+      tooltip: 'Berlin · Chillout',
+      stream: 'https://streams.fluxfm.de/klubradio/mp3-128/streams.fluxfm.de/',
+      genre: [{ id: 'chillout', name: 'Chillout' }]
+    },
+    {
+      id: 'flux_chillhop',
+      title: 'FluxFM ChillHop',
+      tooltip: 'Berlin · Chillout',
+      stream: 'https://streams.fluxfm.de/Chillhop/mp3-128/streams.fluxfm.de/',
+      genre: [{ id: 'chillout', name: 'Chillout' }]
+    },
+    {
+      id: 'flux_80s',
+      title: 'FluxFM 80s',
+      tooltip: 'Berlin · Nostalgie',
+      stream: 'https://streams.fluxfm.de/80er/mp3-128/streams.fluxfm.de/',
+      genre: [{ id: 'nst', name: 'Nostalgie' }]
+    },
+    {
+      id: 'flux_90s',
+      title: 'FluxFM 90s',
+      tooltip: 'Berlin · Nostalgie',
+      stream: 'https://streams.fluxfm.de/90er/mp3-128/streams.fluxfm.de/',
+      genre: [{ id: 'nst', name: 'Nostalgie' }]
+    },
+    {
+      id: 'flux_70s',
+      title: 'FluxFM 70s',
+      tooltip: 'Berlin · Nostalgie',
+      stream: 'https://streams.fluxfm.de/70er/mp3-128/streams.fluxfm.de/',
+      genre: [{ id: 'nst', name: 'Nostalgie' }]
+    },
+    {
+      id: 'flux_60s',
+      title: 'FluxFM 60s',
+      tooltip: 'Berlin · Nostalgie',
+      stream: 'https://streams.fluxfm.de/60er/mp3-128/streams.fluxfm.de/',
+      genre: [{ id: 'nst', name: 'Nostalgie' }]
+    },
+    {
+      id: 'flux_2000er',
+      title: 'FluxFM 2000er',
+      tooltip: 'Berlin · Nostalgie',
+      stream: 'https://streams.fluxfm.de/flx_2000/mp3-128/streams.fluxfm.de/',
+      genre: [{ id: 'nst', name: 'Nostalgie' }]
+    },
+    {
+      id: 'flux_indie_disco',
+      title: 'FluxFM Indie Disco',
+      tooltip: 'Berlin · Indie',
+      stream: 'https://streams.fluxfm.de/indiedisco/mp3-128/streams.fluxfm.de/',
+      genre: [{ id: 'indie', name: 'Indie' }]
+    },
+    {
+      id: 'flux_elektroflux',
+      title: 'ElektroFlux',
+      tooltip: 'Berlin · Dance',
+      stream: 'https://streams.fluxfm.de/elektro/mp3-128/streams.fluxfm.de/',
+      genre: [{ id: 'dance', name: 'Dance' }]
+    },
+    {
+      id: 'flux_beach_house',
+      title: 'FluxFM Berlin Beach House Radio',
+      tooltip: 'Berlin · House',
+      stream: 'https://streams.fluxfm.de/bbeachhouse/mp3-128/streams.fluxfm.de/',
+      genre: [{ id: 'house', name: 'House' }]
+    },
+    {
+      id: 'flux_techno_underground',
+      title: 'FluxFM Techno Underground',
+      tooltip: 'Berlin · Techno',
+      stream: 'https://streams.fluxfm.de/technoug/mp3-128/streams.fluxfm.de/',
+      genre: [{ id: 'Techno', name: 'Techno' }]
+    },
+    {
+      id: 'flux_sound_of_berlin',
+      title: 'FluxFM Sound of Berlin',
+      tooltip: 'Berlin · Dance',
+      stream: 'https://streams.fluxfm.de/soundofberlin/mp3-128/streams.fluxfm.de/',
+      genre: [{ id: 'dance', name: 'Dance' }]
+    },
+    {
+      id: 'flux_mini',
+      title: 'Mini Flux',
+      tooltip: 'Berlin · Kids',
+      stream: 'https://streams.fluxfm.de/kinder1/mp3-128/streams.fluxfm.de/',
+      genre: [{ id: 'kids', name: 'Kids' }]
+    },
+    {
+      id: 'flux_hiphop_classics',
+      title: 'FluxFM HipHop Classics',
+      tooltip: 'Berlin · Hip-Hop',
+      stream: 'https://streams.fluxfm.de/boomfmclassics/mp3-128/streams.fluxfm.de/',
+      genre: [{ id: 'hiphop', name: 'Hip-Hop' }]
+    },
+    {
+      id: 'flux_jazz_schwarzenstein',
+      title: 'FluxFM Jazzradio Schwarzenstein',
+      tooltip: 'Berlin · Jazz',
+      stream: 'https://streams.fluxfm.de/jazzschwarz/mp3-128/streams.fluxfm.de/',
+      genre: [{ id: 'jazz', name: 'Jazz' }]
+    },
+    {
+      id: 'flux_xjazz',
+      title: 'FluxFM XJAZZ',
+      tooltip: 'Berlin · Jazz',
+      stream: 'https://streams.fluxfm.de/xjazz/mp3-128/streams.fluxfm.de/',
+      genre: [{ id: 'jazz', name: 'Jazz' }]
+    },
+    {
+      id: 'flux_neofm',
+      title: 'FluxFM neoFM',
+      tooltip: 'Berlin · Classic',
+      stream: 'https://streams.fluxfm.de/neofm/mp3-128/streams.fluxfm.de/',
+      genre: [{ id: 'classical', name: 'Classic' }]
+    },
+    {
+      id: 'flux_metalfm',
+      title: 'FluxFM MetalFM',
+      tooltip: 'Berlin · Rock',
+      stream: 'https://streams.fluxfm.de/metalfm/mp3-128/streams.fluxfm.de/',
+      genre: [{ id: 'rock', name: 'Rock' }]
+    },
+    {
+      id: 'flux_radio_alternative',
+      title: 'FluxFM Radio Alternative',
+      tooltip: 'Berlin · Alternative Rock',
+      stream: 'https://streams.fluxfm.de/radioalt/mp3-128/streams.fluxfm.de/',
+      genre: [{ id: 'altrock', name: 'Alternative Rock' }]
+    },
+    {
+      id: 'flux_bfunk',
+      title: 'FluxFM B-Funk',
+      tooltip: 'Berlin · Funk',
+      stream: 'https://streams.fluxfm.de/event01/mp3-128/streams.fluxfm.de/',
+      genre: [{ id: 'funk', name: 'Funk' }]
+    },
+    {
+      id: 'flux_anima',
+      title: 'FluxFM Anima Radio',
+      tooltip: 'Berlin · Pop',
+      stream: 'https://streams.fluxfm.de/popradio/mp3-128/streams.fluxfm.de/',
+      genre: [{ id: 'pop', name: 'Pop' }]
+    },
+    {
+      id: 'flux_yoga_sounds',
+      title: 'FluxFM Yoga Sounds',
+      tooltip: 'Berlin · Relax',
+      stream: 'https://streams.fluxfm.de/yogasounds/mp3-128/streams.fluxfm.de/',
+      genre: [{ id: 'relax', name: 'Relax' }]
+    },
+    {
+      id: 'flux_chillout_radio',
+      title: 'FluxFM Chillout Radio',
+      tooltip: 'Berlin · Chillout',
+      stream: 'https://streams.fluxfm.de/chillout/mp3-128/streams.fluxfm.de/',
+      genre: [{ id: 'chillout', name: 'Chillout' }]
+    },
+    {
+      id: 'flux_htgp',
+      title: 'FluxFM Hippie Trippy Garden Pretty',
+      tooltip: 'Berlin · Relax',
+      stream: 'https://streams.fluxfm.de/event02/mp3-128/streams.fluxfm.de/',
+      genre: [{ id: 'relax', name: 'Relax' }]
+    },
+    {
+      id: 'flux_john_reed',
+      title: 'FluxFM John Reed Radio',
+      tooltip: 'Berlin · Dance',
+      stream: 'https://streams.fluxfm.de/john-reed/mp3-128/streams.fluxfm.de/',
+      genre: [{ id: 'dance', name: 'Dance' }]
+    },
+    {
+      id: 'flux_easy_fitness',
+      title: 'FluxFM Easy Fitness',
+      tooltip: 'Berlin · Dance',
+      stream: 'https://streams.fluxfm.de/easyfitness/mp3-128/streams.fluxfm.de/',
+      genre: [{ id: 'dance', name: 'Dance' }]
+    }    
   ];
 
   UKRAINIAN_STATIONS.forEach(function (s) {
@@ -858,7 +1068,7 @@
       }
       if (idx < 0) return null;
 
-      var views = 10, guard = 0;
+      var views = 15, guard = 0;
       while ((page + 1) * views <= idx && guard++ < 100) {
         page++;
         _this6.next();
