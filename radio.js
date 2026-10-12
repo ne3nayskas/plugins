@@ -120,6 +120,13 @@
       genre: [{ id: 'news', name: 'Новини' }]
     },
     {
+      id: 'nv',
+      title: 'Radio NV',
+      tooltip: '96.0 Київ - Аналітика і новини',
+      stream: 'https://online-radio.nv.ua/radionv.mp3',
+      genre: [{ id: 'news', name: 'Новини' }]
+    },
+    {
       id: 'radiobayraktar',
       title: 'Radio Bayraktar',
       tooltip: 'Музика української перемоги',
