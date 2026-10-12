@@ -71,6 +71,13 @@
       genre: [{ id: 'news', name: 'Новини' }]
     },
     {
+      id: 'replaynewsen',
+      title: 'Replay News EN',
+      tooltip: 'News every five minutes, 24/7',
+      stream: 'https://replaynewsen.ice.infomaniak.ch/replaynewsen-128.mp3',
+      genre: [{ id: 'news', name: 'Новини' }]
+    },
+    {
       id: 'ukrradio',
       title: 'Українське Радіо',
       tooltip: 'UR1 Українське Радіо',
