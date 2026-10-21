@@ -18,7 +18,7 @@
 
   // ===== НАЛАШТУВАННЯ =====
   // Розмір назв станцій у плитках (на всіх екранах). Порожній рядок '' = розміри за замовчуванням
-  var TILE_TITLE_FONT = '1.5em';
+  var TILE_TITLE_FONT = '';
   // ========================
 
   function _classCallCheck(instance, Constructor) {
