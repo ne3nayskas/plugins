@@ -4,13 +4,46 @@
         ratimg_omdb_avg: {
             ru: 'ИТОГ',
             en: 'TOTAL',
-            uk: '<svg width="14px" height="14px" viewBox="0 0 36 36" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" aria-hidden="true" role="img" class="iconify iconify--twemoji" preserveAspectRatio="xMidYMid meet"><path fill="#FFAC33" d="M27.287 34.627c-.404 0-.806-.124-1.152-.371L18 28.422l-8.135 5.834a1.97 1.97 0 0 1-2.312-.008a1.971 1.971 0 0 1-.721-2.194l3.034-9.792l-8.062-5.681a1.98 1.98 0 0 1-.708-2.203a1.978 1.978 0 0 1 1.866-1.363L12.947 13l3.179-9.549a1.976 1.976 0 0 1 3.749 0L23 13l10.036.015a1.975 1.975 0 0 1 1.159 3.566l-8.062 5.681l3.034 9.792a1.97 1.97 0 0 1-.72 2.194a1.957 1.957 0 0 1-1.16.379z"></path></svg>',
+            uk: '<img src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIzNiIgaGVpZ2h0PSIzNiIgdmlld0JveD0iMCAwIDM2IDM2Ij48cGF0aCBmaWxsPSIjRkZBQzMzIiBkPSJNMjcuMjg3IDM0LjYyN2MtLjQwNCAwLS44MDYtLjEyNC0xLjE1Mi0uMzcxTDE4IDI4LjQyMmwtOC4xMzUgNS44MzRhMS45NyAxLjk3IDAgMCAxLTIuMzEyLS4wMDhhMS45NzEgMS45NzEgMCAwIDEtLjcyMS0yLjE5NGwzLjAzNC05Ljc5MmwtOC4wNjItNS42ODFhMS45OCAxLjk4IDAgMCAxLS43MDgtMi4yMDNhMS45NzggMS45NzggMCAwIDEgMS44NjYtMS4zNjNMMTIuOTQ3IDEzbDMuMTc5LTkuNTQ5YTEuOTc2IDEuOTc2IDAgMCAxIDMuNzQ5IDBMMjMgMTNsMTAuMDM2LjAxNWExLjk3NSAxLjk3NSAwIDAgMSAxLjE1OSAzLjU2NmwtOC4wNjIgNS42ODFsMy4wMzQgOS43OTJhMS45NyAxLjk3IDAgMCAxLS43MiAyLjE5NGExLjk1NyAxLjk1NyAwIDAgMS0xLjE2LjM3OXoiLz48L3N2Zz4=" style="height:14px; width:14px; display:inline-block; vertical-align:middle; object-fit:contain;">',
             be: 'ВЫНІК',
             pt: 'TOTAL',
             zh: '总评',
             he: 'סה"כ',
             cs: 'VÝSLEDEK',
             bg: 'РЕЗУЛТАТ'
+        },
+        maxsm_unit_bln: {
+            ru: 'млрд',
+            en: 'B',
+            uk: 'млрд',
+            be: 'млрд',
+            pt: 'bi',
+            zh: 'B',
+            he: 'B',
+            cs: 'mld.',
+            bg: 'млрд.'
+        },
+        maxsm_unit_mln: {
+            ru: 'млн',
+            en: 'M',
+            uk: 'млн',
+            be: 'млн',
+            pt: 'mi',
+            zh: 'M',
+            he: 'M',
+            cs: 'mil.',
+            bg: 'млн.'
+        },
+        maxsm_boxoffice_us: {
+            ru: ' (США)',
+            en: ' (US)',
+            uk: ' (США)',
+            be: ' (ЗША)',
+            pt: ' (EUA)',
+            zh: ' (美国)',
+            he: ' (ארה"ב)',
+            cs: ' (USA)',
+            bg: ' (САЩ)'
         },
         loading_dots: {
             ru: 'Загрузка рейтингов',
@@ -22,6 +55,17 @@
             he: 'טוען דירוגים',
             cs: 'Načítání hodnocení',
             bg: 'Зареждане на рейтинги'
+        },
+        maxsm_boxoffice: {
+            ru: 'Сборы',
+            en: 'Box office',
+            uk: 'Касові збори',
+            be: 'Збор',
+            pt: 'Bilheteria',
+            zh: '票房',
+            he: 'קופות',
+            cs: 'Tržby',
+            bg: 'Приходи'
         },
         maxsm_omdb_oscars: {
             ru: 'Оскары',
@@ -80,7 +124,6 @@
         }
     });
 
-    // Стилі
     var style = "<style id=\"maxsm_omdb_rating\">" +
         ".full-start-new__rate-line {" +
         "visibility: hidden;" +
@@ -91,16 +134,19 @@
         " margin-left: 0 !important;" +
         " margin-right: 0.6em !important;" +
         "}" +
-        ".rate--avg.rating--green { color: #4caf50; }" +
-        ".rate--avg.rating--lime { color: #3399ff; }" +
-        ".rate--avg.rating--orange { color: #ff9933; }" +
-        ".rate--avg.rating--red { color: #f44336; }" +
         ".rate--oscars { color: gold; }" +
+        ".full-start__rate > div:last-child { flex-shrink: 0; }" +
+        ".full-start__rate > div:last-child img { max-width: none !important; flex-shrink: 0; }" +
+        ".full-start__rate > div:last-child svg { width: 14px !important; height: 14px !important; max-width: none !important; flex-shrink: 0; }" +
+        ".full-start-new__rate-line > .full-start__rate { max-height: 2.4em; }" +
+        ".maxsm-budget > *:last-child," +
+        ".maxsm-boxoffice > *:last-child {" +
+        " color: #00e676 !important;" +
+        "}" +
         "</style>";
     Lampa.Template.add('card_css', style);
     $('body').append(Lampa.Template.get('card_css', {}, true));
 
-    // Оновлені стилі з гарантованою видимістю
     var loadingStyles = "<style id=\"maxsm_loading_animation\">" +
         ".loading-dots-container {" +
         " position: absolute;" +
@@ -148,13 +194,51 @@
     Lampa.Template.add('loading_animation_css', loadingStyles);
     $('body').append(Lampa.Template.get('loading_animation_css', {}, true));
 
-    // Конфігурація
-    var CACHE_TIME = 3 * 24 * 60 * 60 * 1000; // 3 дні
+    var voteStyle = "<style id=\"maxsm_vote_colors\">" +
+        ".card__vote {" +
+        " position: absolute; right: 0; bottom: 0; z-index: 12; height: auto;" +
+        " background: rgba(0,0,0,0.6);" +
+        " border-radius: 1em 0 0.75em 0 !important;" +
+        " overflow: hidden; pointer-events: auto; box-sizing: border-box;" +
+        " text-transform: uppercase;" +
+        " font-family: 'Roboto Condensed', 'Arial Narrow', Arial, sans-serif;" +
+        " font-weight: 700 !important; font-size: 0.8em !important;" +
+        " padding: 0.35em 0.65em !important; white-space: nowrap;" +
+        " display: flex !important; align-items: center; justify-content: flex-start;" +
+        " text-shadow: 0.5px 0.5px 1px rgba(0,0,0,0.25);" +
+        " line-height: 1 !important; text-overflow: ellipsis;" +
+        "}" +
+        ".card__age {" +
+        " position: absolute !important; right: 0; top: 0; z-index: 12; height: auto;" +
+        " background: rgba(0,0,0,0.6);" +
+        " border-radius: 0 0.8em 0 0.75em !important;" +
+        " overflow: hidden; pointer-events: auto; box-sizing: border-box;" +
+        " text-transform: uppercase;" +
+        " font-family: 'Roboto Condensed', 'Arial Narrow', Arial, sans-serif;" +
+        " font-weight: 700 !important; font-size: 0.8em !important;" +
+        " padding: 0.35em 0.65em !important; white-space: nowrap;" +
+        " display: flex !important; align-items: center; justify-content: flex-start;" +
+        " text-shadow: 0.5px 0.5px 1px rgba(0,0,0,0.25);" +
+        " line-height: 1 !important; text-overflow: ellipsis;" +
+        " color: #ffffff !important; margin: 0; transform: translateX(0);" +
+        "}" +
+        "@media (max-width: 1024px) {" +
+        " .card__vote, .card__age { font-size: 1em; padding: 0.25em 0.5em; }" +
+        " .card__type svg { width: 2.3em; height: 2.3em; }" +
+        "}" +
+        "@media (max-width: 480px) {" +
+        " .card__vote, .card__age { font-size: 0.95em; padding: 0.2em 0.4em; }" +
+        "}" +
+        "</style>";
+    $('body').append(voteStyle);
+
+    var CACHE_TIME = 3 * 24 * 60 * 60 * 1000;
+    var EMPTY_CACHE_TIME = 24 * 60 * 60 * 1000;
+    var SAFETY_TIMEOUT = 6000;
     var OMDB_CACHE = 'maxsm_rating_omdb';
     var ID_MAPPING_CACHE = 'maxsm_rating_id_mapping';
-    var OMDB_API_KEY = window.RATINGS_PLUGIN_TOKENS?.OMDB_API_KEY || '5301dba1';
+    var OMDB_API_KEY = (window.RATINGS_PLUGIN_TOKENS && window.RATINGS_PLUGIN_TOKENS.OMDB_API_KEY) || ''; // OMDB API KEY ----- !
 
-    // Словник вікових рейтингів
     var AGE_RATINGS = {
         'G': '3+',
         'PG': '6+',
@@ -169,7 +253,6 @@
         'TV-MA': '17+'
     };
 
-    // Вагові коефіцієнти
     var WEIGHTS = {
         imdb: 0.40,
         tmdb: 0.40,
@@ -177,7 +260,6 @@
         rt: 0.10
     };
 
-    // Отримуємо кількість Оскарів
     function parseOscars(awardsText) {
         if (typeof awardsText !== 'string') return null;
         var match = awardsText.match(/Won (\d+) Oscars?/i);
@@ -187,8 +269,79 @@
         return null;
     }
 
-    function addLoadingAnimation() {
-        var render = Lampa.Activity.active().activity.render();
+    function parseBoxOffice(text) {
+        if (typeof text !== 'string' || text === 'N/A') return null;
+        var num = parseInt(text.replace(/[^0-9]/g, ''), 10);
+        return isNaN(num) || num <= 0 ? null : num;
+    }
+
+    function decimalSep() {
+        var lang = Lampa.Storage.get('language', 'ru');
+        return (lang === 'en' || lang === 'zh' || lang === 'he') ? '.' : ',';
+    }
+
+    function formatMoney(n) {
+        n = Math.round(n);
+        var value, unit;
+        if (n >= 1e9) {
+            value = Math.round(n / 1e7) / 100;
+            unit = 'maxsm_unit_bln';
+        } else if (n >= 1e6) {
+            value = Math.round(n / 1e5) / 10;
+            unit = 'maxsm_unit_mln';
+        } else {
+            return '$ ' + String(n).replace(/\B(?=(\d{3})+(?!\d))/g, ' ');
+        }
+        return '$ ' + String(value).replace('.', decimalSep()) + ' ' + Lampa.Lang.translate(unit);
+    }
+
+    function findBudgetBlock(render) {
+        var found = null;
+        $('.full-descr__info', render).each(function() {
+            var block = $(this);
+            if (block.hasClass('maxsm-boxoffice')) return;
+            var kids = block.children();
+            if (kids.length < 2) return;
+            var value = kids.last().text().trim();
+            if (!found && value.indexOf('$') === 0) found = block;
+        });
+        return found;
+    }
+
+    function markBudget(render) {
+        if (!render) return;
+        var budget = findBudgetBlock(render);
+        if (!budget) return;
+        budget.addClass('maxsm-budget');
+
+        if (!budget.data('maxsm-short')) {
+            var valueEl = budget.children().last();
+            var raw = parseInt(valueEl.text().replace(/[^0-9]/g, ''), 10);
+            if (raw > 0) valueEl.text(formatMoney(raw));
+            budget.data('maxsm-short', true);
+        }
+    }
+
+    function insertBoxOffice(render, revenue, isUS) {
+        if (!render) return;
+
+        markBudget(render);
+        var budget = findBudgetBlock(render);
+        if (!budget) return;
+
+        if (!revenue || isNaN(revenue) || revenue <= 0) return;
+        if ($('.maxsm-boxoffice', render).length) return;
+
+        var el = budget.clone().removeClass('maxsm-budget').addClass('maxsm-boxoffice');
+        el.children().first().text(
+            Lampa.Lang.translate('maxsm_boxoffice') +
+            (isUS ? Lampa.Lang.translate('maxsm_boxoffice_us') : '')
+        );
+        el.children().last().text(formatMoney(revenue));
+        el.insertAfter(budget);
+    }
+
+    function addLoadingAnimation(render) {
         if (!render) return;
 
         var rateLine = $('.full-start-new__rate-line', render);
@@ -211,29 +364,97 @@
         });
     }
 
-    function removeLoadingAnimation() {
-        var render = Lampa.Activity.active().activity.render();
+    function removeLoadingAnimation(render) {
         if (!render) return;
         $('.loading-dots-container', render).remove();
     }
 
-    // Допоміжні функції
     function getCardType(card) {
         var type = card.media_type || card.type;
         if (type === 'movie' || type === 'tv') return type;
         return card.name || card.original_name ? 'tv' : 'movie';
     }
 
-    function getRatingClass(rating) {
-        if (rating >= 8.0) return 'rating--green';
-        if (rating >= 6.0) return 'rating--lime';
-        if (rating >= 5.5) return 'rating--orange';
-        return 'rating--red';
+    function getRatingColor(rating) {
+        if (rating <= 3) return '#ff3333';
+        if (rating < 6) return '#ff9933';
+        if (rating < 8) return '#3399ff';
+        return '#33cc33';                    
     }
 
-    // Основна функція
-    function fetchAdditionalRatings(card) {
-        var render = Lampa.Activity.active().activity.render();
+    function findParentByClass(el, cls) {
+        while (el && el !== document) {
+            if (el.classList && el.classList.contains(cls)) return el;
+            el = el.parentNode;
+        }
+        return null;
+    }
+
+    function colorizePosterLabels() {
+        var votes = document.querySelectorAll('.card__vote');
+        for (var i = 0; i < votes.length; i++) {
+            var vote = parseFloat((votes[i].textContent || '').trim());
+            if (!isNaN(vote)) votes[i].style.color = getRatingColor(vote);
+        }
+
+        var ages = document.querySelectorAll('.card__age');
+        for (var j = 0; j < ages.length; j++) {
+            var age = ages[j];
+            var year = parseInt((age.textContent || '').trim(), 10);
+            if (isNaN(year) || year === 0) continue;
+            var parent = age.parentNode;
+            if (parent && parent.classList && parent.classList.contains('card__view')) continue;
+            var card = findParentByClass(age, 'card');
+            var view = card ? card.querySelector('.card__view') : null;
+            if (view) view.appendChild(age);
+        }
+    }
+
+    function colorizeDetailRates() {
+        var rates = document.querySelectorAll('.full-start__rate');
+        for (var i = 0; i < rates.length; i++) {
+            var rate = rates[i];
+            if (rate.classList.contains('rate--oscars')) continue;
+            var num = rate.firstElementChild;
+            if (!num) continue;
+            var value = parseFloat((num.textContent || '').trim());
+            if (isNaN(value) || value <= 0 || value > 10) continue;
+            num.style.setProperty('color', getRatingColor(value), 'important');
+        }
+    }
+
+    var colorTimer = null;
+
+    function colorizeAll() {
+        colorTimer = null;
+        try {
+            colorizePosterLabels();
+            colorizeDetailRates();
+        } catch (e) {
+            console.warn('Ratings colors error:', e);
+        }
+    }
+
+    function scheduleColorize() {
+        if (!colorTimer) colorTimer = setTimeout(colorizeAll, 120);
+    }
+
+    function initColors() {
+        var start = function() {
+            colorizeAll();
+            if (typeof MutationObserver !== 'undefined') {
+                new MutationObserver(scheduleColorize).observe(document.body, {
+                    childList: true,
+                    subtree: true,
+                    characterData: true
+                });
+            }
+        };
+        if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', start);
+        else start();
+    }
+
+    function fetchAdditionalRatings(card, render, state) {
         if (!render) return;
 
         var normalizedCard = {
@@ -242,42 +463,42 @@
             title: card.title || card.name || '',
             original_title: card.original_title || card.original_name || '',
             type: getCardType(card),
-            release_date: card.release_date || card.first_air_date || ''
+            release_date: card.release_date || card.first_air_date || '',
+            revenue: card.revenue || 0
         };
+
+        state.revenue = normalizedCard.revenue;
+        state.isUS = false;
+        insertBoxOffice(render, state.revenue, false);
 
         var rateLine = $('.full-start-new__rate-line', render);
         if (rateLine.length) {
             rateLine.css('visibility', 'hidden');
-            addLoadingAnimation();
+            addLoadingAnimation(render);
         }
+
+        var safetyTimer = setTimeout(function() {
+            calculateAverageRating(render);
+        }, SAFETY_TIMEOUT);
 
         var cacheKey = normalizedCard.type + '_' + (normalizedCard.imdb_id || normalizedCard.id);
         var cachedData = getOmdbCache(cacheKey);
         var ratingsData = {};
 
-        // Статуси рейтингів
         var imdbElement = $('.rate--imdb:not(.hide)', render);
         if (imdbElement.length > 0 && !!imdbElement.find('> div').eq(0).text().trim()) {
-            processNextStep();
+            clearTimeout(safetyTimer);
+            calculateAverageRating(render);
             return;
         }
 
-        // 1. Обробляємо кеш OMDB
         if (cachedData) {
-            ratingsData.rt = cachedData.rt;
-            ratingsData.mc = cachedData.mc;
-            ratingsData.imdb = cachedData.imdb;
-            ratingsData.ageRating = cachedData.ageRating;
-            ratingsData.oscars = cachedData.oscars;
+            fillFromOmdb(cachedData);
             updateUI();
         } else if (normalizedCard.imdb_id) {
             fetchOmdbRatings(normalizedCard, cacheKey, function(omdbData) {
                 if (omdbData) {
-                    ratingsData.rt = omdbData.rt;
-                    ratingsData.mc = omdbData.mc;
-                    ratingsData.imdb = omdbData.imdb;
-                    ratingsData.ageRating = omdbData.ageRating;
-                    ratingsData.oscars = omdbData.oscars;
+                    fillFromOmdb(omdbData);
                     saveOmdbCache(cacheKey, omdbData);
                 }
                 updateUI();
@@ -289,11 +510,7 @@
                     cacheKey = normalizedCard.type + '_' + newImdbId;
                     fetchOmdbRatings(normalizedCard, cacheKey, function(omdbData) {
                         if (omdbData) {
-                            ratingsData.rt = omdbData.rt;
-                            ratingsData.mc = omdbData.mc;
-                            ratingsData.imdb = omdbData.imdb;
-                            ratingsData.ageRating = omdbData.ageRating;
-                            ratingsData.oscars = omdbData.oscars;
+                            fillFromOmdb(omdbData);
                             saveOmdbCache(cacheKey, omdbData);
                         }
                         updateUI();
@@ -304,21 +521,32 @@
             });
         }
 
+        function fillFromOmdb(d) {
+            ratingsData.rt = d.rt;
+            ratingsData.mc = d.mc;
+            ratingsData.imdb = d.imdb;
+            ratingsData.ageRating = d.ageRating;
+            ratingsData.oscars = d.oscars;
+            ratingsData.boxoffice = d.boxoffice;
+        }
+
         function updateUI() {
-            // Вставляємо рейтинги RT і MC
-            insertRatings(ratingsData.rt, ratingsData.mc, ratingsData.oscars);
-            // Оновлюємо скриті елементи
-            updateHiddenElements(ratingsData);
-            // Рахуємо та відображаємо середній рейтинг
-            calculateAverageRating();
+            clearTimeout(safetyTimer);
+            insertRatings(render, ratingsData.rt, ratingsData.mc, ratingsData.oscars);
+            updateHiddenElements(render, ratingsData);
+               state.isUS = !normalizedCard.revenue && !!ratingsData.boxoffice;
+            state.revenue = normalizedCard.revenue || ratingsData.boxoffice || 0;
+            insertBoxOffice(render, state.revenue, state.isUS);
+            calculateAverageRating(render);
         }
     }
 
-    // Функції роботи з кешем
     function getOmdbCache(key) {
         var cache = Lampa.Storage.get(OMDB_CACHE) || {};
         var item = cache[key];
-        return item && (Date.now() - item.timestamp < CACHE_TIME) ? item : null;
+        if (!item) return null;
+        var ttl = item.empty ? EMPTY_CACHE_TIME : CACHE_TIME;
+        return (Date.now() - item.timestamp < ttl) ? item : null;
     }
 
     function saveOmdbCache(key, data) {
@@ -327,23 +555,36 @@
             (data.mc && data.mc !== "N/A" && !isNaN(data.mc)) ||
             (data.imdb && data.imdb !== "N/A" && !isNaN(data.imdb))
         );
-        
+
         var hasValidAgeRating = (
             data.ageRating && data.ageRating !== "N/A" && data.ageRating !== "Not Rated"
         );
-        
-        var hasOscars = typeof data.oscars === 'number' && data.oscars > 0;
 
-        if (!hasValidRating && !hasValidAgeRating && !hasOscars) return;
+        var hasOscars = typeof data.oscars === 'number' && data.oscars > 0;
+        var hasBoxOffice = typeof data.boxoffice === 'number' && data.boxoffice > 0;
+
+        var isEmpty = !(hasValidRating || hasValidAgeRating || hasOscars || hasBoxOffice);
 
         var cache = Lampa.Storage.get(OMDB_CACHE) || {};
+
+        var now = Date.now();
+        for (var k in cache) {
+            if (cache.hasOwnProperty(k)) {
+                var it = cache[k];
+                var ttl = it && it.empty ? EMPTY_CACHE_TIME : CACHE_TIME;
+                if (!it || now - it.timestamp >= ttl) delete cache[k];
+            }
+        }
+
         cache[key] = {
             rt: data.rt,
             mc: data.mc,
             imdb: data.imdb,
             ageRating: data.ageRating,
             oscars: data.oscars || null,
-            timestamp: Date.now()
+            boxoffice: data.boxoffice || null,
+            empty: isEmpty,
+            timestamp: now
         };
         Lampa.Storage.set(OMDB_CACHE, cache);
     }
@@ -414,16 +655,19 @@
 
         var url = 'https://www.omdbapi.com/?apikey=' + OMDB_API_KEY + '&i=' + card.imdb_id;
         new Lampa.Reguest().silent(url, function(data) {
-            if (data && data.Response === 'True' && (data.Ratings || data.imdbRating)) {
+            if (data && data.Response === 'True') {
                 var imdbRating = data.imdbRating && data.imdbRating !== 'N/A' ? parseFloat(data.imdbRating) : null;
-                
+
                 callback({
                     rt: extractRating(data.Ratings, 'Rotten Tomatoes'),
                     mc: extractRating(data.Ratings, 'Metacritic'),
                     imdb: imdbRating,
                     ageRating: data.Rated || null,
-                    oscars: parseOscars(data.Awards || '')
+                    oscars: parseOscars(data.Awards || ''),
+                    boxoffice: parseBoxOffice(data.BoxOffice)
                 });
+            } else if (data && data.Response === 'False' && data.Error && !/limit/i.test(data.Error)) {
+                callback({ empty: true });
             } else {
                 callback(null);
             }
@@ -432,11 +676,9 @@
         });
     }
 
-    function updateHiddenElements(ratings) {
-        var render = Lampa.Activity.active().activity.render();
+    function updateHiddenElements(render, ratings) {
         if (!render || !render[0]) return;
 
-        // Оновлення вікового рейтингу
         var pgElement = $('.full-start__pg.hide', render);
         if (pgElement.length && ratings.ageRating) {
             var invalidRatings = ['N/A', 'Not Rated', 'Unrated'];
@@ -447,11 +689,9 @@
             }
         }
 
-        // Обробка IMDB - ВИПРАВЛЕННЯ: приховуємо контейнер якщо рейтинг відсутній
         var imdbContainer = $('.rate--imdb', render);
         if (imdbContainer.length) {
             if (ratings.imdb && !isNaN(ratings.imdb) && parseFloat(ratings.imdb) > 0) {
-                // Якщо є валідний рейтинг IMDB - показуємо
                 if (imdbContainer.hasClass('hide')) {
                     imdbContainer.removeClass('hide');
                 }
@@ -461,12 +701,10 @@
                     imdbDivs.eq(1).html(Lampa.Lang.translate('source_imdb'));
                 }
             } else {
-                // Якщо рейтинг IMDB відсутній або невалідний - приховуємо
                 imdbContainer.addClass('hide');
             }
         }
 
-        // Обробка TMDB
         var tmdbContainer = $('.rate--tmdb', render);
         if (tmdbContainer.length) {
             tmdbContainer.find('> div:nth-child(2)').html(Lampa.Lang.translate('source_tmdb'));
@@ -488,8 +726,7 @@
         return null;
     }
 
-    function insertRatings(rtRating, mcRating, oscars) {
-        var render = Lampa.Activity.active().activity.render();
+    function insertRatings(render, rtRating, mcRating, oscars) {
         if (!render) return;
 
         var rateLine = $('.full-start-new__rate-line', render);
@@ -536,8 +773,7 @@
         }
     }
 
-    function calculateAverageRating() {
-        var render = Lampa.Activity.active().activity.render();
+    function calculateAverageRating(render) {
         if (!render) return;
 
         var rateLine = $('.full-start-new__rate-line', render);
@@ -566,9 +802,8 @@
 
         if (ratingsCount > 1 && totalWeight > 0) {
             var averageRating = weightedSum / totalWeight;
-            var colorClass = getRatingClass(averageRating);
             var avgElement = $(
-                '<div class="full-start__rate rate--avg ' + colorClass + '">' +
+                '<div class="full-start__rate rate--avg">' +
                 '<div>' + averageRating.toFixed(1) + '</div>' +
                 '<div class="source--name">' + Lampa.Lang.translate("ratimg_omdb_avg") + '</div>' +
                 '</div>'
@@ -576,19 +811,36 @@
             $('.full-start__rate:first', rateLine).before(avgElement);
         }
 
-        removeLoadingAnimation();
+        colorizeDetailRates();
+        removeLoadingAnimation(render);
         rateLine.css('visibility', 'visible');
     }
 
-    // Ініціалізація плагіна
     function startPlugin() {
         window.combined_ratings_plugin = true;
+        initColors();
+        Lampa.Listener.follow('app', function(e) {
+            if (e.type === 'ready') scheduleColorize();
+        });
         Lampa.Listener.follow('full', function(e) {
-            if (e.type === 'complite') {
+            if (e.type !== 'complite') return;
+
+            var active = Lampa.Activity.active();
+            if (!active || !active.activity) return;
+            var render = active.activity.render();
+            var state = { revenue: 0, isUS: false };
+
+            setTimeout(function() {
+                markBudget(render);
+                fetchAdditionalRatings(e.data.movie, render, state);
+            }, 500);
+
+            [1500, 3000, 5000].forEach(function(delay) {
                 setTimeout(function() {
-                    fetchAdditionalRatings(e.data.movie);
-                }, 500);
-            }
+                    markBudget(render);
+                    insertBoxOffice(render, state.revenue, state.isUS);
+                }, delay);
+            });
         });
     }
 
