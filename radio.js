@@ -494,13 +494,6 @@
       genre: [{ id: 'nst', name: 'Nostalgie' }]
     },
     {
-      id: 'flux_90s',
-      title: 'FluxFM 90s',
-      tooltip: 'Berlin · Nostalgie',
-      stream: 'https://streams.fluxfm.de/90er/mp3-128/streams.fluxfm.de/',
-      genre: [{ id: 'nst', name: 'Nostalgie' }]
-    },
-    {
       id: 'flux_70s',
       title: 'FluxFM 70s',
       tooltip: 'Berlin · Nostalgie',
@@ -611,13 +604,6 @@
       tooltip: 'Berlin · Funk',
       stream: 'https://streams.fluxfm.de/event01/mp3-128/streams.fluxfm.de/',
       genre: [{ id: 'funk', name: 'Funk' }]
-    },
-    {
-      id: 'flux_anima',
-      title: 'FluxFM Anima Radio',
-      tooltip: 'Berlin · Pop',
-      stream: 'https://streams.fluxfm.de/popradio/mp3-128/streams.fluxfm.de/',
-      genre: [{ id: 'pop', name: 'Pop' }]
     },
     {
       id: 'flux_yoga_sounds',
