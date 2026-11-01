@@ -26,6 +26,18 @@
     // Новий плагін — просто додайте його клас сюди.
     var ONLINE_LIKE = ['view--uafilms'];
 
+    // Кнопки, які ТОЧНО не онлайн: їх не чіпаємо як онлайн (ні порядок, ні іконка).
+    var NON_ONLINE = ['button--play', 'button--book', 'button--subscribe', 'button--options',
+        'button--reaction', 'button--priority', 'open--menu',
+        'view--torrent', 'view--trailer', 'view--ukr-trailer'];
+
+    // true  — будь-яка НЕВІДОМА кнопка в картці вважається кнопкою нового онлайн-плагіна:
+    //         стає в ряд онлайн-кнопок (після відомих, перед Торрентами й Трейлерами),
+    //         отримує іконку «Онлайн» і синій колір. Нові плагіни додавати в код не треба.
+    // false — онлайн лише кнопки зі словом "online" у класі та з ONLINE_LIKE.
+    // Якщо якась не-онлайн кнопка помилково потрапила в онлайн — додайте її клас у NON_ONLINE.
+    var UNKNOWN_AS_ONLINE = true;
+
     // Власні підписи кнопок: клас кнопки → текст.
     // Потрібно, бо різні онлайн-плагіни можуть показувати однаковий напис.
     // Не потрібен підпис — видаліть рядок. Новий плагін — додайте його клас.
@@ -55,15 +67,15 @@
             '<line class="lme-dot" x1="8" y1="8" x2="8.01" y2="8"/><line class="lme-dot" x1="16" y1="8" x2="16.01" y2="8"/>' +
             '<line class="lme-dot" x1="12" y1="12" x2="12.01" y2="12"/>' +
             '<line class="lme-dot" x1="8" y1="16" x2="8.01" y2="16"/><line class="lme-dot" x1="16" y1="16" x2="16.01" y2="16"/></svg>',
-        torrent: '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 50 50" width="50px" height="50px">' +
+        torrent: '<svg class="lme-ic" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 50 50" width="50px" height="50px">' +
             '<path d="M25,2C12.317,2,2,12.317,2,25s10.317,23,23,23s23-10.317,23-23S37.683,2,25,2zM40.5,30.963c-3.1,0-4.9-2.4-4.9-2.4S34.1,35,27,35c-1.4,0-3.6-0.837-3.6-0.837l4.17,9.643C26.727,43.92,25.874,44,25,44c-2.157,0-4.222-0.377-6.155-1.039L9.237,16.851c0,0-0.7-1.2,0.4-1.5c1.1-0.3,5.4-1.2,5.4-1.2s1.475-0.494,1.8,0.5c0.5,1.3,4.063,11.112,4.063,11.112S22.6,29,27.4,29c4.7,0,5.9-3.437,5.7-3.937c-1.2-3-4.993-11.862-4.993-11.862s-0.6-1.1,0.8-1.4c1.4-0.3,3.8-0.7,3.8-0.7s1.105-0.163,1.6,0.8c0.738,1.437,5.193,11.262,5.193,11.262s1.1,2.9,3.3,2.9c0.464,0,0.834-0.046,1.152-0.104c-0.082,1.635-0.348,3.221-0.817,4.722C42.541,30.867,41.756,30.963,40.5,30.963z"/></svg>',
         // Другий path — великий центральний трикутник (жовтий у кнопці Lampac)
-        online: '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32">' +
+        online: '<svg class="lme-ic" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32">' +
             '<path d="M20.331 14.644l-13.794-13.831 17.55 10.075z"/>' +
             '<path d="M2.938 0c-0.813 0.425-1.356 1.2-1.356 2.206v27.581c0 1.006 0.544 1.781 1.356 2.206l16.038-16z"/>' +
             '<path d="M29.512 14.1l-3.681-2.131-4.106 4.031 4.106 4.031 3.756-2.131c1.125-0.893 1.125-2.906-0.075-3.8z"/>' +
             '<path d="M6.538 31.188l17.55-10.075-3.756-3.756z"/></svg>',
-        trailer: '<svg height="70" viewBox="0 0 80 70" fill="none" xmlns="http://www.w3.org/2000/svg">' +
+        trailer: '<svg class="lme-ic" height="70" viewBox="0 0 80 70" fill="none" xmlns="http://www.w3.org/2000/svg">' +
             '<path fill-rule="evenodd" clip-rule="evenodd" d="M71.2555 2.08955C74.6975 3.2397,77.4083 6.62804,78.3283 10.9306C80 18.7291,80 35,80 35C80 35,80 51.2709,78.3283 59.0694C77.4083 63.372,74.6975 66.7603,71.2555 67.9104C65.0167 70,40,70,40,70C40 70,14.9833 70,8.74453 67.9104C5.3025 66.7603,2.59172 63.372,1.67172 59.0694C0 51.2709,0 35,0 35C0 35,0 18.7291,1.67172 10.9306C2.59172 6.62804,5.3025 3.2395,8.74453 2.08955C14.9833 0,40,0,40,0C40 0,65.0167 0,71.2555 2.08955ZM55.5909 35.0004L29.9773 49.5714V20.4286L55.5909 35.0004Z"/></svg>'
     };
 
@@ -128,6 +140,7 @@
             '  --online-accent: #ffeb3b;',
             '  --uafilms-big: #2196f3;',     // великий трикутник UAFilms
             '  --uafilms-small: #ffeb3b;',   // малі трикутники UAFilms
+            '  --uakino-color: #ffeb3b;',    // усі трикутники UAKino
             '  --torrent-color: #4caf50;',
             '  --trailer-color: #f44336;',
             '  --head-icon-size: 24px;',   // розмір іконок наших кнопок шапки (як «Пошук»)
@@ -145,10 +158,14 @@
 
             '.head__action.open--feed svg path,',
             '.full-start__button.view--online svg path { fill: var(--online-color) !important; }',
+            // Усі інші онлайн-кнопки (нові плагіни) — стандартний синій; Lampac і UAFilms нижче перекривають
+            '.full-start__button.lme-online svg path { fill: var(--online-color) !important; }',
             '.full-start__button.lampac--button svg path:nth-of-type(2) { fill: var(--online-accent) !important; }',
             // UAFilms — дзеркально до Lampac: малі трикутники жовті, великий (другий path) синій
             '.full-start__button.view--uafilms svg path { fill: var(--uafilms-small) !important; }',
             '.full-start__button.view--uafilms svg path:nth-of-type(2) { fill: var(--uafilms-big) !important; }',
+            // UAKino — усі трикутники жовті (клас lme-yellow ставить плагін, див. ICON_YELLOW_MATCH)
+            '.full-start__button.lme-online.lme-yellow svg path { fill: var(--uakino-color) !important; }',
             '.full-start__button.view--torrent svg path { fill: var(--torrent-color) !important; }',
             '.full-start__button.view--trailer svg path { fill: var(--trailer-color) !important; }',
             // Кнопки шапки: однаковий розмір і колір (currentColor), без кольорових акцентів
@@ -196,11 +213,58 @@
         return null;
     }
 
-    function replaceIcons(root) {
-        root.find('.full-start__button.view--torrent svg').replaceWith(SVG_ICONS.torrent);
-        root.find('.full-start__button.view--online svg').replaceWith(SVG_ICONS.online);
-        root.find('.full-start__button.view--uafilms svg').replaceWith(SVG_ICONS.online);
-        root.find('.full-start__button.view--trailer svg').replaceWith(SVG_ICONS.trailer);
+    function hasAnyClass(el, list) {
+        if (!el || !el.classList) return false;
+        return list.some(function (c) { return el.classList.contains(c); });
+    }
+
+    // Кнопки з усіма жовтими трикутниками (UAKino). Розпізнається за словом у класі, id,
+    // атрибутах (data-*) або тексті кнопки — клас плагіна знати не обов'язково.
+    // Інша назва — змініть вираз, напр. /uakino|kinoukr/i
+    var ICON_YELLOW_MATCH = /uakino/i;
+
+    function buttonSignature(el) {
+        var s = (el.className || '') + ' ' + (el.id || '') + ' ' + (el.textContent || '');
+        var attrs = el.attributes || [];
+        for (var i = 0; i < attrs.length; i++) s += ' ' + attrs[i].name + ' ' + attrs[i].value;
+        return s;
+    }
+
+    // Чи це кнопка онлайн-плагіна (будь-якого, і майбутніх теж)
+    function isOnlineButton(el) {
+        if (!el || !el.classList) return false;
+        // явні: Lampac, штатний «Онлайн», плагіни зі списку
+        if (el.classList.contains('lampac--button') || el.classList.contains('view--online')) return true;
+        if (hasAnyClass(el, ONLINE_LIKE)) return true;
+        // точно не онлайн
+        if (hasAnyClass(el, NON_ONLINE)) return false;
+        // слово "online" у класі
+        if (/online/i.test(el.className || '')) return true;
+        // невідома кнопка якогось плагіна
+        return UNKNOWN_AS_ONLINE;
+    }
+
+    // Міняє першу іконку кнопки на нашу (повторно вже замінену не чіпає)
+    function swapIcon(btn, html) {
+        var $b = $(btn);
+        var svg = $b.find('svg').first();
+        if (svg.length) {
+            if (svg.hasClass('lme-ic')) return;
+            svg.replaceWith(html);
+        } else {
+            $b.prepend(html);
+        }
+    }
+
+    function replaceIcons(root, onlineButtons) {
+        root.find('.full-start__button.view--torrent').each(function () { swapIcon(this, SVG_ICONS.torrent); });
+        root.find('.full-start__button.view--trailer').each(function () { swapIcon(this, SVG_ICONS.trailer); });
+        onlineButtons.forEach(function (el) {
+            var $el = $(el);
+            $el.addClass('lme-online');
+            if (ICON_YELLOW_MATCH.test(buttonSignature(el))) $el.addClass('lme-yellow');
+            swapIcon(el, SVG_ICONS.online);
+        });
     }
 
     function applyLabels(root) {
@@ -212,11 +276,10 @@
         });
     }
 
-    // Відступи кнопки UAFilms беремо з еталонної кнопки (Lampac, інакше Bandera):
-    // власні відступи плагіна UAFilms роблять її ширшою, через це при фокусі
-    // наступна кнопка зсувається правіше за звичайне.
+    // Відступи решти онлайн-кнопок (UAFilms, нові плагіни) беремо з еталонної кнопки
+    // (Lampac, інакше Bandera): власні відступи плагінів роблять кнопку ширшою,
+    // через це при фокусі наступна кнопка зсувається правіше за звичайне.
     var SPACING_REF = ['lampac--button', 'view--bandera-online'];
-    var SPACING_TARGETS = ['view--uafilms'];
 
     function copyStyle(from, to, props) {
         if (!from || !to) return;
@@ -224,7 +287,7 @@
         props.forEach(function (p) { to.style.setProperty(p, cs.getPropertyValue(p), 'important'); });
     }
 
-    function mirrorSpacing(root) {
+    function mirrorSpacing(root, onlineButtons) {
         var ref = null;
         SPACING_REF.some(function (cls) {
             var el = root.find('.full-start__button.' + cls).first();
@@ -233,9 +296,9 @@
         });
         if (!ref) return;
 
-        SPACING_TARGETS.forEach(function (cls) {
-            var tgt = root.find('.full-start__button.' + cls).first();
-            if (!tgt.length) return;
+        onlineButtons.forEach(function (el) {
+            if (hasAnyClass(el, SPACING_REF)) return;   // еталони не чіпаємо
+            var tgt = $(el);
 
             copyStyle(ref[0], tgt[0], ['padding-left', 'padding-right', 'padding-top', 'padding-bottom',
                 'margin-left', 'margin-right', 'gap', 'column-gap']);
@@ -246,7 +309,9 @@
         });
     }
 
-    function applyLayout(fullContainer) {
+    // late = true: повторний прохід, коли якийсь плагін додав кнопку із запізненням
+    // (фокус при цьому не скидаємо на першу кнопку)
+    function applyLayout(fullContainer, late) {
         if (!fullContainer || !fullContainer.length) return;
 
         var targetContainer = fullContainer.find('.full-start-new__buttons');
@@ -275,9 +340,12 @@
         ONLINE_LIKE.forEach(function (cls) {
             allButtons.filter('.' + cls).each(function () { pushEl(this); });
         });
-        // Автовизначення: будь-яка кнопка, у класі якої є слово "online"
-        allButtons.filter(function () { return /online/i.test(this.className || ''); })
-            .each(function () { pushEl(this); });
+        // Усі решта онлайн-кнопки (нові плагіни, у порядку появи) — за відомими,
+        // але до Торрентів і Трейлерів. Ці ж кнопки отримують іконку «Онлайн».
+        var onlineButtons = [];
+        allButtons.each(function () {
+            if (isOnlineButton(this)) { pushEl(this); onlineButtons.push(this); }
+        });
 
         FIXED_ORDER.forEach(function (cls) {
             var el = allButtons.filter('.' + cls);
@@ -300,18 +368,28 @@
             unique.push(el);
         });
         ordered = unique;
+        onlineButtons = onlineButtons.filter(function (el) { return unique.indexOf(el) !== -1; });
 
         // detach (не empty), щоб зберегти обробники подій
         $(ordered).detach();
         $(ordered).each(function () { targetContainer.append(this); });
 
         // Іконки міняємо в тому ж проході, до показу кнопок
-        safeExecute(function () { replaceIcons(targetContainer); }, 'Помилка оновлення іконок кнопок');
+        safeExecute(function () { replaceIcons(targetContainer, onlineButtons); }, 'Помилка оновлення іконок кнопок');
         safeExecute(function () { applyLabels(targetContainer); }, 'Помилка оновлення підписів кнопок');
-        safeExecute(function () { mirrorSpacing(targetContainer); }, 'Помилка вирівнювання відступів кнопок');
+        safeExecute(function () { mirrorSpacing(targetContainer, onlineButtons); }, 'Помилка вирівнювання відступів кнопок');
 
         targetContainer.addClass('lme-buttons');
         syncHideClass();
+
+        if (late) {
+            // Пізній прохід: лише оновлюємо список кнопок для пульта, якщо зараз активна картка
+            safeExecute(function () {
+                var en = Lampa.Controller.enabled && Lampa.Controller.enabled();
+                if (en && en.name === 'full_start') Lampa.Controller.toggle('full_start');
+            }, 'Помилка оновлення керування');
+            return;
+        }
 
         Lampa.Controller.toggle("full_start");
 
@@ -330,6 +408,49 @@
         fullContainer.find('.full-start-new__buttons').addClass(READY_CLASS);
     }
 
+    // Деякі плагіни додають кнопку із запізненням (після мережевого запиту), уже після
+    // першого розкладу. Стежимо за контейнерами кнопок і ставимо нові кнопки на місце.
+    var cardObserver = null;
+    var cardLateTimer = null;
+    var cardObserverTimeout = null;
+    var cardLatePasses = 0;
+    var CARD_OBSERVE_MS = 12000;   // скільки мс після відкриття картки чекаємо нові кнопки
+    var CARD_MAX_PASSES = 8;       // запобіжник від нескінченних перестановок
+
+    function stopCardObserver() {
+        if (cardObserver) { cardObserver.disconnect(); cardObserver = null; }
+        clearTimeout(cardLateTimer);
+        clearTimeout(cardObserverTimeout);
+    }
+
+    function observeCardButtons(fullContainer) {
+        if (cardObserver) { cardObserver.disconnect(); cardObserver = null; }
+        if (typeof MutationObserver === 'undefined') return;
+
+        var containers = fullContainer.find('.full-start-new__buttons, .buttons--container');
+        if (!containers.length) return;
+
+        cardObserver = new MutationObserver(function (list) {
+            var added = list.some(function (m) {
+                return Array.prototype.some.call(m.addedNodes || [], function (n) {
+                    return n.nodeType === 1 &&
+                        (n.classList.contains('full-start__button') || !!n.querySelector('.full-start__button'));
+                });
+            });
+            if (!added) return;
+
+            clearTimeout(cardLateTimer);
+            cardLateTimer = setTimeout(function () {
+                if (cardLatePasses >= CARD_MAX_PASSES) return stopCardObserver();
+                cardLatePasses++;
+                if (cardObserver) cardObserver.disconnect();   // не реагуємо на власні перестановки
+                try { applyLayout(fullContainer, true); } catch (err) { console.error('Button Manager:', err); }
+                observeCardButtons(fullContainer);
+            }, 80);
+        });
+        containers.each(function () { cardObserver.observe(this, { childList: true }); });
+    }
+
     function initCardListener() {
         Lampa.Listener.follow('full', function (e) {
             if (e.type === 'build' && e.name === 'start' && e.item && e.item.html) {
@@ -340,6 +461,8 @@
                 if (!fullContainer) return;
                 lastFullContainer = fullContainer;
                 syncHeadIconSizeSoon();   // інтерфейс міг змінити масштаб (розмір шрифту в налаштуваннях)
+                stopCardObserver();       // нова картка — починаємо стежити заново
+                cardLatePasses = 0;
 
                 // Таймаут, щоб інші плагіни встигли вставити свої кнопки
                 setTimeout(function () {
@@ -350,6 +473,8 @@
                         console.error('Button Manager:', err);
                     }
                     revealButtons(fullContainer);
+                    observeCardButtons(fullContainer);
+                    cardObserverTimeout = setTimeout(stopCardObserver, CARD_OBSERVE_MS);
                 }, 50);
 
                 // Запобіжник: кнопки в жодному разі не лишаються невидимими
@@ -374,18 +499,16 @@
                 "default": true
             },
             field: {
-                name: 'Hide text',
+                name: 'Ховати текст кнопок ?',
                 description: Lampa.Lang.translate('lme_showbuttonwn_desc')
             },
             onChange: function () {
                 Lampa.Settings.update();
-                // Дати Lampa записати нове значення, потім застосувати
-                setTimeout(function () {
-                    syncHideClass();
-                    if (lastFullContainer && lastFullContainer.length) {
-                        applyLayout(lastFullContainer);
-                    }
-                }, 30);
+                // Дати Lampa записати нове значення, потім застосувати.
+                // Текст кнопок ховається лише класом на <html>, тому перебудова розкладу не потрібна.
+                // Раніше тут викликався applyLayout → Controller.toggle('full_start'), який забирав
+                // керування (і фокус) з меню налаштувань. Перезавантаження інтерфейсу теж не потрібне.
+                setTimeout(syncHideClass, 30);
             }
         });
     }
@@ -693,7 +816,7 @@
     // ---------- Запуск ----------
     var manifest = {
         type: "other",
-        version: "3.4.1",
+        version: "3.5.1",
         author: '@lme_chat',
         name: "Button Manager + Кеш/Вихід",
         description: "Порядок кнопок картки (Lampac Online першим), Hide text, кнопки шапки: випадковий фільм, перезавантаження, очищення кешу, вихід",
