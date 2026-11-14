@@ -371,6 +371,13 @@
       genre: [{ id: 'psytrance', name: 'Psy Trance' }]
     },
     {
+      id: 'goanight',
+      title: 'Goa Night',
+      tooltip: 'Psy Dance Music & Trippy ChillOut Tunes',
+      stream: 'https://stream.laut.fm/goanight',
+      genre: [{ id: 'psytrance', name: 'Psy Trance' }]
+    },
+    {
       id: 'groovesalad',
       title: 'SomaFM Groove Salad',
       tooltip: 'Ambient & Downtempo',
