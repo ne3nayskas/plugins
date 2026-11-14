@@ -351,9 +351,9 @@
     },
     {
       id: 'technolovers',
-      title: 'Technolovers',
-      tooltip: 'Psy & Goa Trance Non-Stop!',
-      stream: 'https://stream.technolovers.fm/psytrance',
+      title: 'Goa Channel One ॐ',
+      tooltip: 'Psy & Goa Trance ॐ Non-Stop!',
+      stream: 'https://stream.laut.fm/goa-channel-one',
       genre: [{ id: 'psytrance', name: 'Psy Trance' }]
     },
     {
