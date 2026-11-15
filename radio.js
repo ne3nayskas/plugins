@@ -30,7 +30,7 @@
   // Кольори рядка з назвою треку: текст і значок ♪, та швидкість стрічки, пікселів/с
   var TRACK_COLOR_TEXT = '#4da3ff';
   var TRACK_COLOR_NOTE = '#ffd700';
-  var TRACK_SCROLL_SPEED = 45;
+  var TRACK_SCROLL_SPEED = 40;
   // ========================
 
   function _classCallCheck(instance, Constructor) {
@@ -99,6 +99,13 @@
       genre: [{ id: 'news', name: 'Новини' }]
     },
     {
+      id: 'ukrpisnia',
+      title: 'Українська пісня',
+      tooltip: 'Радіо пісенної класики України',
+      stream: 'https://listen6.myradio24.com/50904',
+      genre: [{ id: 'ukr', name: 'Українське' }]
+    },
+    {
       id: 'ukrradio',
       title: 'Українське Радіо',
       tooltip: 'UR1 Українське Радіо',
@@ -118,13 +125,6 @@
       tooltip: 'UR3 Радіо Культура',
       stream: 'https://radio2.ukr.radio/ur3-mp3-m',
       genre: [{ id: 'culture', name: 'Культура' }]
-    },
-    {
-      id: 'ukrpisnia',
-      title: 'Українська пісня',
-      tooltip: 'Радіо пісенної класики України',
-      stream: 'https://listen6.myradio24.com/50904',
-      genre: [{ id: 'ukr', name: 'Українське' }]
     },
     {
       id: 'pryamyi',
@@ -281,13 +281,6 @@
       genre: [{ id: 'indie', name: 'Indie' }]
     },
     {
-      id: 'regenbogen2',
-      title: 'REGENBOGEN 2 Indie-Rock',
-      tooltip: 'Maximum Indie Rock',
-      stream: 'https://stream.regenbogen2.de/indierock/mp3-128/',
-      genre: [{ id: 'indie', name: 'Indie' }]
-    },
-    {
       id: 'melodiafm',
       title: 'Мелодія FM',
       tooltip: 'Найкращі хіти 90-х і 2000-х!',
@@ -321,13 +314,6 @@
       tooltip: 'Музика для відпочинку',
       stream: 'https://online.radiorelax.ua/RadioRelax',
       genre: [{ id: 'relax', name: 'Relax' }]
-    },
-    {
-      id: 'wandafm',
-      title: 'Ванда FM',
-      tooltip: 'Радіо чарівного настрою',
-      stream: 'https://icecast.xtvmedia.pp.ua/radiowandafm_hq.mp3',
-      genre: [{ id: 'pop', name: 'Pop' }]
     },
     {
       id: 'radiojazz',
@@ -440,6 +426,13 @@
       tooltip: 'World of Rock',
       stream: 'https://stream.laut.fm/rockworld',
       genre: [{ id: 'rock', name: 'Rock' }]
+    },
+    {
+      id: 'regenbogen2',
+      title: 'REGENBOGEN 2 Indie-Rock',
+      tooltip: 'Maximum Indie Rock',
+      stream: 'https://stream.regenbogen2.de/indierock/mp3-128/',
+      genre: [{ id: 'indie', name: 'Indie' }]
     },
     {
       id: 'bigfm',
