@@ -420,6 +420,13 @@
       genre: [{ id: 'rock', name: 'Rock' }]
     },
     {
+      id: 'powerfmberlin',
+      title: 'Power FM',
+      tooltip: 'Classic Rock',
+      stream: 'https://stream.laut.fm/powerfm',
+      genre: [{ id: 'rock', name: 'Rock' }]
+    },
+    {
       id: 'bigfm',
       title: 'bigFM Deep',
       tooltip: 'Deep House',
