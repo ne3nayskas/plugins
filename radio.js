@@ -1,6 +1,6 @@
 // =========================================
 // Радіо для Lampa
-// Версія: 1.11.0 | 2026.11.15
+// Версія: 1.11.1 | 2026.11.15
 // Опис: Плагін для прослуховування ~ 80+ радіостанцій
 // Aвтор - @ne3nayskas 
 // Зміни 1.6.0: свайпи та кнопки ⏮ / ⏭ у вікні відтворення (мобільні)
@@ -21,6 +21,7 @@
 // Зміни 1.10.1: назва треку для Radio Bayraktar (o.tavr.media/bayraktar)
 // Зміни 1.10.2: якщо трек невідомий — у стрічці показується слоган станції (tooltip) в такому ж оформленні; трек має пріоритет
 // Зміни 1.11.0: один рядок на місці слогана: «♪ трек ♪ слоган ♪» (немає треку — «♪ слоган ♪»), біжить, якщо не вміщається
+// Зміни 1.11.1: стабільніший старт потоку: затримка 250 мс при швидких перемиканнях, перепідключення через 8 с, ICY-запит лише після старту звуку, коректне переривання завантаження
 // =========================================
 
 (function () {
@@ -787,6 +788,8 @@
   var globalScreenReset = null;
   var globalHls = null;
   var globalNotyTimers = [];
+  var globalStartTimer = null;   // відкладений старт потоку (захист від частих перемикань)
+  var globalWatchdog = null;     // перезапуск, якщо потік довго не стартує
 
   function clearPlayingClass() {
     document.querySelectorAll('.radio-item.playing').forEach(function(el) {
@@ -822,10 +825,15 @@
       globalHls.destroy();
       globalHls = false;
     }
+    clearTimeout(globalStartTimer);
+    clearTimeout(globalWatchdog);
+    globalStartTimer = globalWatchdog = null;
     if (globalAudio) {
       try {
         globalAudio.pause();
-        globalAudio.src = '';
+        // не src = '' (це може відкрити запит до сторінки): прибираємо атрибут і обриваємо завантаження
+        globalAudio.removeAttribute('src');
+        globalAudio.load();
       } catch(e) {}
       globalAudio = null;
     }
@@ -878,13 +886,34 @@
       }
     }
 
+    var started = false, retries = 0;
+
     function loadPlay() {
+      if (!globalAudio || globalStation !== station) return;
       globalAudio.src = url;
       globalAudio.load();
       startPlay();
+      armWatchdog();
+    }
+
+    // Якщо потік не почав грати за 8 с — перепідключаємось (до 2 разів)
+    function armWatchdog() {
+      clearTimeout(globalWatchdog);
+      globalWatchdog = setTimeout(function() {
+        if (started || !globalAudio || globalStation !== station) return;
+        if (retries++ < 2) loadPlay();
+      }, 8000);
+    }
+
+    // Невелика затримка перед підключенням: при швидких свайпах не засипаємо сервер запитами
+    function loadPlayDelayed() {
+      clearTimeout(globalStartTimer);
+      globalStartTimer = setTimeout(loadPlay, 250);
     }
 
     globalAudio.addEventListener("playing", function() {
+      started = true;
+      clearTimeout(globalWatchdog);
       updateMiniPlayer(station, 'play');
       if (!globalScreenReset) {
         globalScreenReset = setInterval(function() {
@@ -906,7 +935,7 @@
     });
 
     if (globalAudio.canPlayType('application/vnd.apple.mpegurl') || url.indexOf('.aacp') > 0 || station.stream) {
-      loadPlay();
+      loadPlayDelayed();
     } else if (Hls.isSupported()) {
       try {
         globalHls = new Hls();
@@ -928,7 +957,7 @@
         setTimeout(hideNoty, 100);
       }
     } else {
-      loadPlay();
+      loadPlayDelayed();
     }
   }
 
@@ -1129,14 +1158,14 @@
     return null;
   }
 
-  function fetchNowPlaying(station, signal) {
+  function fetchNowPlaying(station, signal, allowIcy) {
     var url = streamUrlOf(station);
     if (!url || typeof fetch !== 'function') return Promise.resolve('');
     var svc = readServiceTitle(url, signal);
     var p = svc || Promise.resolve('');
     return p["catch"](function () { return ''; }).then(function (t) {
       if (cleanTrack(t, station)) return t;
-      if (/\.m3u8(\?|$)/i.test(url)) return '';
+      if (!allowIcy || /\.m3u8(\?|$)/i.test(url)) return '';
       return readIcyTitle(url, signal);
     });
   }
@@ -1233,7 +1262,9 @@
       if (isDestroyed) return;
       if (npAbort) { try { npAbort.abort(); } catch (e) {} }
       npAbort = typeof AbortController === 'function' ? new AbortController() : null;
-      fetchNowPlaying(station, npAbort ? npAbort.signal : undefined).then(function (t) {
+      // ICY відкриває друге з'єднання з потоком — робимо це лише коли звук уже грає, щоб не заважати старту
+      var allowIcy = !!(audioRef && !audioRef.paused && audioRef.readyState >= 3);
+      fetchNowPlaying(station, npAbort ? npAbort.signal : undefined, allowIcy).then(function (t) {
         if (isDestroyed) return;
         var box = html.find('.radio-player__track');
         // є трек — «♪ трек ♪ слоган ♪», немає — «♪ слоган ♪»
@@ -1291,8 +1322,15 @@
       if (box0) setTrack(box0, ''); // одразу слоган, поки йде запит
       pollNowPlaying();
       npTimer = setInterval(pollNowPlaying, NOW_PLAYING_EVERY);
+      // щойно звук реально пішов — одразу питаємо трек ще раз (тепер уже і через ICY)
+      if (audioRef) audioRef.addEventListener('playing', onAudioPlayingNp);
+    }
+    function onAudioPlayingNp() {
+      audioRef.removeEventListener('playing', onAudioPlayingNp);
+      setTimeout(pollNowPlaying, 300);
     }
     function stopNowPlaying() {
+      if (audioRef) audioRef.removeEventListener('playing', onAudioPlayingNp);
       if (npTimer) clearInterval(npTimer);
       npTimer = null;
       if (npAbort) { try { npAbort.abort(); } catch (e) {} }
@@ -1858,7 +1896,7 @@
 
     var manifest = {
       type: 'audio',
-      version: '1.11.0',
+      version: '1.11.1',
       name: Lampa.Lang.translate('radio_station'),
       description: 'Українські радіостанції',
       component: 'radio'
