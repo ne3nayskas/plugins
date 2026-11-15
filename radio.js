@@ -28,8 +28,8 @@
   // Чутливість хвиль у плеєрі: 1 = спокійно, 2 = жваво, 3 = дуже різко
   var VIZ_SENSITIVITY = 1.5;
   // Кольори рядка з назвою треку: текст і значок ♪, та швидкість стрічки, пікселів/с
-  var TRACK_COLOR_TEXT = '#ffd700';
-  var TRACK_COLOR_NOTE = '#4da3ff';
+  var TRACK_COLOR_TEXT = '#4da3ff';
+  var TRACK_COLOR_NOTE = '#ffd700';
   var TRACK_SCROLL_SPEED = 45;
   // ========================
 
