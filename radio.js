@@ -1,6 +1,6 @@
 // =========================================
 // Радіо для Lampa
-// Версія: 1.9.3 | 2026.11.15
+// Версія: 1.9.5 | 2026.11.15
 // Опис: Плагін для прослуховування ~ 80+ радіостанцій
 // Aвтор - @ne3nayskas 
 // Зміни 1.6.0: свайпи та кнопки ⏮ / ⏭ у вікні відтворення (мобільні)
@@ -15,6 +15,8 @@
 // Зміни 1.9.1: у плеєрі показується поточна композиція (ICY-метадані, laut.fm, SomaFM); жвавіші хвилі з налаштуванням VIZ_SENSITIVITY; виправлено відступи та висоту смужок
 // Зміни 1.9.2: назва треку — кольорова (градієнт) з ♪ і біжить стрічкою, якщо довга; нові станції laut.fm
 // Зміни 1.9.3: назва треку для станцій на myradio24 (через status.json); значок ♪ з обох боків назви
+// Зміни 1.9.4: назва треку для Radio ROKS, ROKS Український Рок, New Rock, Ballads та Hard & Heavy (o.tavr.media)
+// Зміни 1.9.5: назва треку для Kiss FM, Hit FM, Наше Радіо, Relax, Jazz, Мелодія (o.tavr.media)
 // =========================================
 
 (function () {
@@ -980,6 +982,37 @@
 
   var NOW_PLAYING_EVERY = 20000; // як часто оновлювати, мс
 
+  // Radio ROKS: суфікс потоку (RadioROKS_<суфікс>) → назва стрічки на o.tavr.media. Інші канали додавайте сюди, коли знайдете їхні адреси
+  var ROKS_FEEDS = { '': 'roks', 'ukr': 'roksukr', 'newrock': 'roksnew', 'ballads': 'roksbal', 'hardnheavy': 'rokshar' };
+
+  // TAVR: назва потоку → стрічки на o.tavr.media (main — історія основного каналу, multi — по одному запису на підканал із полем type)
+  var TAVR_FEEDS = {
+    kissfm: { main: 'kiss', multi: 'kiss3songs' },
+    hitfm: { main: 'hit', multi: 'hit3songs' },
+    nasheradio: { main: 'nasheradio', multi: 'nasheradio3songs' },
+    radiorelax: { main: 'relax', multi: 'relax5songs' },
+    radiojazz: { main: 'jazz', multi: 'jazz3songs' },
+    melodiafm: { main: 'melodia', multi: 'melodia3songs' }
+  };
+
+  function readTavrTitle(url, signal) {
+    var m = /^https?:\/\/(?:online\.[a-z]+\.ua|tavr\.tvstitch\.com)\/([A-Za-z]+)(?:_([A-Za-z]+))?(?:[?#]|$)/i.exec(url);
+    var f = m && TAVR_FEEDS[m[1].toLowerCase()];
+    if (!f) return null;
+    var type = (m[2] || '').toLowerCase();
+    return fetch('https://o.tavr.media/' + (type ? f.multi : f.main), { cache: 'no-store', signal: signal }).then(function (r) { return r.json(); }).then(function (j) {
+      if (!Array.isArray(j)) return '';
+      var it = null;
+      if (type) {
+        for (var i = 0; i < j.length; i++) if (String(j[i].type || '').toLowerCase() === type) { it = j[i]; break; }
+      } else {
+        it = j[0];
+      }
+      if (!it || !it.stime || !it.song || it.song === 'None') return '';
+      return (it.singer ? it.singer + ' - ' : '') + it.song;
+    });
+  }
+
   function streamUrlOf(st) {
     return st.stream_320 || st.stream_128 || st.stream || st.stream_hls || '';
   }
@@ -1063,6 +1096,21 @@
         return (a ? a + ' - ' : '') + (j && j.title || '');
       });
     }
+    // Radio ROKS: власний JSON сайту (CORS *), масив від найновішого; джингл має artist_id 0 і порожній stime
+    m = /online\.radioroks\.ua\/RadioROKS(?:_([A-Za-z]+))?(?:[?#]|$)/i.exec(url);
+    if (m) {
+      var feed = ROKS_FEEDS[(m[1] || '').toLowerCase()];
+      if (feed) {
+        return fetch('https://o.tavr.media/' + feed, { cache: 'no-store', signal: signal }).then(function (r) { return r.json(); }).then(function (j) {
+          var it = Array.isArray(j) ? j[0] : null;
+          if (!it || !it.stime || !it.song) return '';
+          return (it.singer ? it.singer + ' - ' : '') + it.song;
+        });
+      }
+    }
+    // Холдинг TAVR (Kiss, Hit, Наше Радіо, Relax, Jazz, Мелодія): o.tavr.media, CORS *
+    var tv = readTavrTitle(url, signal);
+    if (tv) return tv;
     // Хостинг myradio24: JSON статусу з CORS, поле song = «Виконавець - Назва»
     m = /myradio24\.(?:com|org)\/(\d+)/i.exec(url);
     if (m) {
@@ -1794,7 +1842,7 @@
 
     var manifest = {
       type: 'audio',
-      version: '1.9.3',
+      version: '1.9.5',
       name: Lampa.Lang.translate('radio_station'),
       description: 'Українські радіостанції',
       component: 'radio'
