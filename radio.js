@@ -1,6 +1,6 @@
 // =========================================
 // Радіо для Lampa
-// Версія: 1.9.2 | 2026.11.15
+// Версія: 1.9.3 | 2026.11.15
 // Опис: Плагін для прослуховування ~ 80+ радіостанцій
 // Aвтор - @ne3nayskas 
 // Зміни 1.6.0: свайпи та кнопки ⏮ / ⏭ у вікні відтворення (мобільні)
@@ -14,6 +14,7 @@
 // Зміни 1.9.0: новий синьо-жовтий логотип у меню
 // Зміни 1.9.1: у плеєрі показується поточна композиція (ICY-метадані, laut.fm, SomaFM); жвавіші хвилі з налаштуванням VIZ_SENSITIVITY; виправлено відступи та висоту смужок
 // Зміни 1.9.2: назва треку — кольорова (градієнт) з ♪ і біжить стрічкою, якщо довга; нові станції laut.fm
+// Зміни 1.9.3: назва треку для станцій на myradio24 (через status.json); значок ♪ з обох боків назви
 // =========================================
 
 (function () {
@@ -1062,6 +1063,15 @@
         return (a ? a + ' - ' : '') + (j && j.title || '');
       });
     }
+    // Хостинг myradio24: JSON статусу з CORS, поле song = «Виконавець - Назва»
+    m = /myradio24\.(?:com|org)\/(\d+)/i.exec(url);
+    if (m) {
+      return fetch('https://myradio24.com/users/' + m[1] + '/status.json', { cache: 'no-store', signal: signal }).then(function (r) { return r.json(); }).then(function (j) {
+        if (!j) return '';
+        var t = j.song || ((j.artist ? j.artist + ' - ' : '') + (j.songtitle || ''));
+        return /^(джингл|jingle)$/i.test((t || '').trim()) ? '' : t;
+      });
+    }
     m = /somafm\.com\/([a-z0-9]+)-/i.exec(url);
     if (m) {
       return fetch('https://somafm.com/channels.json', { signal: signal }).then(function (r) { return r.json(); }).then(function (j) {
@@ -1784,7 +1794,7 @@
 
     var manifest = {
       type: 'audio',
-      version: '1.9.2',
+      version: '1.9.3',
       name: Lampa.Lang.translate('radio_station'),
       description: 'Українські радіостанції',
       component: 'radio'
