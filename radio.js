@@ -1198,12 +1198,13 @@
           n.textContent = '♪';
           return n;
         }
+        var gap = '  '; // подвійний пробіл між значком і назвою
+        // Нерухомо: ♪  Назва  ♪ ; у стрічці знак ♪ один між назвами: ♪  Назва  ♪  Назва  ...
         for (var k = 0; k < repeat; k++) {
           span.appendChild(note());
-          span.appendChild(document.createTextNode(' ' + text + ' '));
-          span.appendChild(note());
-          if (repeat > 1) span.appendChild(document.createTextNode('     '));
+          span.appendChild(document.createTextNode(gap + text + gap));
         }
+        if (repeat === 1) span.appendChild(note());
       }
       fill(1);
       box.appendChild(span);
