@@ -1,6 +1,6 @@
 // =========================================
 // Радіо для Lampa
-// Версія: 1.11.1 | 2026.11.15
+// Версія: 1.11.2 | 2026.11.15
 // Опис: Плагін для прослуховування ~ 80+ радіостанцій
 // Aвтор - @ne3nayskas 
 // Зміни 1.6.0: свайпи та кнопки ⏮ / ⏭ у вікні відтворення (мобільні)
@@ -22,6 +22,7 @@
 // Зміни 1.10.2: якщо трек невідомий — у стрічці показується слоган станції (tooltip) в такому ж оформленні; трек має пріоритет
 // Зміни 1.11.0: один рядок на місці слогана: «♪ трек ♪ слоган ♪» (немає треку — «♪ слоган ♪»), біжить, якщо не вміщається
 // Зміни 1.11.1: стабільніший старт потоку: затримка 250 мс при швидких перемиканнях, перепідключення через 8 с, ICY-запит лише після старту звуку, коректне переривання завантаження
+// Зміни 1.11.2: еквалайзер і підсвітка станції, що грає, замість зеленого — кольори стрічки (синя та жовта половини) (налаштування EQ_COLOR_FROM / EQ_COLOR_TO / PLAYING_TEXT_COLOR)
 // =========================================
 
 (function () {
@@ -36,6 +37,10 @@
   var TRACK_COLOR_TEXT = '#4da3ff';
   var TRACK_COLOR_NOTE = '#ffd700';
   var TRACK_SCROLL_SPEED = 40;
+  // Еквалайзер (перша половина смужок — EQ_COLOR_FROM, друга — EQ_COLOR_TO) і підсвітка станції, що грає: за замовчуванням кольори стрічки
+  var EQ_COLOR_FROM = TRACK_COLOR_TEXT;
+  var EQ_COLOR_TO = TRACK_COLOR_NOTE;
+  var PLAYING_TEXT_COLOR = TRACK_COLOR_TEXT;
   // ========================
 
   function _classCallCheck(instance, Constructor) {
@@ -1040,6 +1045,32 @@
     });
   }
 
+  // Змішування двох #rrggbb кольорів
+  function mixHex(a, b, t) {
+    function p(h) { h = String(h).replace('#', ''); if (h.length === 3) h = h[0] + h[0] + h[1] + h[1] + h[2] + h[2]; return [0, 2, 4].map(function (i) { return parseInt(h.substr(i, 2), 16) || 0; }); }
+    var x = p(a), y = p(b);
+    return 'rgb(' + [0, 1, 2].map(function (i) { return Math.round(x[i] + (y[i] - x[i]) * t); }).join(',') + ')';
+  }
+
+  // CSS кольорів еквалайзера та активної станції (перекриває стару зелену схему)
+  function accentCss() {
+    function grad(sel, n, extra) {
+      var out = '';
+      // жорсткий поділ як на прапорі (плавне змішування синього з жовтим дає брудно-зелений)
+      for (var i = 1; i <= n; i++) out += sel + ':nth-child(' + i + '){background-color:' + (i <= Math.ceil(n / 2) ? EQ_COLOR_FROM : EQ_COLOR_TO) + ' !important}';
+      return out;
+    }
+    var c = PLAYING_TEXT_COLOR;
+    return grad('.radio-item__wave i', 5) +
+      grad('.radio-item__shade i', 5) +
+      grad('.radio-mini-player:not(.focus) .radio-mini-player__button i', 4) +
+      grad('.radio-player__wave>div', 21) +
+      '.radio-item.playing .radio-item__title,.radio-item.playing .radio-item__num{color:' + c + ' !important}' +
+      '.radio-item.playing .radio-item__tooltip{color:' + c + ' !important;opacity:.8 !important}' +
+      '.radio-mini-player:not(.focus).loading .radio-mini-player__button:before{border-top-color:' + c + ' !important}' +
+      '.radio-player__btn:active{background-color:' + mixHex(c, '#000000', 0.55) + ' !important}';
+  }
+
   function streamUrlOf(st) {
     return st.stream_320 || st.stream_128 || st.stream || st.stream_hls || '';
   }
@@ -1896,7 +1927,7 @@
 
     var manifest = {
       type: 'audio',
-      version: '1.11.1',
+      version: '1.11.2',
       name: Lampa.Lang.translate('radio_station'),
       description: 'Українські радіостанції',
       component: 'radio'
@@ -1928,6 +1959,7 @@
       $('.menu .menu__list').eq(0).append(button);
       $('body').append(Lampa.Template.get('radio_style', {}, true));
       $('body').append('<style>.radio-player__track-in{color:' + TRACK_COLOR_TEXT + '}.radio-player__track-in i{color:' + TRACK_COLOR_NOTE + '}</style>');
+      $('body').append('<style>' + accentCss() + '</style>');
       if (TILE_TITLE_FONT) $('body').append('<style>.radio-content--tiles .radio-item__title{font-size:' + TILE_TITLE_FONT + ' !important}</style>');
     }
 
