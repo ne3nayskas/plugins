@@ -1,6 +1,6 @@
 // =========================================
 // Радіо для Lampa
-// Версія: 1.10.2 | 2026.11.15
+// Версія: 1.11.0 | 2026.11.15
 // Опис: Плагін для прослуховування ~ 80+ радіостанцій
 // Aвтор - @ne3nayskas 
 // Зміни 1.6.0: свайпи та кнопки ⏮ / ⏭ у вікні відтворення (мобільні)
@@ -20,6 +20,7 @@
 // Зміни 1.10.0: РЕЛІЗ — у плеєрі виконавець і трек для ~30 станцій (ICY-метадані, laut.fm, SomaFM, myradio24, o.tavr.media)
 // Зміни 1.10.1: назва треку для Radio Bayraktar (o.tavr.media/bayraktar)
 // Зміни 1.10.2: якщо трек невідомий — у стрічці показується слоган станції (tooltip) в такому ж оформленні; трек має пріоритет
+// Зміни 1.11.0: один рядок на місці слогана: «♪ трек ♪ слоган ♪» (немає треку — «♪ слоган ♪»), біжить, якщо не вміщається
 // =========================================
 
 (function () {
@@ -1235,43 +1236,50 @@
       fetchNowPlaying(station, npAbort ? npAbort.signal : undefined).then(function (t) {
         if (isDestroyed) return;
         var box = html.find('.radio-player__track');
-        // є трек — показуємо його; немає — слоган станції (tooltip) у такому ж оформленні
-        if (box) setTrack(box, cleanTrack(t, station) || fallbackText());
+        // є трек — «♪ трек ♪ слоган ♪», немає — «♪ слоган ♪»
+        if (box) setTrack(box, cleanTrack(t, station));
       }, function () {
         if (isDestroyed || trackShown) return;
         var box = html.find('.radio-player__track');
-        if (box) setTrack(box, fallbackText());
+        if (box) setTrack(box, '');
       });
     }
-    var lastTrack = '';
-    var trackShown = false; // чи зараз у рядку справжній трек (а не слоган)
+    var lastTrack = null;
+    var trackShown = false; // чи зараз у рядку справжній трек (а не лише слоган)
     function fallbackText() { return String(station.tooltip || '').replace(/\s+/g, ' ').trim(); }
-    function setTrack(box, text) {
-      if (text === lastTrack) return;
-      lastTrack = text;
-      trackShown = !!text && text !== fallbackText();
+    // Один рядок: «♪ трек ♪ слоган ♪» або, коли треку немає, «♪ слоган ♪»
+    function setTrack(box, info) {
+      var parts = [];
+      if (info) parts.push(info);
+      var slogan = fallbackText();
+      if (slogan) parts.push(slogan);
+      var key = parts.join('\u0001');
+      if (key === lastTrack) return;
+      lastTrack = key;
+      trackShown = !!info;
       box.textContent = '';
-      if (!text) return;
+      if (!parts.length) return;
       var span = document.createElement('span');
       span.className = 'radio-player__track-in';
+      var gap = '  '; // подвійний пробіл між значком і текстом
+      function note() {
+        var n = document.createElement('i');
+        n.textContent = '♪';
+        return n;
+      }
       function fill(repeat) {
         span.textContent = '';
-        function note() {
-          var n = document.createElement('i');
-          n.textContent = '♪';
-          return n;
-        }
-        var gap = '  '; // подвійний пробіл між значком і назвою
-        // Нерухомо: ♪  Назва  ♪ ; у стрічці знак ♪ один між назвами: ♪  Назва  ♪  Назва  ...
         for (var k = 0; k < repeat; k++) {
-          span.appendChild(note());
-          span.appendChild(document.createTextNode(gap + text + gap));
+          for (var p = 0; p < parts.length; p++) {
+            span.appendChild(note());
+            span.appendChild(document.createTextNode(gap + parts[p] + gap));
+          }
         }
-        if (repeat === 1) span.appendChild(note());
+        if (repeat === 1) span.appendChild(note()); // нерухомо: замикаючий ♪
       }
       fill(1);
       box.appendChild(span);
-      // якщо назва не вміщається — пускаємо безперервну стрічку
+      // якщо не вміщається — пускаємо безперервну стрічку
       if (span.offsetWidth > box.clientWidth) {
         fill(2);
         span.style.animationDuration = Math.max(6, Math.round(span.offsetWidth / 2 / TRACK_SCROLL_SPEED)) + 's';
@@ -1280,7 +1288,7 @@
     }
     function startNowPlaying() {
       var box0 = html.find('.radio-player__track');
-      if (box0) setTrack(box0, fallbackText()); // одразу слоган, поки йде запит
+      if (box0) setTrack(box0, ''); // одразу слоган, поки йде запит
       pollNowPlaying();
       npTimer = setInterval(pollNowPlaying, NOW_PLAYING_EVERY);
     }
@@ -1301,7 +1309,8 @@
     this.create = function () {
       var cover = Lampa.Template.js('radio_cover');
       cover.find('.radio-cover__title').text(station.title || '');
-      cover.find('.radio-cover__tooltip').text(station.tooltip || '');
+      // слоган більше не окремий рядок: на його місці — рядок «трек + слоган» (див. setTrack)
+      cover.find('.radio-cover__tooltip').classList.add('radio-player__track');
       var img_box = cover.find('.radio-cover__img-box');
       var img_elm = img_box.find('img');
       img_box.removeClass('loaded loaded-icon');
@@ -1849,7 +1858,7 @@
 
     var manifest = {
       type: 'audio',
-      version: '1.10.2',
+      version: '1.11.0',
       name: Lampa.Lang.translate('radio_station'),
       description: 'Українські радіостанції',
       component: 'radio'
@@ -1862,7 +1871,7 @@
     
     Lampa.Template.add('radio_list_item', "\n        <div class=\"radio-item selector layer--visible\">\n            <div class=\"radio-item__num\"></div>\n            <div class=\"radio-item__cover\">\n                <div class=\"radio-item__cover-box\">\n                    <img />\n                </div>\n                <div class=\"radio-item__shade\"><i></i><i></i><i></i><i></i><i></i></div>\n            </div>\n            <div class=\"radio-item__body\">\n                <div class=\"radio-item__title\"></div>\n                <div class=\"radio-item__tooltip\"></div>\n            </div>\n            <div class=\"radio-item__wave\">\n                <i></i><i></i><i></i><i></i><i></i>\n            </div>\n            <div class=\"radio-item__icons\">\n                <div class=\"radio-item__icon-favorite\">\n                    <svg version=\"1.1\" id=\"Capa_1\" xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 477.534 477.534\" xml:space=\"preserve\">\n                        <path fill=\"currentColor\" d=\"M438.482,58.61c-24.7-26.549-59.311-41.655-95.573-41.711c-36.291,0.042-70.938,15.14-95.676,41.694l-8.431,8.909\n                            l-8.431-8.909C181.284,5.762,98.662,2.728,45.832,51.815c-2.341,2.176-4.602,4.436-6.778,6.778\n                            c-52.072,56.166-52.072,142.968,0,199.134l187.358,197.581c6.482,6.843,17.284,7.136,24.127,0.654\n                            c0.224-0.212,0.442-0.43,0.654-0.654l187.29-197.581C490.551,201.567,490.551,114.77,438.482,58.61z M413.787,234.226h-0.017\n                            L238.802,418.768L63.818,234.226c-39.78-42.916-39.78-109.233,0-152.149c36.125-39.154,97.152-41.609,136.306-5.484\n                            c1.901,1.754,3.73,3.583,5.484,5.484l20.804,21.948c6.856,6.812,17.925,6.812,24.781,0l20.804-21.931\n                            c36.125-39.154,97.152-41.609,136.306-5.484c1.901,1.754,3.73,3.583,5.484,5.484C453.913,125.078,454.207,191.516,413.787,234.226\n                            z\"/>\n                    </svg>\n                </div>\n                <div class=\"radio-item__icon-play\">\n                    <svg width=\"22\" height=\"25\" viewBox=\"0 0 22 25\" fill=\"none\" xmlns=\"http://www.w3.org/2000/svg\">\n                        <path d=\"M21 10.7679C22.3333 11.5377 22.3333 13.4622 21 14.232L3.75 24.1913C2.41666 24.9611 0.75 23.9989 0.75 22.4593L0.750001 2.5407C0.750001 1.0011 2.41667 0.0388526 3.75 0.808653L21 10.7679Z\" fill=\"currentColor\"/>\n                    </svg>\n                </div>\n            </div>\n        </div>\n    ");
     
-    Lampa.Template.add('radio_player', "\n        <div class=\"radio-player\">\n            <div class=\"radio-player__content\">\n                <div class=\"radio-player__cover\"></div>\n                <div class=\"radio-player__wave\"></div>\n                <div class=\"radio-player__track\"></div>\n                <div class=\"radio-player__controls\">\n                    <div class=\"radio-player__btn radio-player__prev\">\n                        <svg viewBox=\"0 0 24 24\"><path fill=\"currentColor\" d=\"M6 6h2v12H6zm3.5 6l8.5 6V6z\"/></svg>\n                    </div>\n                    <div class=\"radio-player__btn radio-player__next\">\n                        <svg viewBox=\"0 0 24 24\"><path fill=\"currentColor\" d=\"M6 18l8.5-6L6 6v12zM16 6v12h2V6h-2z\"/></svg>\n                    </div>\n                </div>\n            </div>\n            <div class=\"radio-player__close\">\n                <svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 329.269 329\" xml:space=\"preserve\">\n                    <path d=\"M194.8 164.77 323.013 36.555c8.343-8.34 8.343-21.825 0-30.164-8.34-8.34-21.825-8.34-30.164 0L164.633 134.605 36.422 6.391c-8.344-8.34-21.824-8.34-30.164 0-8.344 8.34-8.344 21.824 0 30.164l128.21 128.215L6.259 292.984c-8.344 8.34-8.344 21.825 0 30.164a21.266 21.266 0 0 0 15.082 6.25c5.46 0 10.922-2.09 15.082-6.25l128.21-128.214 128.216 128.214a21.273 21.273 0 0 0 15.082 6.25c5.46 0 10.922-2.09 15.082-6.25 8.343-8.34 8.343-21.824 0-30.164zm0 0\" fill=\"currentColor\"></path>\n                </svg>\n            </div>\n        </div>\n    ");
+    Lampa.Template.add('radio_player', "\n        <div class=\"radio-player\">\n            <div class=\"radio-player__content\">\n                <div class=\"radio-player__cover\"></div>\n                <div class=\"radio-player__wave\"></div>\n                <div class=\"radio-player__controls\">\n                    <div class=\"radio-player__btn radio-player__prev\">\n                        <svg viewBox=\"0 0 24 24\"><path fill=\"currentColor\" d=\"M6 6h2v12H6zm3.5 6l8.5 6V6z\"/></svg>\n                    </div>\n                    <div class=\"radio-player__btn radio-player__next\">\n                        <svg viewBox=\"0 0 24 24\"><path fill=\"currentColor\" d=\"M6 18l8.5-6L6 6v12zM16 6v12h2V6h-2z\"/></svg>\n                    </div>\n                </div>\n            </div>\n            <div class=\"radio-player__close\">\n                <svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 329.269 329\" xml:space=\"preserve\">\n                    <path d=\"M194.8 164.77 323.013 36.555c8.343-8.34 8.343-21.825 0-30.164-8.34-8.34-21.825-8.34-30.164 0L164.633 134.605 36.422 6.391c-8.344-8.34-21.824-8.34-30.164 0-8.344 8.34-8.344 21.824 0 30.164l128.21 128.215L6.259 292.984c-8.344 8.34-8.344 21.825 0 30.164a21.266 21.266 0 0 0 15.082 6.25c5.46 0 10.922-2.09 15.082-6.25l128.21-128.214 128.216 128.214a21.273 21.273 0 0 0 15.082 6.25c5.46 0 10.922-2.09 15.082-6.25 8.343-8.34 8.343-21.824 0-30.164zm0 0\" fill=\"currentColor\"></path>\n                </svg>\n            </div>\n        </div>\n    ");
     
     Lampa.Template.add('radio_mini_player', "\n        <div class=\"selector radio-mini-player hide stop\">\n            <div class=\"radio-mini-player__button\">\n                <i></i>\n                <i></i>\n                <i></i>\n                <i></i>\n            </div>\n            <div class=\"radio-mini-player__name\"></div>\n        </div>\n    ");
 
