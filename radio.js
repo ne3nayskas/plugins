@@ -1,6 +1,6 @@
 // =========================================
 // Радіо для Lampa
-// Версія: 1.10.1 | 2026.11.15
+// Версія: 1.10.2 | 2026.11.15
 // Опис: Плагін для прослуховування ~ 80+ радіостанцій
 // Aвтор - @ne3nayskas 
 // Зміни 1.6.0: свайпи та кнопки ⏮ / ⏭ у вікні відтворення (мобільні)
@@ -19,6 +19,7 @@
 // Зміни 1.9.5: назва треку для Kiss FM, Hit FM, Наше Радіо, Relax, Jazz, Мелодія (o.tavr.media)
 // Зміни 1.10.0: РЕЛІЗ — у плеєрі виконавець і трек для ~30 станцій (ICY-метадані, laut.fm, SomaFM, myradio24, o.tavr.media)
 // Зміни 1.10.1: назва треку для Radio Bayraktar (o.tavr.media/bayraktar)
+// Зміни 1.10.2: якщо трек невідомий — у стрічці показується слоган станції (tooltip) в такому ж оформленні; трек має пріоритет
 // =========================================
 
 (function () {
@@ -1234,13 +1235,21 @@
       fetchNowPlaying(station, npAbort ? npAbort.signal : undefined).then(function (t) {
         if (isDestroyed) return;
         var box = html.find('.radio-player__track');
-        if (box) setTrack(box, cleanTrack(t, station));
-      }, function () {});
+        // є трек — показуємо його; немає — слоган станції (tooltip) у такому ж оформленні
+        if (box) setTrack(box, cleanTrack(t, station) || fallbackText());
+      }, function () {
+        if (isDestroyed || trackShown) return;
+        var box = html.find('.radio-player__track');
+        if (box) setTrack(box, fallbackText());
+      });
     }
     var lastTrack = '';
+    var trackShown = false; // чи зараз у рядку справжній трек (а не слоган)
+    function fallbackText() { return String(station.tooltip || '').replace(/\s+/g, ' ').trim(); }
     function setTrack(box, text) {
       if (text === lastTrack) return;
       lastTrack = text;
+      trackShown = !!text && text !== fallbackText();
       box.textContent = '';
       if (!text) return;
       var span = document.createElement('span');
@@ -1270,6 +1279,8 @@
       }
     }
     function startNowPlaying() {
+      var box0 = html.find('.radio-player__track');
+      if (box0) setTrack(box0, fallbackText()); // одразу слоган, поки йде запит
       pollNowPlaying();
       npTimer = setInterval(pollNowPlaying, NOW_PLAYING_EVERY);
     }
@@ -1838,7 +1849,7 @@
 
     var manifest = {
       type: 'audio',
-      version: '1.10.1',
+      version: '1.10.2',
       name: Lampa.Lang.translate('radio_station'),
       description: 'Українські радіостанції',
       component: 'radio'
