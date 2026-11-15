@@ -422,8 +422,15 @@
     {
       id: 'powerfmberlin',
       title: 'Power FM',
-      tooltip: 'Classic Rock',
+      tooltip: 'Power by Rock',
       stream: 'https://stream.laut.fm/powerfm',
+      genre: [{ id: 'rock', name: 'Rock' }]
+    },
+    {
+      id: 'rockworld',
+      title: 'Rock World',
+      tooltip: 'World of Rock',
+      stream: 'https://stream.laut.fm/rockworld',
       genre: [{ id: 'rock', name: 'Rock' }]
     },
     {
