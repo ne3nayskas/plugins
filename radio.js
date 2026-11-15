@@ -1,6 +1,6 @@
 // =========================================
 // Радіо для Lampa
-// Версія: 1.9.5 | 2026.11.15
+// Версія: 1.10.1 | 2026.11.15
 // Опис: Плагін для прослуховування ~ 80+ радіостанцій
 // Aвтор - @ne3nayskas 
 // Зміни 1.6.0: свайпи та кнопки ⏮ / ⏭ у вікні відтворення (мобільні)
@@ -17,6 +17,8 @@
 // Зміни 1.9.3: назва треку для станцій на myradio24 (через status.json); значок ♪ з обох боків назви
 // Зміни 1.9.4: назва треку для Radio ROKS, ROKS Український Рок, New Rock, Ballads та Hard & Heavy (o.tavr.media)
 // Зміни 1.9.5: назва треку для Kiss FM, Hit FM, Наше Радіо, Relax, Jazz, Мелодія (o.tavr.media)
+// Зміни 1.10.0: РЕЛІЗ — у плеєрі виконавець і трек для ~30 станцій (ICY-метадані, laut.fm, SomaFM, myradio24, o.tavr.media)
+// Зміни 1.10.1: назва треку для Radio Bayraktar (o.tavr.media/bayraktar)
 // =========================================
 
 (function () {
@@ -985,7 +987,8 @@
     nasheradio: { main: 'nasheradio', multi: 'nasheradio3songs' },
     radiorelax: { main: 'relax', multi: 'relax5songs' },
     radiojazz: { main: 'jazz', multi: 'jazz3songs' },
-    melodiafm: { main: 'melodia', multi: 'melodia3songs' }
+    melodiafm: { main: 'melodia', multi: 'melodia3songs' },
+    radiobayraktar: { main: 'bayraktar', multi: 'bayraktar' }
   };
 
   function readTavrTitle(url, signal) {
@@ -1835,7 +1838,7 @@
 
     var manifest = {
       type: 'audio',
-      version: '1.9.5',
+      version: '1.10.1',
       name: Lampa.Lang.translate('radio_station'),
       description: 'Українські радіостанції',
       component: 'radio'
