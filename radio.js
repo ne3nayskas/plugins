@@ -204,7 +204,7 @@
       id: 'radioroks_classicrock',
       title: 'Radio ROKS Classic Rock',
       tooltip: 'ClassicRock',
-      stream: 'https://tavr.tvstitch.com/RadioROKS_ClassicRock',
+      stream: 'https://online.radioroks.ua/RadioROKS_ClassicRock',
       genre: [{ id: 'rock', name: 'Rock' }]
     },
     {
