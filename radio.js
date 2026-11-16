@@ -236,6 +236,20 @@
       genre: [{ id: 'dance', name: 'Dance' }]
     },
     {
+      id: 'kissfm_deep',
+      title: 'Kiss FM Deep',
+      tooltip: 'Kiss FM Deep',
+      stream: 'https://online.kissfm.ua/KissFM_Deep',
+      genre: [{ id: 'dance', name: 'Dance' }]
+    },
+    {
+      id: 'kissfm_digital',
+      title: 'Kiss FM Digital',
+      tooltip: 'Kiss FM Digital',
+      stream: 'https://online.kissfm.ua/KissFM_Digital',
+      genre: [{ id: 'dance', name: 'Dance' }]
+    },
+    {
       id: 'lvivfm',
       title: 'Львівська Хвиля',
       tooltip: '100.8 FM',
