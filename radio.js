@@ -1022,7 +1022,7 @@
   var NOW_PLAYING_EVERY = 20000; // як часто оновлювати, мс
 
   // Radio ROKS: суфікс потоку (RadioROKS_<суфікс>) → назва стрічки на o.tavr.media. Інші канали додавайте сюди, коли знайдете їхні адреси
-  var ROKS_FEEDS = { '': 'roks', 'ukr': 'roksukr', 'newrock': 'roksnew', 'ballads': 'roksbal', 'hardnheavy': 'rokshar' };
+  var ROKS_FEEDS = { '': 'roks', 'ukr': 'roksukr', 'newrock': 'roksnew', 'ballads': 'roksbal', 'hardnheavy': 'rokshar', 'classicrock': 'rokscla' };
 
   // TAVR: назва потоку → стрічки на o.tavr.media (main — історія основного каналу, multi — по одному запису на підканал із полем type)
   var TAVR_FEEDS = {
