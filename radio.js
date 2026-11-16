@@ -1,7 +1,7 @@
 // =========================================
 // Радіо для Lampa
-// Версія: 1.11.4 | 2026.11.16
-// Опис: Плагін для прослуховування ~ 80+ радіостанцій
+// Версія: 1.12.0 | 2026.11.16
+// Опис: Плагін для прослуховування ~ 100+ радіостанцій
 // Aвтор - @ne3nayskas 
 // Зміни 1.6.0: свайпи та кнопки ⏮ / ⏭ у вікні відтворення (мобільні)
 // Зміни 1.6.1: оптимізація продуктивності, виправлено подвійний запуск потоку
@@ -24,6 +24,7 @@
 // Зміни 1.11.1: стабільніший старт потоку: затримка 250 мс при швидких перемиканнях, перепідключення через 8 с, ICY-запит лише після старту звуку, коректне переривання завантаження
 // Зміни 1.11.2: еквалайзер і підсвітка станції, що грає, замість зеленого — кольори стрічки (синя та жовта половини) (налаштування EQ_COLOR_FROM / EQ_COLOR_TO / PLAYING_TEXT_COLOR)
 // Зміни 1.11.3: назви треків для URC Radio US, 4 Ever Floyd, STUD RADIO
+// Зміни 1.12.0: +24 станції TAVR (Hit, Roks, Kiss, Relax, Мелодія, Наше Радіо, Jazz, Гуляй, Gold, Music, Italiana, Ritmo Latino, Flash, Black, K-POP) з назвами треків; Classic Radio і Radio Indie UA тепер теж із треком
 // =========================================
 
 (function () {
@@ -187,6 +188,13 @@
       genre: [{ id: 'rock', name: 'Rock' }]
     },
     {
+      id: 'radioroks_classic',
+      title: 'Radio ROKS Classic Rock',
+      tooltip: 'Класичний рок',
+      stream: 'https://tavr.tvstitch.com/RadioROKS_ClassicRock',
+      genre: [{ id: 'rock', name: 'Rock' }]
+    },
+    {
       id: 'radioroks_heavy',
       title: 'Radio ROKS Hard & Heavy',
       tooltip: 'Hard & Heavy',
@@ -198,13 +206,6 @@
       title: 'Radio ROKS Ballads',
       tooltip: 'Ballads',
       stream: 'https://online.radioroks.ua/RadioROKS_Ballads',
-      genre: [{ id: 'rock', name: 'Rock' }]
-    },
-    {
-      id: 'radioroks_classicrock',
-      title: 'Radio ROKS Classic Rock',
-      tooltip: 'ClassicRock',
-      stream: 'https://online.radioroks.ua/RadioROKS_ClassicRock',
       genre: [{ id: 'rock', name: 'Rock' }]
     },
     {
@@ -224,29 +225,29 @@
     {
       id: 'kissfm',
       title: 'Kiss FM',
-      tooltip: 'Kiss FM',
+      tooltip: 'The Best Dance Radio',
       stream: 'https://online.kissfm.ua/KissFM',
       genre: [{ id: 'dance', name: 'Dance' }]
     },
     {
-      id: 'kissfm_ukraine',
-      title: 'Kiss FM Ukraine',
-      tooltip: 'Kiss Ukraine',
+      id: 'kissfm_ukr',
+      title: 'Kiss FM (Україна)',
+      tooltip: 'Тільки український Dance',
       stream: 'https://online.kissfm.ua/KissFM_Ukr',
       genre: [{ id: 'dance', name: 'Dance' }]
     },
     {
       id: 'kissfm_deep',
       title: 'Kiss FM Deep',
-      tooltip: 'Kiss Deep',
-      stream: 'https://online.kissfm.ua/KissFM_Deep',
+      tooltip: 'Deep',
+      stream: 'https://tavr.tvstitch.com/KissFM_Deep',
       genre: [{ id: 'dance', name: 'Dance' }]
     },
     {
       id: 'kissfm_digital',
       title: 'Kiss FM Digital',
-      tooltip: 'Kiss Digital',
-      stream: 'https://online.kissfm.ua/KissFM_Digital',
+      tooltip: 'Digital',
+      stream: 'https://tavr.tvstitch.com/KissFM_Digital',
       genre: [{ id: 'dance', name: 'Dance' }]
     },
     {
@@ -320,6 +321,27 @@
       genre: [{ id: 'nst', name: 'Nostalgie' }]
     },
     {
+      id: 'melodiafm_int',
+      title: 'Мелодія FM International',
+      tooltip: 'Міжнародні хіти',
+      stream: 'https://tavr.tvstitch.com/MelodiaFM_Int',
+      genre: [{ id: 'nst', name: 'Nostalgie' }]
+    },
+    {
+      id: 'melodiafm_disco',
+      title: 'Мелодія FM Disco',
+      tooltip: 'Диско',
+      stream: 'https://tavr.tvstitch.com/MelodiaFM_Disco',
+      genre: [{ id: 'nst', name: 'Nostalgie' }]
+    },
+    {
+      id: 'melodiafm_romantic',
+      title: 'Мелодія FM Romantic',
+      tooltip: 'Романтичні хіти',
+      stream: 'https://tavr.tvstitch.com/MelodiaFM_Romantic',
+      genre: [{ id: 'nst', name: 'Nostalgie' }]
+    },
+    {
       id: 'hitfm',
       title: 'Хіт FM',
       tooltip: 'Найкращі хіти',
@@ -334,6 +356,20 @@
       genre: [{ id: 'pop', name: 'Pop' }]
     },
     {
+      id: 'hitfm_best',
+      title: 'Хіт FM Найбільші хіти',
+      tooltip: 'Найбільші хіти',
+      stream: 'https://tavr.tvstitch.com/HitFM_Best',
+      genre: [{ id: 'pop', name: 'Pop' }]
+    },
+    {
+      id: 'hitfm_top',
+      title: 'Хіт FM Сучасні хіти',
+      tooltip: 'Сучасні хіти',
+      stream: 'https://tavr.tvstitch.com/HitFM_Top',
+      genre: [{ id: 'pop', name: 'Pop' }]
+    },
+    {
       id: 'nasheradio',
       title: 'Наше Радіо',
       tooltip: 'Все буде добре',
@@ -341,10 +377,45 @@
       genre: [{ id: 'pop', name: 'Pop' }]
     },
     {
+      id: 'nasheradio_ukr',
+      title: 'Наше Радіо UkrTOP100',
+      tooltip: 'Укр ТОП 100',
+      stream: 'https://online.nasheradio.ua/NasheRadio_Ukr',
+      genre: [{ id: 'pop', name: 'Pop' }]
+    },
+    {
       id: 'radiorelax',
       title: 'Radio Relax',
       tooltip: 'Музика для відпочинку',
       stream: 'https://online.radiorelax.ua/RadioRelax',
+      genre: [{ id: 'relax', name: 'Relax' }]
+    },
+    {
+      id: 'radiorelax_ukr',
+      title: 'Radio Relax Українською',
+      tooltip: 'Релакс українською',
+      stream: 'https://tavr.tvstitch.com/RadioRelax_Ukr',
+      genre: [{ id: 'relax', name: 'Relax' }]
+    },
+    {
+      id: 'radiorelax_int',
+      title: 'Radio Relax International',
+      tooltip: 'Міжнародна музика для відпочинку',
+      stream: 'https://tavr.tvstitch.com/RadioRelax_Int',
+      genre: [{ id: 'relax', name: 'Relax' }]
+    },
+    {
+      id: 'radiorelax_cafe',
+      title: 'Radio Relax Cafe',
+      tooltip: 'Музика для кав’ярні',
+      stream: 'https://tavr.tvstitch.com/RadioRelax_Cafe',
+      genre: [{ id: 'relax', name: 'Relax' }]
+    },
+    {
+      id: 'radiorelax_instrumental',
+      title: 'Radio Relax Instrumental',
+      tooltip: 'Інструментальна музика',
+      stream: 'https://tavr.tvstitch.com/RadioRelax_Instrumental',
       genre: [{ id: 'relax', name: 'Relax' }]
     },
     {
@@ -362,11 +433,88 @@
       genre: [{ id: 'jazz', name: 'Jazz' }]
     },
     {
+      id: 'radiojazz_ukr',
+      title: 'RadioJazz From UA',
+      tooltip: 'Український джаз',
+      stream: 'https://tavr.tvstitch.com/RadioJazz_Ukr',
+      genre: [{ id: 'jazz', name: 'Jazz' }]
+    },
+    {
+      id: 'radiojazz_cover',
+      title: 'RadioJazz Cover',
+      tooltip: 'Джазові каверси',
+      stream: 'https://tavr.tvstitch.com/RadioJazz_Cover',
+      genre: [{ id: 'jazz', name: 'Jazz' }]
+    },
+    {
+      id: 'radiojazz_groove',
+      title: 'RadioJazz Groove',
+      tooltip: 'Groove',
+      stream: 'https://tavr.tvstitch.com/RadioJazz_Groove',
+      genre: [{ id: 'jazz', name: 'Jazz' }]
+    },
+    {
       id: 'classicradio',
       title: 'Classic Radio',
       tooltip: 'Класична музика',
       stream: 'https://online.classicradio.ua/ClassicRadio',
       genre: [{ id: 'classical', name: 'Classic' }]
+    },
+    {
+      id: 'guliayradio',
+      title: 'Гуляй Радіо',
+      tooltip: 'Гуляй Радіо',
+      stream: 'https://tavr.tvstitch.com/GuliayRadio',
+      genre: [{ id: 'ukr', name: 'Українське' }]
+    },
+    {
+      id: 'radiogold',
+      title: 'Radio Gold',
+      tooltip: 'Золоті хіти',
+      stream: 'https://tavr.tvstitch.com/RadioGold',
+      genre: [{ id: 'nst', name: 'Nostalgie' }]
+    },
+    {
+      id: 'musicradio',
+      title: 'Music Radio',
+      tooltip: 'Музичне радіо',
+      stream: 'https://tavr.tvstitch.com/MusicRadio',
+      genre: [{ id: 'pop', name: 'Pop' }]
+    },
+    {
+      id: 'radioitaliana',
+      title: 'Radio Italiana',
+      tooltip: 'Bravo, Bravissimo!',
+      stream: 'https://tavr.tvstitch.com/RadioItaliana',
+      genre: [{ id: 'latin', name: 'Latin' }]
+    },
+    {
+      id: 'radioritmolatino',
+      title: 'Radio Ritmo Latino',
+      tooltip: 'Латиноамериканські ритми',
+      stream: 'https://tavr.tvstitch.com/RadioRitmoLatino',
+      genre: [{ id: 'latin', name: 'Latin' }]
+    },
+    {
+      id: 'flashradio',
+      title: 'Flash Radio',
+      tooltip: 'Нова музика',
+      stream: 'https://tavr.tvstitch.com/FlashRadio',
+      genre: [{ id: 'pop', name: 'Pop' }]
+    },
+    {
+      id: 'radioblack',
+      title: 'Radio Black',
+      tooltip: 'Urban Music',
+      stream: 'https://tavr.tvstitch.com/RadioBlack',
+      genre: [{ id: 'hiphop', name: 'Hip-Hop' }]
+    },
+    {
+      id: 'kpopradio',
+      title: 'K-POP Radio',
+      tooltip: 'K-Pop',
+      stream: 'https://tavr.tvstitch.com/KpopRadio',
+      genre: [{ id: 'pop', name: 'Pop' }]
     },
     {
       id: 'technobucharadio',
@@ -1036,9 +1184,21 @@
   var NOW_PLAYING_EVERY = 20000; // як часто оновлювати, мс
 
   // Radio ROKS: суфікс потоку (RadioROKS_<суфікс>) → назва стрічки на o.tavr.media. Інші канали додавайте сюди, коли знайдете їхні адреси
-  var ROKS_FEEDS = { '': 'roks', 'ukr': 'roksukr', 'newrock': 'roksnew', 'ballads': 'roksbal', 'hardnheavy': 'rokshar', 'classicrock': 'rokscla' };
+  var ROKS_FEEDS = { '': 'roks', 'ukr': 'roksukr', 'newrock': 'roksnew', 'ballads': 'roksbal', 'hardnheavy': 'rokshar' };
 
   // TAVR: назва потоку → стрічки на o.tavr.media (main — історія основного каналу, multi — по одному запису на підканал із полем type)
+  var TAVR_CHANNEL_FEEDS = {
+    hitfm_best: 'hitb', hitfm_top: 'hitt',
+    radioroks_classicrock: 'rokscla',
+    kissfm_deep: 'kissdeep', kissfm_digital: 'kissdigital',
+    radiorelax_ukr: 'relaxukr', radiorelax_int: 'relaxint', radiorelax_cafe: 'relaxcafe', radiorelax_instrumental: 'relaxinstrumental',
+    melodiafm_int: 'melodiaint', melodiafm_disco: 'melodiad', melodiafm_romantic: 'melodiar',
+    nasheradio_ukr: 'nasheradio3ukr',
+    radiojazz_ukr: 'jazz3ukr', radiojazz_cover: 'jazz3cover', radiojazz_groove: 'jazz3groove',
+    classicradio: 'radio3classic', radioindieua: 'radio3indieua', guliayradio: 'radio3guliay',
+    radiogold: 'radio3gold', musicradio: 'radio3music', radioitaliana: 'radio3italiano',
+    radioritmolatino: 'radio3ritmo_latino', flashradio: 'radio3flash', radioblack: 'radio3black', kpopradio: 'radio3kpop'
+  };
   var TAVR_FEEDS = {
     kissfm: { main: 'kiss', multi: 'kiss3songs' },
     hitfm: { main: 'hit', multi: 'hit3songs' },
@@ -1051,7 +1211,17 @@
 
   function readTavrTitle(url, signal) {
     var m = /^https?:\/\/(?:online\.[a-z]+\.ua|tavr\.tvstitch\.com)\/([A-Za-z]+)(?:_([A-Za-z]+))?(?:[?#]|$)/i.exec(url);
-    var f = m && TAVR_FEEDS[m[1].toLowerCase()];
+    // Канали з власним фідом o.tavr.media (CORS *): береться найновіший запис
+    var direct = m && TAVR_CHANNEL_FEEDS[(m[1] + (m[2] ? '_' + m[2] : '')).toLowerCase()];
+    if (direct) {
+      return fetch('https://o.tavr.media/' + direct, { cache: 'no-store', signal: signal }).then(function (r) { return r.json(); }).then(function (j) {
+        var it = Array.isArray(j) ? j[0] : null;
+        if (!it || !it.stime || !it.song || it.song === 'None') return '';
+        return (it.singer ? it.singer + ' - ' : '') + it.song;
+      });
+    }
+    if (!m) return null;
+    var f = TAVR_FEEDS[m[1].toLowerCase()];
     if (!f) return null;
     var type = (m[2] || '').toLowerCase();
     return fetch('https://o.tavr.media/' + (type ? f.multi : f.main), { cache: 'no-store', signal: signal }).then(function (r) { return r.json(); }).then(function (j) {
@@ -1973,7 +2143,7 @@
 
     var manifest = {
       type: 'audio',
-      version: '1.11.4',
+      version: '1.12.0',
       name: Lampa.Lang.translate('radio_station'),
       description: 'Українські радіостанції',
       component: 'radio'
