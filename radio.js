@@ -1,6 +1,6 @@
 // =========================================
 // Радіо для Lampa
-// Версія: 1.11.2 | 2026.11.15
+// Версія: 1.11.3 | 2026.11.16
 // Опис: Плагін для прослуховування ~ 80+ радіостанцій
 // Aвтор - @ne3nayskas 
 // Зміни 1.6.0: свайпи та кнопки ⏮ / ⏭ у вікні відтворення (мобільні)
@@ -23,6 +23,7 @@
 // Зміни 1.11.0: один рядок на місці слогана: «♪ трек ♪ слоган ♪» (немає треку — «♪ слоган ♪»), біжить, якщо не вміщається
 // Зміни 1.11.1: стабільніший старт потоку: затримка 250 мс при швидких перемиканнях, перепідключення через 8 с, ICY-запит лише після старту звуку, коректне переривання завантаження
 // Зміни 1.11.2: еквалайзер і підсвітка станції, що грає, замість зеленого — кольори стрічки (синя та жовта половини) (налаштування EQ_COLOR_FROM / EQ_COLOR_TO / PLAYING_TEXT_COLOR)
+// Зміни 1.11.3: назви треків для URC Radio US, 4 Ever Floyd, STUD RADIO, Techno-Bucha
 // =========================================
 
 (function () {
@@ -1089,9 +1090,32 @@
   }
 
   // Метадані ICY: читаємо кілька блоків потоку й одразу обриваємо з'єднання
-  function readIcyTitle(url, signal) {
+  // Деякі сервери дозволяють ICY через CORS, але не віддають icy-metaint браузеру — тоді беремо відомий інтервал
+  var ICY_METAINT_HINT = { urcradio: 16000, '4everfloyd': 8192 };
+  // Icecast/Shoutcast status-json.xsl із CORS: назва треку без читання потоку
+  var STATUS_JSON_STATIONS = { studradio: 1, technobucharadio: 1 };
+
+  function readStatusJsonTitle(url, signal) {
+    var m = /^(https?:\/\/[^\/]+)(\/[^?#]*)?/i.exec(url);
+    if (!m) return Promise.resolve('');
+    return fetch(m[1] + '/status-json.xsl', { cache: 'no-store', signal: signal }).then(function (r) { return r.json(); }).then(function (j) {
+      var src = j && j.icestats && j.icestats.source;
+      if (!src) return '';
+      var list = Array.isArray(src) ? src : [src], pick = null, path = (m[2] || '').toLowerCase();
+      for (var i = 0; i < list.length; i++) {
+        var lu = String(list[i].listenurl || '').toLowerCase().replace(/[?#].*$/, '');
+        if (path && lu.slice(-path.length) === path) { pick = list[i]; break; }
+      }
+      if (!pick && list.length === 1) pick = list[0];
+      if (!pick) return '';
+      var t = pick.title || '';
+      return (pick.artist && t ? pick.artist + ' - ' : '') + t;
+    });
+  }
+
+  function readIcyTitle(url, signal, hint) {
     return fetch(url, { headers: { 'Icy-MetaData': '1' }, cache: 'no-store', signal: signal }).then(function (res) {
-      var metaint = parseInt(res.headers.get('icy-metaint'), 10);
+      var metaint = parseInt(res.headers.get('icy-metaint'), 10) || hint || 0;
       if (!metaint || !res.body || !res.body.getReader) return '';
       var reader = res.body.getReader();
       var chunks = [], total = 0, pos = 0, blocks = 0;
@@ -1193,11 +1217,12 @@
     var url = streamUrlOf(station);
     if (!url || typeof fetch !== 'function') return Promise.resolve('');
     var svc = readServiceTitle(url, signal);
+    if (!svc && STATUS_JSON_STATIONS[station.id]) svc = readStatusJsonTitle(url, signal);
     var p = svc || Promise.resolve('');
     return p["catch"](function () { return ''; }).then(function (t) {
       if (cleanTrack(t, station)) return t;
       if (!allowIcy || /\.m3u8(\?|$)/i.test(url)) return '';
-      return readIcyTitle(url, signal);
+      return readIcyTitle(url, signal, ICY_METAINT_HINT[station.id]);
     });
   }
 
@@ -1927,7 +1952,7 @@
 
     var manifest = {
       type: 'audio',
-      version: '1.11.2',
+      version: '1.11.3',
       name: Lampa.Lang.translate('radio_station'),
       description: 'Українські радіостанції',
       component: 'radio'
