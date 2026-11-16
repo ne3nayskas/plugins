@@ -229,7 +229,7 @@
       genre: [{ id: 'dance', name: 'Dance' }]
     },
     {
-      id: 'kissfm_ukr',
+      id: 'kissfm_ukraine',
       title: 'Kiss FM (Україна)',
       tooltip: 'Тільки український Dance',
       stream: 'https://online.kissfm.ua/KissFM_Ukr',
