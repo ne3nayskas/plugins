@@ -201,6 +201,13 @@
       genre: [{ id: 'rock', name: 'Rock' }]
     },
     {
+      id: 'radioroks_classicrock',
+      title: 'Radio ROKS Classic Rock',
+      tooltip: 'ClassicRock',
+      stream: 'https://tavr.tvstitch.com/RadioROKS_ClassicRock',
+      genre: [{ id: 'rock', name: 'Rock' }]
+    },
+    {
       id: 'rock_radio_ua',
       title: 'Рок Радіо UA',
       tooltip: 'Територія українського року.',
