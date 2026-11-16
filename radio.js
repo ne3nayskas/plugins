@@ -224,28 +224,28 @@
     {
       id: 'kissfm',
       title: 'Kiss FM',
-      tooltip: 'The Best Dance Radio',
+      tooltip: 'Kiss FM',
       stream: 'https://online.kissfm.ua/KissFM',
       genre: [{ id: 'dance', name: 'Dance' }]
     },
     {
       id: 'kissfm_ukraine',
-      title: 'Kiss FM (Україна)',
-      tooltip: 'Тільки український Dance',
+      title: 'Kiss FM Ukraine',
+      tooltip: 'Kiss Ukraine',
       stream: 'https://online.kissfm.ua/KissFM_Ukr',
       genre: [{ id: 'dance', name: 'Dance' }]
     },
     {
       id: 'kissfm_deep',
       title: 'Kiss FM Deep',
-      tooltip: 'Kiss FM Deep',
+      tooltip: 'Kiss Deep',
       stream: 'https://online.kissfm.ua/KissFM_Deep',
       genre: [{ id: 'dance', name: 'Dance' }]
     },
     {
       id: 'kissfm_digital',
       title: 'Kiss FM Digital',
-      tooltip: 'Kiss FM Digital',
+      tooltip: 'Kiss Digital',
       stream: 'https://online.kissfm.ua/KissFM_Digital',
       genre: [{ id: 'dance', name: 'Dance' }]
     },
