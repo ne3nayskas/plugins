@@ -1,6 +1,6 @@
 // =========================================
 // Радіо для Lampa
-// Версія: 1.12.0 | 2026.11.16
+// Версія: 1.13.0 | 2026.11.17
 // Опис: Плагін для прослуховування ~ 100+ радіостанцій
 // Aвтор - @ne3nayskas 
 // Зміни 1.6.0: свайпи та кнопки ⏮ / ⏭ у вікні відтворення (мобільні)
@@ -25,6 +25,7 @@
 // Зміни 1.11.2: еквалайзер і підсвітка станції, що грає, замість зеленого — кольори стрічки (синя та жовта половини) (налаштування EQ_COLOR_FROM / EQ_COLOR_TO / PLAYING_TEXT_COLOR)
 // Зміни 1.11.3: назви треків для URC Radio US, 4 Ever Floyd, STUD RADIO
 // Зміни 1.12.0: +24 станції TAVR (Hit, Roks, Kiss, Relax, Мелодія, Наше Радіо, Jazz, Гуляй, Gold, Music, Italiana, Ritmo Latino, Flash, Black, K-POP) з назвами треків; Classic Radio і Radio Indie UA тепер теж із треком
+// Зміни 1.13.0: назви треків для всіх 28 каналів FluxFM (API fluxmusic.api.radiosphere.io)
 // =========================================
 
 (function () {
@@ -1361,6 +1362,17 @@
   }
 
   // Окремі API деяких сервісів
+  // FluxFM: потік дає лише назву станції, трек — з API Flux (CORS дозволений). Ключ — каталог у streams.fluxfm.de
+  var FLUX_CHANNELS = {
+    live: 'FluxFM', fluxkompensator: 'fluxfm-finest', lounge: 'flux-lounge', clubsandwich: 'clubsandwich',
+    klubradio: 'electronic-chillout', chillhop: 'chillhop', '80er': '80s', '70er': '70s', '60er': '60s',
+    flx_2000: '2000er', indiedisco: 'indiedisco', elektro: 'elektro-flux', bbeachhouse: 'berlin-beach-house',
+    technoug: 'techno-underground', soundofberlin: 'sound-of-berlin', kinder1: 'mini-flux',
+    boomfmclassics: 'boom-fm-classics', jazzschwarz: 'jazz-schwarzenstein', xjazz: 'x-jazz', neofm: 'neofm',
+    metalfm: 'metal-fm', radioalt: 'alternative', event01: 'b-funk', yogasounds: 'yoga-sounds',
+    chillout: 'chillout-radio', event02: 'htgp', 'john-reed': 'john-reed-radio', easyfitness: 'easy-fitness'
+  };
+
   function readServiceTitle(url, signal) {
     var m = /(?:^|\/\/)(?:[a-z0-9-]+\.)?stream\.laut\.fm\/([^\/?#]+)/i.exec(url);
     if (m) {
@@ -1391,6 +1403,14 @@
         if (!j) return '';
         var t = j.song || ((j.artist ? j.artist + ' - ' : '') + (j.songtitle || ''));
         return /^(джингл|jingle)$/i.test((t || '').trim()) ? '' : t;
+      });
+    }
+    m = /streams\.fluxfm\.de\/([^\/?#]+)/i.exec(url);
+    if (m && FLUX_CHANNELS[m[1].toLowerCase()]) {
+      return fetch('https://fluxmusic.api.radiosphere.io/channels/' + FLUX_CHANNELS[m[1].toLowerCase()] + '/current-track', { cache: 'no-store', signal: signal }).then(function (r) { return r.json(); }).then(function (j) {
+        var ti = j && j.trackInfo;
+        if (!ti || !ti.title) return '';
+        return (ti.artistCredits ? ti.artistCredits + ' - ' : '') + ti.title;
       });
     }
     m = /somafm\.com\/([a-z0-9]+)-/i.exec(url);
@@ -2143,7 +2163,7 @@
 
     var manifest = {
       type: 'audio',
-      version: '1.12.0',
+      version: '1.13.0',
       name: Lampa.Lang.translate('radio_station'),
       description: 'Українські радіостанції',
       component: 'radio'
