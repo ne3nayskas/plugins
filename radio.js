@@ -1,6 +1,6 @@
 // =========================================
 // Радіо для Lampa
-// Версія: 1.13.1 | 2026.11.18
+// Версія: 1.13.2 | 2026.11.18
 // Опис: Плагін для прослуховування ~ 100+ радіостанцій
 // Aвтор - @ne3nayskas 
 // Зміни 1.6.0: свайпи та кнопки ⏮ / ⏭ у вікні відтворення (мобільні)
@@ -27,6 +27,7 @@
 // Зміни 1.12.0: +24 станції TAVR (Hit, Roks, Kiss, Relax, Мелодія, Наше Радіо, Jazz, Гуляй, Gold, Music, Italiana, Ritmo Latino, Flash, Black, K-POP) з назвами треків; Classic Radio і Radio Indie UA тепер теж із треком
 // Зміни 1.13.0: назви треків для всіх 28 каналів FluxFM (API fluxmusic.api.radiosphere.io)
 // Зміни 1.13.1: швидший повтор підключення для cast.mediaonline.net.ua (Прямий FM, Avtoradio, NRJ): 3.5 с замість 8 с, до 3 повторів, повтор одразу після помилки
+// Зміни 1.13.2: нова станція Magic Radio (Київ 93.8 FM) з назвами треків через status-json.xsl
 // =========================================
 
 (function () {
@@ -265,6 +266,13 @@
       tooltip: 'Скоро перемога! Радіо Ностальжі Україна',
       stream: 'https://lux.radio.tvstitch.com/kyiv/nst_adv_hd',
       genre: [{ id: 'nst', name: 'Nostalgie' }]
+    },
+    {
+      id: 'magicradio',
+      title: 'Magic Radio',
+      tooltip: 'Magic. I feel good.',
+      stream: 'https://cast.brg.ua/business_main_public_mp3_hq',
+      genre: [{ id: 'pop', name: 'Pop' }]
     },
     {
       id: 'avtoradioua',
@@ -1296,7 +1304,7 @@
   // Деякі сервери дозволяють ICY через CORS, але не віддають icy-metaint браузеру — тоді беремо відомий інтервал
   var ICY_METAINT_HINT = { urcradio: 16000, '4everfloyd': 8192 };
   // Icecast/Shoutcast status-json.xsl із CORS: назва треку без читання потоку
-  var STATUS_JSON_STATIONS = { studradio: 1 };
+  var STATUS_JSON_STATIONS = { studradio: 1, magicradio: 1 };
 
   function readStatusJsonTitle(url, signal) {
     var m = /^(https?:\/\/[^\/]+)(\/[^?#]*)?/i.exec(url);
@@ -2174,7 +2182,7 @@
 
     var manifest = {
       type: 'audio',
-      version: '1.13.1',
+      version: '1.13.2',
       name: Lampa.Lang.translate('radio_station'),
       description: 'Українські радіостанції',
       component: 'radio'
