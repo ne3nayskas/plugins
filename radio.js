@@ -1,6 +1,6 @@
 // =========================================
 // Радіо для Lampa
-// Версія: 1.13.0 | 2026.11.17
+// Версія: 1.13.1 | 2026.11.18
 // Опис: Плагін для прослуховування ~ 100+ радіостанцій
 // Aвтор - @ne3nayskas 
 // Зміни 1.6.0: свайпи та кнопки ⏮ / ⏭ у вікні відтворення (мобільні)
@@ -26,6 +26,7 @@
 // Зміни 1.11.3: назви треків для URC Radio US, 4 Ever Floyd, STUD RADIO
 // Зміни 1.12.0: +24 станції TAVR (Hit, Roks, Kiss, Relax, Мелодія, Наше Радіо, Jazz, Гуляй, Gold, Music, Italiana, Ritmo Latino, Flash, Black, K-POP) з назвами треків; Classic Radio і Radio Indie UA тепер теж із треком
 // Зміни 1.13.0: назви треків для всіх 28 каналів FluxFM (API fluxmusic.api.radiosphere.io)
+// Зміни 1.13.1: швидший повтор підключення для cast.mediaonline.net.ua (Прямий FM, Avtoradio, NRJ): 3.5 с замість 8 с, до 3 повторів, повтор одразу після помилки
 // =========================================
 
 (function () {
@@ -1037,6 +1038,9 @@
     });
   }
 
+  // Хости, де перші пакети підключення часто губляться (довгий старт): повторюємо підключення швидше
+  var FAST_RETRY_HOST = /^https?:\/\/cast\.mediaonline\.net\.ua\//i;
+
   function playGlobalAudio(station) {
     stopGlobalAudio();
     
@@ -1072,13 +1076,15 @@
       armWatchdog();
     }
 
-    // Якщо потік не почав грати за 8 с — перепідключаємось (до 2 разів)
+    // Якщо потік не почав грати за 8 с — перепідключаємось (до 2 разів);
+    // для «важких» хостів (FAST_RETRY_HOST): за 3.5 с і до 3 разів
+    var fastHost = FAST_RETRY_HOST.test(url);
     function armWatchdog() {
       clearTimeout(globalWatchdog);
       globalWatchdog = setTimeout(function() {
         if (started || !globalAudio || globalStation !== station) return;
-        if (retries++ < 2) loadPlay();
-      }, 8000);
+        if (retries++ < (fastHost ? 3 : 2)) loadPlay();
+      }, fastHost ? 3500 : 8000);
     }
 
     // Невелика затримка перед підключенням: при швидких свайпах не засипаємо сервер запитами
@@ -1108,6 +1114,11 @@
 
     globalAudio.addEventListener("error", function() {
       console.log('Audio error');
+      // Скидання з'єднання сервером на старті: одразу пробуємо ще раз
+      if (fastHost && !started && globalAudio && globalStation === station && retries++ < 3) {
+        clearTimeout(globalStartTimer);
+        globalStartTimer = setTimeout(loadPlay, 300);
+      }
     });
 
     if (globalAudio.canPlayType('application/vnd.apple.mpegurl') || url.indexOf('.aacp') > 0 || station.stream) {
@@ -2163,7 +2174,7 @@
 
     var manifest = {
       type: 'audio',
-      version: '1.13.0',
+      version: '1.13.1',
       name: Lampa.Lang.translate('radio_station'),
       description: 'Українські радіостанції',
       component: 'radio'
