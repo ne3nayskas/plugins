@@ -1,6 +1,6 @@
 // =========================================
 // Радіо для Lampa
-// Версія: 1.13.2 | 2026.11.18
+// Версія: 1.13.3 | 2026.11.20
 // Опис: Плагін для прослуховування ~ 100+ радіостанцій
 // Aвтор - @ne3nayskas 
 // Зміни 1.6.0: свайпи та кнопки ⏮ / ⏭ у вікні відтворення (мобільні)
@@ -28,6 +28,7 @@
 // Зміни 1.13.0: назви треків для всіх 28 каналів FluxFM (API fluxmusic.api.radiosphere.io)
 // Зміни 1.13.1: швидший повтор підключення для cast.mediaonline.net.ua (Прямий FM, Avtoradio, NRJ): 3.5 с замість 8 с, до 3 повторів, повтор одразу після помилки
 // Зміни 1.13.2: нова станція Magic Radio (Київ 93.8 FM) з назвами треків через status-json.xsl
+// Зміни 1.13.3: cast.mediaonline.net.ua — повтор за 5 с (було 3.5 с); DEBUG_START показує час старту потоку
 // =========================================
 
 (function () {
@@ -1048,6 +1049,8 @@
 
   // Хости, де перші пакети підключення часто губляться (довгий старт): повторюємо підключення швидше
   var FAST_RETRY_HOST = /^https?:\/\/cast\.mediaonline\.net\.ua\//i;
+  var FAST_RETRY_MS = 5000;   // через скільки мс повторювати підключення для таких хостів (успішний старт зазвичай до ~3.7 с)
+  var DEBUG_START = true;     // true — після запуску потоку показувати «Старт: X с, спроб: N» (для діагностики; потім поставити false)
 
   function playGlobalAudio(station) {
     stopGlobalAudio();
@@ -1074,7 +1077,7 @@
       }
     }
 
-    var started = false, retries = 0;
+    var started = false, retries = 0, tStart = Date.now();
 
     function loadPlay() {
       if (!globalAudio || globalStation !== station) return;
@@ -1092,7 +1095,7 @@
       globalWatchdog = setTimeout(function() {
         if (started || !globalAudio || globalStation !== station) return;
         if (retries++ < (fastHost ? 3 : 2)) loadPlay();
-      }, fastHost ? 3500 : 8000);
+      }, fastHost ? FAST_RETRY_MS : 8000);
     }
 
     // Невелика затримка перед підключенням: при швидких свайпах не засипаємо сервер запитами
@@ -1102,6 +1105,9 @@
     }
 
     globalAudio.addEventListener("playing", function() {
+      if (!started && DEBUG_START) {
+        try { Lampa.Noty.show('Старт: ' + ((Date.now() - tStart) / 1000).toFixed(1) + ' с, спроб: ' + (retries + 1)); } catch (e) {}
+      }
       started = true;
       clearTimeout(globalWatchdog);
       updateMiniPlayer(station, 'play');
@@ -2182,7 +2188,7 @@
 
     var manifest = {
       type: 'audio',
-      version: '1.13.2',
+      version: '1.13.3',
       name: Lampa.Lang.translate('radio_station'),
       description: 'Українські радіостанції',
       component: 'radio'
