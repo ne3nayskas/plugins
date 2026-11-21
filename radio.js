@@ -148,13 +148,6 @@
       genre: [{ id: 'culture', name: 'Культура' }]
     },
     {
-      id: 'pryamyi',
-      title: 'Прямий FM',
-      tooltip: 'Прямий. Новини',
-      stream: 'https://cast.mediaonline.net.ua/prmfm',
-      genre: [{ id: 'news', name: 'Новини' }]
-    },
-    {
       id: 'edyninovyny',
       title: 'Єдині Новини',
       tooltip: 'Телемарафон',
@@ -281,13 +274,6 @@
       genre: [{ id: 'pop', name: 'Pop' }]
     },
     {
-      id: 'avtoradioua',
-      title: 'Avtoradio Ukraine',
-      tooltip: 'Авторадіо Україна - твій рух вперед!',
-      stream: 'https://cast.mediaonline.net.ua/avtoradio',
-      genre: [{ id: 'ukr', name: 'Українське' }]
-    },
-    {
       id: '109fm',
       title: '109 FM Ukraine',
       tooltip: 'Stand With Ukraine',
@@ -300,20 +286,6 @@
       tooltip: 'Інноваційне медіа, яке об’єднує українців',
       stream: 'https://streamer.radio.co/sdff2fd6a8/listen',
       genre: [{ id: 'ukr', name: 'Українське' }]
-    },
-    {
-      id: 'studradio',
-      title: 'STUD RADIO',
-      tooltip: 'Independent Student Radio from Ukraine',
-      stream: 'https://stream.mjoy.ua:8443/kredens-cafe-radio_mp3',
-      genre: [{ id: 'ukr', name: 'Українське' }]
-    },
-    {
-      id: 'nrj',
-      title: 'NRJ Україна',
-      tooltip: 'Енергія музики',
-      stream: 'https://cast.mediaonline.net.ua/nrj320',
-      genre: [{ id: 'pop', name: 'Pop' }]
     },
     {
       id: 'luxfm',
