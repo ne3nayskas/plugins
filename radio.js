@@ -1,6 +1,6 @@
 // =========================================
 // Радіо для Lampa
-// Версія: 1.15.3 | 2026.11.21
+// Версія: 1.15.4 | 2026.11.21
 // Опис: Плагін для прослуховування ~ 100+ радіостанцій
 // Aвтор - @ne3nayskas 
 // Зміни 1.6.0: свайпи та кнопки ⏮ / ⏭ у вікні відтворення (мобільні)
@@ -34,6 +34,7 @@
 // Зміни 1.15.1: смужка «Зараз грає» схована на мобільних; фон змінюється м'якше (BG_DELAY); «вгору» з першого ряду спершу веде на кнопки шапки плагіна
 // Зміни 1.15.2: повернення з плеєра не смикає список (без прокрутки, якщо станцію видно); поява плиток без зсуву
 // Зміни 1.15.3: у фокусі збільшення логотипа і тонка біла рамка (без анімацій); у режимі логотипів без підписів
+// Зміни 1.15.4: ряди не зсуваються при навігації та після виходу з плеєра (прокрутка лише коли елемент поза видимою зоною); прибрано DEBUG_START і швидкі повтори для cast.mediaonline.net.ua
 // =========================================
 
 (function () {
@@ -1034,10 +1035,6 @@
     });
   }
 
-  // Хости, де перші пакети підключення часто губляться (довгий старт): повторюємо підключення швидше
-  var FAST_RETRY_HOST = /^https?:\/\/cast\.mediaonline\.net\.ua\//i;
-  var FAST_RETRY_MS = 5000;   // через скільки мс повторювати підключення для таких хостів (успішний старт зазвичай до ~3.7 с)
-  var DEBUG_START = true;     // true — після запуску потоку показувати «Старт: X с, спроб: N» (для діагностики; потім поставити false)
 
   function playGlobalAudio(station) {
     stopGlobalAudio();
@@ -1065,7 +1062,7 @@
       }
     }
 
-    var started = false, retries = 0, tStart = Date.now();
+    var started = false, retries = 0;
 
     function loadPlay() {
       if (!globalAudio || globalStation !== station) return;
@@ -1075,15 +1072,13 @@
       armWatchdog();
     }
 
-    // Якщо потік не почав грати за 8 с — перепідключаємось (до 2 разів);
-    // для «важких» хостів (FAST_RETRY_HOST): за 3.5 с і до 3 разів
-    var fastHost = FAST_RETRY_HOST.test(url);
+    // Якщо потік не почав грати за 8 с — перепідключаємось (до 2 разів)
     function armWatchdog() {
       clearTimeout(globalWatchdog);
       globalWatchdog = setTimeout(function() {
         if (started || !globalAudio || globalStation !== station) return;
-        if (retries++ < (fastHost ? 3 : 2)) loadPlay();
-      }, fastHost ? FAST_RETRY_MS : 8000);
+        if (retries++ < 2) loadPlay();
+      }, 8000);
     }
 
     // Невелика затримка перед підключенням: при швидких свайпах не засипаємо сервер запитами
@@ -1093,9 +1088,6 @@
     }
 
     globalAudio.addEventListener("playing", function() {
-      if (!started && DEBUG_START) {
-        try { Lampa.Noty.show('Старт: ' + ((Date.now() - tStart) / 1000).toFixed(1) + ' с, спроб: ' + (retries + 1)); } catch (e) {}
-      }
       started = true;
       clearTimeout(globalWatchdog);
       updateMiniPlayer(station, 'play');
@@ -1116,11 +1108,6 @@
 
     globalAudio.addEventListener("error", function() {
       console.log('Audio error');
-      // Скидання з'єднання сервером на старті: одразу пробуємо ще раз
-      if (fastHost && !started && globalAudio && globalStation === station && retries++ < 3) {
-        clearTimeout(globalStartTimer);
-        globalStartTimer = setTimeout(loadPlay, 300);
-      }
     });
 
     if (globalAudio.canPlayType('application/vnd.apple.mpegurl') || url.indexOf('.aacp') > 0 || station.stream) {
@@ -1778,11 +1765,18 @@
     }
 
     // Чи елемент повністю видно у вікні прокрутки (щоб не смикати список зайвий раз)
-    var returning = false, returningTimer = null;
+    // Не скролимо, якщо елемент видно і він не в останніх рядах (там скрол потрібен для підвантаження)
+    function needScroll(el) {
+      if (!fullyVisible(el)) return true;
+      var all = html.querySelectorAll('.radio-item');
+      return Array.prototype.indexOf.call(all, el) >= all.length - calcCols() * 2;
+    }
     function fullyVisible(el) {
       try {
         var c = scroll.render(true).getBoundingClientRect(), r = el.getBoundingClientRect();
-        return r.height > 0 && r.top >= c.top && r.bottom <= c.bottom;
+        var em = parseFloat(window.getComputedStyle(document.body).fontSize) || 16;
+        // знизу запас під нижню панель, зверху — під підписи
+        return r.height > 0 && r.top >= c.top + em && r.bottom <= c.bottom - em * 3;
       } catch (e) { return false; }
     }
 
@@ -1790,7 +1784,7 @@
     function revealStation(station) {
       if (!station) return;
       var el = ensureEl(station.id);
-      if (el) scroll.update(el, true);
+      if (el && needScroll(el)) scroll.update(el, true);
     }
 
     this.create = function () {
@@ -2143,7 +2137,7 @@
         }, BG_DELAY);
       });
       item.on('hover:focus', function () {
-        if (!(returning && fullyVisible(item))) scroll.update(item);
+        if (needScroll(item)) scroll.update(item);
       });
       item.on('hover:enter', function () { _this7.play(station); });
       item.on('hover:long', function () {
@@ -2205,12 +2199,7 @@
           if (target) last = target;
 
           // повернення (з плеєра): якщо станцію вже видно — список не прокручуємо взагалі
-          var keep = !!target && fullyVisible(target);
-          if (keep) {
-            returning = true;
-            clearTimeout(returningTimer);
-            returningTimer = setTimeout(function () { returning = false; }, 600);
-          }
+          var keep = !!target && !needScroll(target);
           Lampa.Controller.collectionSet(html);
           Lampa.Controller.collectionFocus(target || last, html);
           if (target && !keep) {
@@ -2282,7 +2271,7 @@
 
     var manifest = {
       type: 'audio',
-      version: '1.15.3',
+      version: '1.15.4',
       name: Lampa.Lang.translate('radio_station'),
       description: 'Українські радіостанції',
       component: 'radio'
