@@ -1,6 +1,6 @@
 // =========================================
 // Радіо для Lampa
-// Версія: 1.16.2 | 2026.11.21
+// Версія: 1.16.3 | 2026.11.21
 // Опис: Плагін для прослуховування ~ 100+ радіостанцій
 // Aвтор - @ne3nayskas 
 // Зміни 1.6.0: свайпи та кнопки ⏮ / ⏭ у вікні відтворення (мобільні)
@@ -38,6 +38,7 @@
 // Зміни 1.16.0: «Обране» одразу працює після додавання станції (меню каталогу збирається при відкритті); сердечко обраного — синьо-жовте з тонкою окантовкою; прибрано ручне додавання станцій; «вниз» з кнопок шапки веде на найближчу станцію
 // Зміни 1.16.1: смужка «Зараз грає» оновлює трек і коли плеєр закритий (фонове опитування); трек в один рядок із стрічкою, як у плеєрі, більший шрифт
 // Зміни 1.16.2: смужка «Зараз грає»: є трек — лише виконавець і назва, немає — лише слоган; білий текст без ♪ і без затемнення зліва
+// Зміни 1.16.3: прибрано невикористаний код (підбір кольору, записи STATUS_JSON для видалених станцій); швидше сортування обраних
 // =========================================
 
 (function () {
@@ -1315,7 +1316,7 @@
   // Деякі сервери дозволяють ICY через CORS, але не віддають icy-metaint браузеру — тоді беремо відомий інтервал
   var ICY_METAINT_HINT = { urcradio: 16000, '4everfloyd': 8192 };
   // Icecast/Shoutcast status-json.xsl із CORS: назва треку без читання потоку
-  var STATUS_JSON_STATIONS = { studradio: 1, magicradio: 1 };
+  var STATUS_JSON_STATIONS = {};
 
   function readStatusJsonTitle(url, signal) {
     var m = /^(https?:\/\/[^\/]+)(\/[^?#]*)?/i.exec(url);
@@ -1840,38 +1841,6 @@
       Lampa.Background.change(bg); // плавна зміна замість різкого стрибка
     };
 
-    // Домінантний колір логотипа для рамки фокуса (кеш, без помилок при CORS)
-    var accentCache = {};
-    function accentFrom(url, cb) {
-      if (!url) return;
-      if (accentCache[url]) { cb(accentCache[url]); return; }
-      try {
-        var im = new Image();
-        im.crossOrigin = 'anonymous';
-        im.onload = function () {
-          try {
-            var c = document.createElement('canvas');
-            c.width = c.height = 16;
-            var x = c.getContext('2d');
-            x.drawImage(im, 0, 0, 16, 16);
-            var d = x.getImageData(0, 0, 16, 16).data, r = 0, g = 0, b = 0, n = 0;
-            for (var i = 0; i < d.length; i += 4) {
-              if (d[i + 3] < 128) continue;
-              var mx = Math.max(d[i], d[i + 1], d[i + 2]), mn = Math.min(d[i], d[i + 1], d[i + 2]);
-              if (mx < 30 || mn > 225) continue;
-              var w = 1 + (mx - mn) / 24;
-              r += d[i] * w; g += d[i + 1] * w; b += d[i + 2] * w; n += w;
-            }
-            if (!n) return;
-            var col = 'rgb(' + Math.round(r / n) + ',' + Math.round(g / n) + ',' + Math.round(b / n) + ')';
-            accentCache[url] = col;
-            cb(col);
-          } catch (e) {}
-        };
-        im.src = url;
-      } catch (e) {}
-    }
-
     function onNowPlaying(e) {
       var bar = html.find('.radio-nowbar');
       if (!bar) return;
@@ -2051,8 +2020,9 @@
 
     this.display = function () {
       if (FAV_FIRST && filtred.length > 1) {
-        var fv = [], rest = [];
-        filtred.forEach(function (st) { (Favorites.find(st) ? fv : rest).push(st); });
+        var fv = [], rest = [], favIds = {};
+        Favorites.get().forEach(function (f) { favIds[f.id] = 1; });
+        filtred.forEach(function (st) { (favIds[st.id] ? fv : rest).push(st); });
         if (fv.length && rest.length) filtred = fv.concat(rest);
       }
       scroll.clear();
@@ -2321,7 +2291,7 @@
 
     var manifest = {
       type: 'audio',
-      version: '1.16.2',
+      version: '1.16.3',
       name: Lampa.Lang.translate('radio_station'),
       description: 'Українські радіостанції',
       component: 'radio'
