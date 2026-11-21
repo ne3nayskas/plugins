@@ -1,63 +1,18 @@
-// =========================================
 // Радіо для Lampa
 // Версія: 1.16.3 | 2026.11.21
-// Опис: Плагін для прослуховування ~ 100+ радіостанцій
-// Aвтор - @ne3nayskas 
-// Зміни 1.6.0: свайпи та кнопки ⏮ / ⏭ у вікні відтворення (мобільні)
-// Зміни 1.6.1: оптимізація продуктивності, виправлено подвійний запуск потоку
-// Зміни 1.6.2: після виходу з плеєра список прокручується до станції, що грає
-// Зміни 1.7.0: логотипи станцій беруться з logos/<id>.webp у репозиторії (jsDelivr)
-// Зміни 1.8.0: перемикач вигляду список / плитки; фоновий список прокручується за станцією, що грає
-// Зміни 1.8.1: плитки: більші проміжки, тонка рамка фокуса замість білої картки (ТВ)
-// Зміни 1.8.2: плитки для ТВ: 5–6 колонок, набагато більші проміжки, крупніші назви
-// Зміни 1.8.3: розмір назв у плитках винесено в налаштування TILE_TITLE_FONT на початку файлу; новий синьо-жовтий логотип у меню
-// Зміни 1.9.0: новий синьо-жовтий логотип у меню
-// Зміни 1.9.1: у плеєрі показується поточна композиція (ICY-метадані, laut.fm, SomaFM); жвавіші хвилі з налаштуванням VIZ_SENSITIVITY; виправлено відступи та висоту смужок
-// Зміни 1.9.2: назва треку — кольорова (градієнт) з ♪ і біжить стрічкою, якщо довга; нові станції laut.fm
-// Зміни 1.9.3: назва треку для станцій на myradio24 (через status.json); значок ♪ з обох боків назви
-// Зміни 1.9.4: назва треку для Radio ROKS, ROKS Український Рок, New Rock, Ballads та Hard & Heavy (o.tavr.media)
-// Зміни 1.9.5: назва треку для Kiss FM, Hit FM, Наше Радіо, Relax, Jazz, Мелодія (o.tavr.media)
-// Зміни 1.10.0: РЕЛІЗ — у плеєрі виконавець і трек для ~30 станцій (ICY-метадані, laut.fm, SomaFM, myradio24, o.tavr.media)
-// Зміни 1.10.1: назва треку для Radio Bayraktar (o.tavr.media/bayraktar)
-// Зміни 1.10.2: якщо трек невідомий — у стрічці показується слоган станції (tooltip) в такому ж оформленні; трек має пріоритет
-// Зміни 1.11.0: один рядок на місці слогана: «♪ трек ♪ слоган ♪» (немає треку — «♪ слоган ♪»), біжить, якщо не вміщається
-// Зміни 1.11.1: стабільніший старт потоку: затримка 250 мс при швидких перемиканнях, перепідключення через 8 с, ICY-запит лише після старту звуку, коректне переривання завантаження
-// Зміни 1.11.2: еквалайзер і підсвітка станції, що грає, замість зеленого — кольори стрічки (синя та жовта половини) (налаштування EQ_COLOR_FROM / EQ_COLOR_TO / PLAYING_TEXT_COLOR)
-// Зміни 1.11.3: назви треків для URC Radio US, 4 Ever Floyd, STUD RADIO
-// Зміни 1.12.0: +24 станції TAVR (Hit, Roks, Kiss, Relax, Мелодія, Наше Радіо, Jazz, Гуляй, Gold, Music, Italiana, Ritmo Latino, Flash, Black, K-POP) з назвами треків; Classic Radio і Radio Indie UA тепер теж із треком
-// Зміни 1.13.0: назви треків для всіх 28 каналів FluxFM (API fluxmusic.api.radiosphere.io)
-// Зміни 1.13.1: швидший повтор підключення для cast.mediaonline.net.ua (Прямий FM, Avtoradio, NRJ): 3.5 с замість 8 с, до 3 повторів, повтор одразу після помилки
-// Зміни 1.13.2: нова станція Magic Radio (Київ 93.8 FM) з назвами треків через status-json.xsl
-// Зміни 1.13.3: cast.mediaonline.net.ua — повтор за 5 с (було 3.5 с); DEBUG_START показує час старту потоку
-// Зміни 1.14.0: новий вигляд «лише логотипи» (без назв, щільніша сітка); кнопка вигляду перемикає список → плитки → логотипи
-// Зміни 1.15.0: смужка «Зараз грає» в шапці (логотип, станція, трек); обрані станції першими (FAV_FIRST); на телефоні перший запуск — логотипи
-// Зміни 1.15.1: смужка «Зараз грає» схована на мобільних; фон змінюється м'якше (BG_DELAY); «вгору» з першого ряду спершу веде на кнопки шапки плагіна
-// Зміни 1.15.2: повернення з плеєра не смикає список (без прокрутки, якщо станцію видно); поява плиток без зсуву
-// Зміни 1.15.3: у фокусі збільшення логотипа і тонка біла рамка (без анімацій); у режимі логотипів без підписів
-// Зміни 1.15.4: ряди не зсуваються при навігації та після виходу з плеєра (прокрутка лише коли елемент поза видимою зоною); прибрано DEBUG_START і швидкі повтори для cast.mediaonline.net.ua
-// Зміни 1.16.0: «Обране» одразу працює після додавання станції (меню каталогу збирається при відкритті); сердечко обраного — синьо-жовте з тонкою окантовкою; прибрано ручне додавання станцій; «вниз» з кнопок шапки веде на найближчу станцію
-// Зміни 1.16.1: смужка «Зараз грає» оновлює трек і коли плеєр закритий (фонове опитування); трек в один рядок із стрічкою, як у плеєрі, більший шрифт
-// Зміни 1.16.2: смужка «Зараз грає»: є трек — лише виконавець і назва, немає — лише слоган; білий текст без ♪ і без затемнення зліва
-// Зміни 1.16.3: прибрано невикористаний код (підбір кольору, записи STATUS_JSON для видалених станцій); швидше сортування обраних
-// =========================================
+// Автор: @ne3nayskas
 
 (function () {
   'use strict';
 
-  // ===== НАЛАШТУВАННЯ =====
-  // Розмір назв станцій у плитках (на всіх екранах). Порожній рядок '' = розміри за замовчуванням
   var TILE_TITLE_FONT = '1.5em';
-  // Чутливість хвиль у плеєрі: 1 = спокійно, 2 = жваво, 3 = дуже різко
   var VIZ_SENSITIVITY = 1.5;
-  // Кольори рядка з назвою треку: текст і значок ♪, та швидкість стрічки, пікселів/с
   var TRACK_COLOR_TEXT = '#4da3ff';
   var TRACK_COLOR_NOTE = '#ffd700';
   var TRACK_SCROLL_SPEED = 40;
-  // Еквалайзер (перша половина смужок — EQ_COLOR_FROM, друга — EQ_COLOR_TO) і підсвітка станції, що грає: за замовчуванням кольори стрічки
   var EQ_COLOR_FROM = TRACK_COLOR_TEXT;
   var EQ_COLOR_TO = TRACK_COLOR_NOTE;
   var PLAYING_TEXT_COLOR = TRACK_COLOR_TEXT;
-  // ========================
 
   function _classCallCheck(instance, Constructor) {
     if (!(instance instanceof Constructor)) {
@@ -95,13 +50,7 @@
     return obj;
   }
 
-  // =========================================
-  // СТАТИЧНИЙ СПИСОК УКРАЇНСЬКИХ СТАНЦІЙ
-  // =========================================
   
-  // Логотипи станцій: файли logos/<id>.webp у GitHub-репозиторії (через jsDelivr).
-  // jsDelivr кешує гілку main на кілька годин; для миттєвих оновлень можна вказати
-  // тег релізу замість main, напр. @v1.7.0.
   var LOGO_BASE = 'https://cdn.jsdelivr.net/gh/ne3nayskas/plugins@main/logos/';
   var LOGO_EXT = '.webp';
 
@@ -844,11 +793,8 @@
     s.bg_image_mobile = logoUrl(s.id);
   });
 
-  // =========================================
-  // API
-  // =========================================
   
-  var Api = /*#__PURE__*/function () {
+  var Api =function () {
     function Api() {
       _classCallCheck(this, Api);
     }
@@ -878,11 +824,8 @@
     return Api;
   }();
 
-  // =========================================
-  // FAVORITES
-  // =========================================
   
-  var Favorites = /*#__PURE__*/function () {
+  var Favorites =function () {
     function Favorites() {
       _classCallCheck(this, Favorites);
     }
@@ -946,9 +889,6 @@
     return Favorites;
   }();
 
-  // =========================================
-  // ГЛОБАЛЬНИЙ ПЛЕЄР
-  // =========================================
   
   var globalAudio = null;
   var globalStation = null;
@@ -956,10 +896,9 @@
   var globalScreenReset = null;
   var globalHls = null;
   var globalNotyTimers = [];
-  var globalStartTimer = null;   // відкладений старт потоку (захист від частих перемикань)
-  var globalWatchdog = null;     // перезапуск, якщо потік довго не стартує
+  var globalStartTimer = null;
+  var globalWatchdog = null;
 
-  // Подія для смужки «Зараз грає» у списку станцій
   var globalNowTrack = '';
   function emitNow(station, track) {
     globalNowTrack = track || '';
@@ -968,8 +907,6 @@
     } catch (e) {}
   }
 
-  // Оновлення треку для смужки в списку, поки повне вікно плеєра закрите
-  // (коли плеєр відкритий — він сам опитує і надсилає трек через emitNow)
   var playersOpen = 0, bgNpTimer = null, bgNpAbort = null;
   function bgPoll() {
     var st = globalStation;
@@ -1008,7 +945,6 @@
     } catch(e) {}
   }
 
-  // Без постійного інтервалу: кілька разових перевірок після старту потоку
   function startHidingNoty() {
     stopHidingNoty();
     globalNotyTimers = [0, 400, 1200].map(function(ms) {
@@ -1033,7 +969,6 @@
     if (globalAudio) {
       try {
         globalAudio.pause();
-        // не src = '' (це може відкрити запит до сторінки): прибираємо атрибут і обриваємо завантаження
         globalAudio.removeAttribute('src');
         globalAudio.load();
       } catch(e) {}
@@ -1064,7 +999,6 @@
       }
     });
   }
-
 
   function playGlobalAudio(station) {
     stopGlobalAudio();
@@ -1103,7 +1037,6 @@
       armWatchdog();
     }
 
-    // Якщо потік не почав грати за 8 с — перепідключаємось (до 2 разів)
     function armWatchdog() {
       clearTimeout(globalWatchdog);
       globalWatchdog = setTimeout(function() {
@@ -1112,7 +1045,6 @@
       }, 8000);
     }
 
-    // Невелика затримка перед підключенням: при швидких свайпах не засипаємо сервер запитами
     function loadPlayDelayed() {
       clearTimeout(globalStartTimer);
       globalStartTimer = setTimeout(loadPlay, 250);
@@ -1168,9 +1100,6 @@
     }
   }
 
-  // =========================================
-  // МІНІ-ПЛЕЄР В ГОЛОВІ
-  // =========================================
   
   function updateMiniPlayer(station, state) {
     if (!globalPlayerHtml) {
@@ -1189,8 +1118,6 @@
     globalPlayerHtml.toggleClass('loading', state === 'loading');
     globalPlayerHtml.toggleClass('play', state === 'play');
     
-    // ПРИБИРАЄМО НАЗВУ СТАНЦІЇ В МІНІ-ПЛЕЄРІ
-    // globalPlayerHtml.find('.radio-mini-player__name').text(station.title || '');
     globalPlayerHtml.find('.radio-mini-player__name').text('');
     
     var btn = globalPlayerHtml.find('.radio-mini-player__button');
@@ -1203,22 +1130,12 @@
     }
   }
 
-  // =========================================
-  // PLAYER (повноекранний)
-  // =========================================
   
-  // =========================================
-  // ПОТОЧНА КОМПОЗИЦІЯ (best-effort)
-  // Працює лише там, де станція віддає метадані й дозволяє CORS.
-  // Якщо даних немає — рядок із треком просто не показується.
-  // =========================================
 
-  var NOW_PLAYING_EVERY = 20000; // як часто оновлювати, мс
+  var NOW_PLAYING_EVERY = 20000;
 
-  // Radio ROKS: суфікс потоку (RadioROKS_<суфікс>) → назва стрічки на o.tavr.media. Інші канали додавайте сюди, коли знайдете їхні адреси
   var ROKS_FEEDS = { '': 'roks', 'ukr': 'roksukr', 'newrock': 'roksnew', 'ballads': 'roksbal', 'hardnheavy': 'rokshar' };
 
-  // TAVR: назва потоку → стрічки на o.tavr.media (main — історія основного каналу, multi — по одному запису на підканал із полем type)
   var TAVR_CHANNEL_FEEDS = {
     hitfm_best: 'hitb', hitfm_top: 'hitt',
     radioroks_classicrock: 'rokscla',
@@ -1243,7 +1160,6 @@
 
   function readTavrTitle(url, signal) {
     var m = /^https?:\/\/(?:online\.[a-z]+\.ua|tavr\.tvstitch\.com)\/([A-Za-z]+)(?:_([A-Za-z]+))?(?:[?#]|$)/i.exec(url);
-    // Канали з власним фідом o.tavr.media (CORS *): береться найновіший запис
     var direct = m && TAVR_CHANNEL_FEEDS[(m[1] + (m[2] ? '_' + m[2] : '')).toLowerCase()];
     if (direct) {
       return fetch('https://o.tavr.media/' + direct, { cache: 'no-store', signal: signal }).then(function (r) { return r.json(); }).then(function (j) {
@@ -1269,18 +1185,15 @@
     });
   }
 
-  // Змішування двох #rrggbb кольорів
   function mixHex(a, b, t) {
     function p(h) { h = String(h).replace('#', ''); if (h.length === 3) h = h[0] + h[0] + h[1] + h[1] + h[2] + h[2]; return [0, 2, 4].map(function (i) { return parseInt(h.substr(i, 2), 16) || 0; }); }
     var x = p(a), y = p(b);
     return 'rgb(' + [0, 1, 2].map(function (i) { return Math.round(x[i] + (y[i] - x[i]) * t); }).join(',') + ')';
   }
 
-  // CSS кольорів еквалайзера та активної станції (перекриває стару зелену схему)
   function accentCss() {
     function grad(sel, n, extra) {
       var out = '';
-      // жорсткий поділ як на прапорі (плавне змішування синього з жовтим дає брудно-зелений)
       for (var i = 1; i <= n; i++) out += sel + ':nth-child(' + i + '){background-color:' + (i <= Math.ceil(n / 2) ? EQ_COLOR_FROM : EQ_COLOR_TO) + ' !important}';
       return out;
     }
@@ -1312,10 +1225,7 @@
     return '';
   }
 
-  // Метадані ICY: читаємо кілька блоків потоку й одразу обриваємо з'єднання
-  // Деякі сервери дозволяють ICY через CORS, але не віддають icy-metaint браузеру — тоді беремо відомий інтервал
   var ICY_METAINT_HINT = { urcradio: 16000, '4everfloyd': 8192 };
-  // Icecast/Shoutcast status-json.xsl із CORS: назва треку без читання потоку
   var STATUS_JSON_STATIONS = {};
 
   function readStatusJsonTitle(url, signal) {
@@ -1359,7 +1269,6 @@
       }
 
       function step() {
-        // потрібні: metaint байтів аудіо + 1 байт довжини
         while (total >= pos + metaint + 1) {
           var len = bytesAt(pos + metaint, 1)[0] * 16;
           if (len === 0) {
@@ -1392,8 +1301,6 @@
     });
   }
 
-  // Окремі API деяких сервісів
-  // FluxFM: потік дає лише назву станції, трек — з API Flux (CORS дозволений). Ключ — каталог у streams.fluxfm.de
   var FLUX_CHANNELS = {
     live: 'FluxFM', fluxkompensator: 'fluxfm-finest', lounge: 'flux-lounge', clubsandwich: 'clubsandwich',
     klubradio: 'electronic-chillout', chillhop: 'chillhop', '80er': '80s', '70er': '70s', '60er': '60s',
@@ -1412,7 +1319,6 @@
         return (a ? a + ' - ' : '') + (j && j.title || '');
       });
     }
-    // Radio ROKS: власний JSON сайту (CORS *), масив від найновішого; джингл має artist_id 0 і порожній stime
     m = /online\.radioroks\.ua\/RadioROKS(?:_([A-Za-z]+))?(?:[?#]|$)/i.exec(url);
     if (m) {
       var feed = ROKS_FEEDS[(m[1] || '').toLowerCase()];
@@ -1424,10 +1330,8 @@
         });
       }
     }
-    // Холдинг TAVR (Kiss, Hit, Наше Радіо, Relax, Jazz, Мелодія): o.tavr.media, CORS *
     var tv = readTavrTitle(url, signal);
     if (tv) return tv;
-    // Хостинг myradio24: JSON статусу з CORS, поле song = «Виконавець - Назва»
     m = /myradio24\.(?:com|org)\/(\d+)/i.exec(url);
     if (m) {
       return fetch('https://myradio24.com/users/' + m[1] + '/status.json', { cache: 'no-store', signal: signal }).then(function (r) { return r.json(); }).then(function (j) {
@@ -1473,35 +1377,34 @@
     var html = Lampa.Template.js('radio_player');
     var isDestroyed = false, playerCounted = false;
 
-    // Візуалізація: «жива» хвиля керується з JS (лише transform/opacity)
     var vizRAF = 0, vizOn = false, vizBars = [], vizVal = [], vizNoise = [], vizLast = 0;
     var vizBpm = 90, vizSeed = 0;
     (function () {
       var id = String(station.id || station.title || ''), h = 0;
       for (var i = 0; i < id.length; i++) h = (h * 31 + id.charCodeAt(i)) % 100003;
-      vizBpm = 92 + h % 46;      // 92–137 уд/хв, різний для кожної станції
+      vizBpm = 92 + h % 46;
       vizSeed = h % 628 / 100;
     })();
 
     function vizTick(ts) {
       if (!vizOn || isDestroyed) return;
       vizRAF = requestAnimationFrame(vizTick);
-      if (ts - vizLast < 33) return; // ~30 кадрів/с достатньо
+      if (ts - vizLast < 33) return;
       vizLast = ts;
       var n = vizBars.length;
       var period = 60000 / vizBpm;
       var beat = Math.floor(ts / period);
       var phase = (ts % period) / period;
       var accent = beat % 4 === 0 ? 1 : (beat % 2 === 0 ? 0.8 : 0.55);
-      if ((beat * 2654435761 >>> 0) % 7 === 0) accent *= 0.4;          // іноді «пропущений» удар
-      var kick = Math.exp(-phase * 5.5) * accent;                       // різкий удар і спад
+      if ((beat * 2654435761 >>> 0) % 7 === 0) accent *= 0.4;
+      var kick = Math.exp(-phase * 5.5) * accent;
       var snare = Math.exp(-((phase + 0.5) % 1) * 9) * (beat % 2 ? 0.7 : 0.3);
-      var energy = 0.7 + 0.3 * Math.sin(ts / 5200 + vizSeed);           // повільна зміна «гучності»
+      var energy = 0.7 + 0.3 * Math.sin(ts / 5200 + vizSeed);
       var c = (n - 1) / 2;
       for (var i = 0; i < n; i++) {
         var x = (i - c) / c;
-        var wb = Math.exp(-x * x * 1.8);                                // баси ближче до центру
-        var wh = 0.35 + 0.65 * Math.abs(x);                             // верхи — по краях
+        var wb = Math.exp(-x * x * 1.8);
+        var wh = 0.35 + 0.65 * Math.abs(x);
         vizNoise[i] += (Math.random() - vizNoise[i]) * (0.18 + 0.25 * wh);
         var level = 0.1 + VIZ_SENSITIVITY * energy * (kick * wb * 1.0 + snare * wh * 0.55 + vizNoise[i] * (0.35 + 0.6 * wh));
         if (level > 1) level = 1;
@@ -1554,18 +1457,15 @@
       changeWave(globalAudio && !globalAudio.paused ? 'play' : 'loading');
     }
 
-    // Поточна композиція
     var npTimer = null, npAbort = null;
     function pollNowPlaying() {
       if (isDestroyed) return;
       if (npAbort) { try { npAbort.abort(); } catch (e) {} }
       npAbort = typeof AbortController === 'function' ? new AbortController() : null;
-      // ICY відкриває друге з'єднання з потоком — робимо це лише коли звук уже грає, щоб не заважати старту
       var allowIcy = !!(audioRef && !audioRef.paused && audioRef.readyState >= 3);
       fetchNowPlaying(station, npAbort ? npAbort.signal : undefined, allowIcy).then(function (t) {
         if (isDestroyed) return;
         var box = html.find('.radio-player__track');
-        // є трек — «♪ трек ♪ слоган ♪», немає — «♪ слоган ♪»
         if (box) setTrack(box, cleanTrack(t, station));
       }, function () {
         if (isDestroyed || trackShown) return;
@@ -1574,9 +1474,8 @@
       });
     }
     var lastTrack = null;
-    var trackShown = false; // чи зараз у рядку справжній трек (а не лише слоган)
+    var trackShown = false;
     function fallbackText() { return String(station.tooltip || '').replace(/\s+/g, ' ').trim(); }
-    // Один рядок: «♪ трек ♪ слоган ♪» або, коли треку немає, «♪ слоган ♪»
     function setTrack(box, info) {
       var parts = [];
       if (info) parts.push(info);
@@ -1591,7 +1490,7 @@
       if (!parts.length) return;
       var span = document.createElement('span');
       span.className = 'radio-player__track-in';
-      var gap = '  '; // подвійний пробіл між значком і текстом
+      var gap = '  ';
       function note() {
         var n = document.createElement('i');
         n.textContent = '♪';
@@ -1605,11 +1504,10 @@
             span.appendChild(document.createTextNode(gap + parts[p] + gap));
           }
         }
-        if (repeat === 1) span.appendChild(note()); // нерухомо: замикаючий ♪
+        if (repeat === 1) span.appendChild(note());
       }
       fill(1);
       box.appendChild(span);
-      // якщо не вміщається — пускаємо безперервну стрічку
       if (span.offsetWidth > box.clientWidth) {
         fill(2);
         span.style.animationDuration = Math.max(6, Math.round(span.offsetWidth / 2 / TRACK_SCROLL_SPEED)) + 's';
@@ -1618,10 +1516,9 @@
     }
     function startNowPlaying() {
       var box0 = html.find('.radio-player__track');
-      if (box0) setTrack(box0, ''); // одразу слоган, поки йде запит
+      if (box0) setTrack(box0, '');
       pollNowPlaying();
       npTimer = setInterval(pollNowPlaying, NOW_PLAYING_EVERY);
-      // щойно звук реально пішов — одразу питаємо трек ще раз (тепер уже і через ICY)
       if (audioRef) audioRef.addEventListener('playing', onAudioPlayingNp);
     }
     function onAudioPlayingNp() {
@@ -1646,7 +1543,6 @@
     this.create = function () {
       var cover = Lampa.Template.js('radio_cover');
       cover.find('.radio-cover__title').text(station.title || '');
-      // слоган більше не окремий рядок: на його місці — рядок «трек + слоган» (див. setTrack)
       cover.find('.radio-cover__tooltip').classList.add('radio-player__track');
       var img_box = cover.find('.radio-cover__img-box');
       var img_elm = img_box.find('img');
@@ -1666,7 +1562,6 @@
         window.history.back();
       });
 
-      // Кнопки попередня / наступна
       html.find('.radio-player__prev').on('click', function () {
         if (handlers.prev) handlers.prev();
       });
@@ -1674,7 +1569,6 @@
         if (handlers.next) handlers.next();
       });
 
-      // Свайпи
       var sx = 0, sy = 0, st = 0, tracking = false;
       html.addEventListener('touchstart', function (e) {
         if (e.touches.length !== 1) { tracking = false; return; }
@@ -1691,14 +1585,14 @@
         var dx = t.clientX - sx;
         var dy = t.clientY - sy;
         var absX = Math.abs(dx), absY = Math.abs(dy);
-        var TH = 50; // мінімальна довжина свайпу, px
+        var TH = 50;
 
-        if (Date.now() - st > 800) return;      // занадто повільний жест
-        if (Math.max(absX, absY) < TH) return;  // це тап, а не свайп
+        if (Date.now() - st > 800) return;
+        if (Math.max(absX, absY) < TH) return;
 
         var dir;
-        if (absX > absY) dir = dx < 0 ? 1 : -1;  // вліво = наступна, вправо = попередня
-        else dir = dy < 0 ? 1 : -1;              // вгору = наступна, вниз = попередня
+        if (absX > absY) dir = dx < 0 ? 1 : -1;
+        else dir = dy < 0 ? 1 : -1;
 
         if (dir === 1 && handlers.next) handlers.next();
         if (dir === -1 && handlers.prev) handlers.prev();
@@ -1709,7 +1603,6 @@
       startNowPlaying();
       if (!playerCounted) { playerCounted = true; playersOpen++; }
 
-      // Потік запускає Component.play(); плеєр лише відображає стан
     };
 
     this.destroy = function () {
@@ -1725,9 +1618,6 @@
     };
   }
 
-  // =========================================
-  // COMPONENT
-  // =========================================
   
   function Component() {
     var _this6 = this;
@@ -1736,22 +1626,18 @@
     var viewMode = (function () {
       var v = Lampa.Storage.get('radio_view', '');
       if (v === 'tiles' || v === 'logos' || v === 'list') return v;
-      return (window.innerWidth || 1000) <= 600 ? 'logos' : 'list'; // перший запуск: на телефоні — лише логотипи
+      return (window.innerWidth || 1000) <= 600 ? 'logos' : 'list';
     })();
     var html = document.createElement('div');
     var img_bg = 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACgAAAAZCAYAAABD2GxlAAAACXBIWXMAAAsTAAALEwEAmpwYAAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8YQUAAAHASURBVHgBlZaLrsMgDENXxAf3/9XHFdXNZLm2YZHQymPk4CS0277v9+ffrut62nEcn/M8nzb69cxj6le1+75f/RqrZ9fatm3F9wwMR7yhawilNke4Gis/7j9srQbdaVFBnkcQ1WrfgmIIBcTrvgqqsKiTzvpOQbUnAykVW4VVqZXyyDllYFSKx9QaVrO7nGJIB63g+FAq/xhcHWBYdwCsmAtvFZUKE0MlVZWCT4idOlyhTp3K35R/6Nzlq0uBnsKWlEzgSh1VGJxv6rmpXMO7EK+XWUPnDFRWqitQFeY2UyZVryuWlI8ulLgGf19FooAUwC9gCWLcwzWPb7Wa60qdlZxjx6ooUuUqVQsK+y1VoAJyBeJAVsLJeYmg/RIXdG2kPhwYPBUQQyYF0XC8lwP3MTCrYAXB88556peCbUUZV7WccwkUQfCZC4PXdA5hKhSVhythZqjZM0J39w5m8BRadKAcrsIpNZsLIYdOqcZ9hExhZ1MH+QL+ciFzXzmYhZr/M6yUUwp2dp5U4naZDwAF5JRSefdScJZ3SkU0nl8xpaAy+7ml1EqvMXSs1HRrZ9bc3eZUSXmGa/mdyjbmqyX7A9RaYQa9IRJ0AAAAAElFTkSuQmCC';
 
-    // Затримка зміни фону після фокуса, мс (більше — спокійніше під час гортання)
     var BG_DELAY = 900;
     var lastBg = '';
 
-    // Обрані станції — на початок списку (true / false)
     var FAV_FIRST = true;
 
-    // Кількість колонок плиток за шириною екрана (змінюйте за потреби)
     var TILE_COLS = [[600, 3], [820, 4], [1500, 5], [Infinity, 6]];
 
-    // Кількість колонок для вигляду «лише логотипи» (трохи менші за плитки, але не дрібні)
     var LOGO_COLS = [[600, 4], [820, 5], [1500, 8], [Infinity, 8]];
 
     function calcCols() {
@@ -1763,7 +1649,6 @@
       return 4;
     }
 
-    // Розмір «сторінки» підвантаження (кратний 3, 5 і 6 для плиток)
     function pageSize() {
       return viewMode === 'logos' ? 40 : viewMode === 'tiles' ? 30 : 10;
     }
@@ -1773,8 +1658,6 @@
       if (box) box.style.setProperty('--radio-cols', calcCols());
     }
 
-    // Повертає DOM-елемент станції за id. Якщо її ще немає в списку
-    // (список підвантажується частинами), дозавантажує потрібні сторінки.
     function ensureEl(sid) {
       if (sid === null || sid === undefined || !scroll) return null;
       sid = String(sid);
@@ -1797,8 +1680,6 @@
       return null;
     }
 
-    // Чи елемент повністю видно у вікні прокрутки (щоб не смикати список зайвий раз)
-    // Не скролимо, якщо елемент видно і він не в останніх рядах (там скрол потрібен для підвантаження)
     function needScroll(el) {
       if (!fullyVisible(el)) return true;
       var all = html.querySelectorAll('.radio-item');
@@ -1808,12 +1689,10 @@
       try {
         var c = scroll.render(true).getBoundingClientRect(), r = el.getBoundingClientRect();
         var em = parseFloat(window.getComputedStyle(document.body).fontSize) || 16;
-        // знизу запас під нижню панель, зверху — під підписи
         return r.height > 0 && r.top >= c.top + em && r.bottom <= c.bottom - em * 3;
       } catch (e) { return false; }
     }
 
-    // Прокручує фоновий список до станції (без зміни фокуса), щоб вона не ховалась за екраном
     function revealStation(station) {
       if (!station) return;
       var el = ensureEl(station.id);
@@ -1838,7 +1717,7 @@
       var bg = last ? last.background || img_bg : img_bg;
       if (bg === lastBg) return;
       lastBg = bg;
-      Lampa.Background.change(bg); // плавна зміна замість різкого стрибка
+      Lampa.Background.change(bg);
     };
 
     function onNowPlaying(e) {
@@ -1855,7 +1734,6 @@
       renderBarTicker(bar.querySelector('.radio-nowbar__track'), d.station, d.track);
     }
 
-    // Один рядок: трек (виконавець — назва), а коли треку немає — слоган. Стрічка, якщо не вміщається
     var barKey = null;
     function renderBarTicker(box, station, info) {
       if (!box) return;
@@ -1892,7 +1770,6 @@
       html.find('.radio-content__list').append(scroll.render(true));
       scroll.minus(html.find('.radio-content__head'));
 
-      // позначаємо контейнер елементів для сітки плиток
       var gridBody = scroll.body ? scroll.body(true) : html.querySelector('.scroll__body');
       if (gridBody && gridBody.classList) gridBody.classList.add('radio-grid');
 
@@ -1921,7 +1798,6 @@
       var _this3 = this;
       var btn = html.find('.button--catalog');
 
-      // Пункти меню збираємо щоразу при відкритті: обране могло змінитись, поки ми в плагіні
       function catalogItems() {
         var favs = Favorites.get().length;
         var items = [{
@@ -1972,7 +1848,6 @@
       });
     };
 
-    // Застосовує поточний вигляд (список / плитки)
     this.applyView = function () {
       var box = html.find('.radio-content');
       if (!box) return;
@@ -1981,7 +1856,6 @@
       box.style.setProperty('--radio-cols', calcCols());
     };
 
-    // Кнопка перемикання вигляду в шапці
     this.buildView = function () {
       var _this8 = this;
       html.find('.button--view').on('hover:enter', function () {
@@ -1989,7 +1863,7 @@
         viewMode = viewMode === 'list' ? 'tiles' : viewMode === 'tiles' ? 'logos' : 'list';
         try { Lampa.Storage.set('radio_view', viewMode); } catch (e) {}
         _this8.applyView();
-        focusSid = cur; // після перебудови повертаємо фокус на ту саму станцію
+        focusSid = cur;
         _this8.display();
       });
     };
@@ -2055,18 +1929,16 @@
     this.play = function (station) {
       played = station;
 
-      // Не перезапускаємо потік, якщо ця станція вже грає
       var alreadyPlaying = globalStation && globalStation.id === station.id && globalAudio && !globalAudio.paused;
       if (!alreadyPlaying) playGlobalAudio(station);
 
-      // фоновий список прокручується до станції, що грає
       revealStation(station);
 
       var player;
       var busy = false;
 
       var move = function move(d) {
-        if (busy) return; // захист від подвійного спрацювання
+        if (busy) return;
         var total = filtred.length;
         if (!total) return;
         busy = true;
@@ -2128,7 +2000,7 @@
         clearTimeout(bgTimer);
         bgTimer = setTimeout(function () {
           var bg = item.background || img_bg;
-          if (bg === lastBg) return; // той самий фон — не чіпаємо
+          if (bg === lastBg) return;
           lastBg = bg;
           Lampa.Background.change(bg);
         }, BG_DELAY);
@@ -2195,7 +2067,6 @@
           focusPlaying = false;
           if (target) last = target;
 
-          // повернення (з плеєра): якщо станцію вже видно — список не прокручуємо взагалі
           var keep = !!target && !needScroll(target);
           Lampa.Controller.collectionSet(html);
           Lampa.Controller.collectionFocus(target || last, html);
@@ -2210,7 +2081,6 @@
         right: function right() { Navigator.move('right'); },
         up: function up() {
           if (Navigator.canmove('up')) { Navigator.move('up'); return; }
-          // з першого ряду — спершу на кнопки шапки плагіна (найближча по горизонталі), і лише потім у шапку Lampa
           var onHead = html.querySelector('.radio-content__head .selector.focus');
           var cur = html.querySelector('.radio-item.focus');
           var btns = onHead ? [] : Array.prototype.slice.call(html.querySelectorAll('.radio-content__head .selector'));
@@ -2227,7 +2097,6 @@
           Lampa.Controller.toggle('head');
         },
         down: function down() {
-          // з кнопки шапки — на найближчу по горизонталі станцію першого видимого ряду
           var from = html.querySelector('.radio-content__head .selector.focus');
           if (from) {
             var c = scroll.render(true).getBoundingClientRect();
@@ -2267,9 +2136,6 @@
     };
   }
 
-  // =========================================
-  // START PLUGIN
-  // =========================================
   
   function startPlugin() {
     window.plugin_record_ready = true;
@@ -2308,7 +2174,7 @@
     
     Lampa.Template.add('radio_mini_player', "\n        <div class=\"selector radio-mini-player hide stop\">\n            <div class=\"radio-mini-player__button\">\n                <i></i>\n                <i></i>\n                <i></i>\n                <i></i>\n            </div>\n            <div class=\"radio-mini-player__name\"></div>\n        </div>\n    ");
 
-    Lampa.Template.add('radio_style', "\n        <style>\n        .radio-content{padding:0 1.5em}.radio-content__head{display:-webkit-box;display:-webkit-flex;display:-moz-box;display:-ms-flexbox;display:flex;padding:1.5em 0}.radio-content__body{display:-webkit-box;display:-webkit-flex;display:-moz-box;display:-ms-flexbox;display:flex}.radio-content__list{width:100%}@media screen and (max-width:576px){.radio-content__list{width:100%}}.radio-cover{text-align:center;line-height:1.4}.radio-cover__img-container{max-width:20em;margin:0 auto}.radio-cover__img-box{position:relative;padding-bottom:100%;background-color:rgba(0,0,0,0.3);-webkit-border-radius:1em;-moz-border-radius:1em;border-radius:1em}.radio-cover__img-box>img{position:absolute;top:0;left:0;width:100%;height:100%;-webkit-border-radius:1em;-moz-border-radius:1em;border-radius:1em;opacity:0}.radio-cover__img-box.loaded{background-color:transparent}.radio-cover__img-box.loaded>img{opacity:1}.radio-cover__img-box.loaded-icon{background-color:rgba(0,0,0,0.3)}.radio-cover__img-box.loaded-icon>img{left:20%;top:20%;width:60%;height:60%;opacity:.2}.radio-cover__title{font-weight:700;font-size:1.5em;margin-top:1em}.radio-cover__tooltip{font-weight:300;font-size:1.3em;margin-top:.2em}.radio-item{padding:1em;display:-webkit-box;display:-webkit-flex;display:-moz-box;display:-ms-flexbox;display:flex;-webkit-box-align:center;-webkit-align-items:center;-moz-box-align:center;-ms-flex-align:center;align-items:center;line-height:1.4}.radio-item__num{font-weight:700;margin-right:1em;font-size:1.3em;opacity:.4;-webkit-flex-shrink:0;-ms-flex-negative:0;flex-shrink:0}@media screen and (max-width:400px){.radio-item__num{display:none}}.radio-item__body{max-width:60%}.radio-item__cover{width:5em;-webkit-flex-shrink:0;-ms-flex-negative:0;flex-shrink:0;margin-right:2em}.radio-item__cover-box{position:relative;padding-bottom:100%;background-color:rgba(0,0,0,0.3);-webkit-border-radius:1em;-moz-border-radius:1em;border-radius:1em}.radio-item__cover-box>img{position:absolute;top:0;left:0;width:100%;height:100%;-webkit-border-radius:1em;-moz-border-radius:1em;border-radius:1em;opacity:0}.radio-item__cover-box.loaded{background-color:transparent}.radio-item__cover-box.loaded>img{opacity:1}.radio-item__cover-box.loaded-icon{background-color:rgba(0,0,0,0.3)}.radio-item__cover-box.loaded-icon>img{left:20%;top:20%;width:60%;height:60%;opacity:.2}\n\n/* ===== ТЕКСТ У СПИСКУ - БЕЗ ПІДКЛАДКИ ===== */\n.radio-item__title {\n    font-weight:700;\n    font-size:1.2em;\n    text-shadow: 0 1px 2px rgba(0,0,0,0.7);\n    transition: color 0.3s ease;\n}\n.radio-item__tooltip {\n    opacity:.5;\n    margin-top:.5em;\n    font-size:1.1em;\n    text-shadow: 0 1px 2px rgba(0,0,0,0.7);\n    transition: color 0.3s ease;\n}\n.radio-item__num {\n    transition: color 0.3s ease, opacity 0.3s ease;\n}\n\n/* ===== ЗЕЛЕНИЙ ТЕКСТ ДЛЯ АКТИВНОЇ СТАНЦІЇ ===== */\n.radio-item.playing .radio-item__title {\n    color: #00ff00 !important;\n    text-shadow: 0 1px 2px rgba(0,0,0,0.7) !important;\n}\n.radio-item.playing .radio-item__tooltip {\n    color: #66ff66 !important;\n    text-shadow: 0 1px 2px rgba(0,0,0,0.7) !important;\n    opacity: 0.9 !important;\n}\n.radio-item.playing .radio-item__num {\n    color: #00ff00 !important;\n    opacity: 1 !important;\n}\n\n.radio-item__icons{margin-left:auto;padding-left:1em;-webkit-flex-shrink:0;-ms-flex-negative:0;flex-shrink:0;display:-webkit-box;display:-webkit-flex;display:-moz-box;display:-ms-flexbox;display:flex}.radio-item__icons svg{width:1.4em !important;height:1.4em !important}.radio-item__icons>*+*{margin-left:1.5em}.radio-item__icons .radio-item__icon-favorite{display:none}.radio-item__icons .radio-item__icon-play{display:none}.radio-item.focus{background:white;color:#000;-webkit-border-radius:1em;-moz-border-radius:1em;border-radius:1em}.radio-item.focus .radio-item__icon-play{display:block}.radio-item.favorite .radio-item__icon-favorite{display:block}.radio-item.playing{background:rgba(0,255,0,0.08);border:1px solid rgba(0,255,0,0.25);border-radius:1em}.radio-item.empty--item .radio-item__title,.radio-item.empty--item .radio-item__num,.radio-item.empty--item .radio-item__tooltip{background-color:rgba(255,255,255,0.3);height:1.2em;-webkit-border-radius:.3em;-moz-border-radius:.3em;border-radius:.3em}.radio-item.empty--item .radio-item__num{width:1.4em}.radio-item.empty--item .radio-item__title{width:7em}.radio-item.empty--item .radio-item__tooltip{width:16em}.radio-item.empty--item .radio-item__icons{display:none}.radio-item.empty--item .radio-item__cover-box{background-color:rgba(255,255,255,0.3)}.radio-item.empty--item.focus{background-color:transparent;color:#fff}\n\n/* ===== ЕКВАЛАЙЗЕР В СПИСКУ ДЛЯ АКТИВНОЇ СТАНЦІЇ ===== */\n.radio-item__wave {\n    display: none;\n    -webkit-box-align: center;\n    -webkit-align-items: center;\n    -moz-box-align: center;\n    -ms-flex-align: center;\n    align-items: center;\n    -webkit-box-pack: center;\n    -webkit-justify-content: center;\n    -moz-box-pack: center;\n    -ms-flex-pack: center;\n    justify-content: center;\n    margin-left: auto;\n    padding-left: 0.5em;\n    -webkit-flex-shrink: 0;\n    -ms-flex-negative: 0;\n    flex-shrink: 0;\n    height: 2.5em;\n    gap: 2px;\n}\n\n.radio-item.playing .radio-item__wave {\n    display: -webkit-box;\n    display: -webkit-flex;\n    display: -moz-box;\n    display: -ms-flexbox;\n    display: flex;\n}\n\n.radio-item__wave i {\n    display: block;\n    width: 3px;\n    background-color: #00ff00;\n    border-radius: 1px;\n    height: 0.8em;\n    -webkit-animation: wavePlay 0.8s ease-in-out infinite alternate;\n    -moz-animation: wavePlay 0.8s ease-in-out infinite alternate;\n    -o-animation: wavePlay 0.8s ease-in-out infinite alternate;\n    animation: wavePlay 0.8s ease-in-out infinite alternate;\n}\n\n.radio-item__wave i:nth-child(1) { -webkit-animation-delay: 0s; animation-delay: 0s; height: 0.5em; }\n.radio-item__wave i:nth-child(2) { -webkit-animation-delay: 0.1s; animation-delay: 0.1s; height: 1.2em; }\n.radio-item__wave i:nth-child(3) { -webkit-animation-delay: 0.2s; animation-delay: 0.2s; height: 1.8em; }\n.radio-item__wave i:nth-child(4) { -webkit-animation-delay: 0.3s; animation-delay: 0.3s; height: 1.0em; }\n.radio-item__wave i:nth-child(5) { -webkit-animation-delay: 0.4s; animation-delay: 0.4s; height: 0.6em; }\n\n@-webkit-keyframes wavePlay {\n    0% { -webkit-transform: scaleY(0.3); transform: scaleY(0.3); opacity: 0.4; }\n    100% { -webkit-transform: scaleY(1); transform: scaleY(1); opacity: 1; }\n}\n@-moz-keyframes wavePlay {\n    0% { -moz-transform: scaleY(0.3); transform: scaleY(0.3); opacity: 0.4; }\n    100% { -moz-transform: scaleY(1); transform: scaleY(1); opacity: 1; }\n}\n@-o-keyframes wavePlay {\n    0% { -o-transform: scaleY(0.3); transform: scaleY(0.3); opacity: 0.4; }\n    100% { -o-transform: scaleY(1); transform: scaleY(1); opacity: 1; }\n}\n@keyframes wavePlay {\n    0% { -webkit-transform: scaleY(0.3); -moz-transform: scaleY(0.3); -o-transform: scaleY(0.3); transform: scaleY(0.3); opacity: 0.4; }\n    100% { -webkit-transform: scaleY(1); -moz-transform: scaleY(1); -o-transform: scaleY(1); transform: scaleY(1); opacity: 1; }\n}\n\n/* ===== ПОВНОЕКРАННИЙ ПЛЕЄР ===== */\n.radio-player {\n    position:fixed;\n    z-index:100;\n    left:0;\n    top:0;\n    width:100%;\n    height:100%;\n    display:-webkit-box;\n    display:-webkit-flex;\n    display:-moz-box;\n    display:-ms-flexbox;\n    display:flex;\n    -webkit-box-align:center;\n    -webkit-align-items:center;\n    -moz-box-align:center;\n    -ms-flex-align:center;\n    align-items:center;\n    -webkit-box-pack:center;\n    -webkit-justify-content:center;\n    -moz-box-pack:center;\n    -ms-flex-pack:center;\n    justify-content:center;\n}\n\n/* ТЕМНИЙ ФОН (без blur заради продуктивності) */\n.radio-player {\n    background: rgba(0,0,0,0.85);\n}\n\n/* СУЦІЛЬНА ПІДКЛАДКА ДЛЯ ВСЬОГО КОНТЕНТУ */\n.radio-player__content {\n    position:relative;\n    background: rgba(0, 0, 0, 0.65);\n    padding: 2em 3em;\n    border-radius: 1.5em;\n    max-width: 30em;\n    width: 100%;\n    box-shadow: 0 8px 24px rgba(0,0,0,0.6);\n    border: 1px solid rgba(255,255,255,0.08);\n}\n\n.radio-player__cover{width:100%}.radio-player__track{margin:.7em auto 0;padding:0;width:88%;max-width:88%;text-align:center;font-size:1.2em;line-height:1.4;font-weight:600;overflow:hidden;white-space:nowrap;-webkit-mask-image:linear-gradient(90deg,transparent,#000 7%,#000 93%,transparent);mask-image:linear-gradient(90deg,transparent,#000 7%,#000 93%,transparent)}.radio-player__track-in{display:inline-block;white-space:nowrap;color:#ffd700}.radio-player__track-in i{font-style:normal;font-size:1.3em;line-height:1;vertical-align:-.08em;color:#4da3ff}.radio-player__track-in.run{-webkit-animation:radioTrackRun 12s linear infinite;animation:radioTrackRun 12s linear infinite;will-change:transform}@-webkit-keyframes radioTrackRun{0%{-webkit-transform:translateX(0)}100%{-webkit-transform:translateX(-50%)}}@keyframes radioTrackRun{0%{transform:translateX(0)}100%{transform:translateX(-50%)}}.radio-player__track:empty{display:none}.radio-player__track+.radio-player__controls{margin-top:1.3em}.radio-player__wave{margin-top:1em;padding:.6em 0}.radio-player__wave>div.live{opacity:1;will-change:transform,opacity;-webkit-transform:scaleY(.15);transform:scaleY(.15)}.radio-player__wave{display:-webkit-box;display:-webkit-flex;display:-moz-box;display:-ms-flexbox;display:flex;-webkit-box-align:center;-webkit-align-items:center;-moz-box-align:center;-ms-flex-align:center;align-items:center;-webkit-box-pack:center;-webkit-justify-content:center;-moz-box-pack:center;-ms-flex-pack:center;justify-content:center;margin-top:1.5em;padding:1em 0}.radio-player__wave>div{width:4px;background-color:#00ff00;margin:0 .3em;height:3.4em;opacity:0;border-radius:2px}.radio-player__wave>div.loading{-webkit-animation:radioAnimationWaveLoading 400ms ease infinite;-moz-animation:radioAnimationWaveLoading 400ms ease infinite;-o-animation:radioAnimationWaveLoading 400ms ease infinite;animation:radioAnimationWaveLoading 400ms ease infinite}.radio-player__wave>div.play{-webkit-animation:radioAnimationWavePlay 50ms linear infinite alternate;-moz-animation:radioAnimationWavePlay 50ms linear infinite alternate;-o-animation:radioAnimationWavePlay 50ms linear infinite alternate;animation:radioAnimationWavePlay 50ms linear infinite alternate}.radio-player__close{position:fixed;top:1.5em;right:50%;margin-right:-2em;-webkit-border-radius:100%;-moz-border-radius:100%;border-radius:100%;padding:1em;display:none;background-color:rgba(255,255,255,0.1)}.radio-player__close>svg{width:1.5em;height:1.5em}body.true--mobile .radio-player__close{display:block}\n\n/* МІНІ-ПЛЕЄР В ГОЛОВІ - БЕЗ НАЗВИ */\n.radio-mini-player {\n    display:-webkit-box;display:-webkit-flex;display:-moz-box;display:-ms-flexbox;display:flex;\n    -webkit-box-align:center;-webkit-align-items:center;-moz-box-align:center;-ms-flex-align:center;align-items:center;\n    -webkit-border-radius:0.3em;-moz-border-radius:0.3em;border-radius:0.3em;\n    padding:0.2em 0.4em;\n    margin-left:0.5em;\n    margin-right:0.5em;\n    cursor:pointer;\n}\n.radio-mini-player__name {\n    display:none !important;\n}\n.radio-mini-player__button {\n    position:relative;\n    width:2.2em;\n    height:2.2em;\n    display:-webkit-box;display:-webkit-flex;display:-moz-box;display:-ms-flexbox;display:flex;\n    -webkit-box-align:center;-webkit-align-items:center;-moz-box-align:center;-ms-flex-align:center;align-items:center;\n    -webkit-box-pack:center;-webkit-justify-content:center;-moz-box-pack:center;-ms-flex-pack:center;justify-content:center;\n    -webkit-flex-shrink:0;-ms-flex-negative:0;flex-shrink:0;\n    -webkit-border-radius:0.3em;-moz-border-radius:0.3em;border-radius:0.3em;\n    border:0.15em solid rgba(255,255,255,0.8);\n    background-size:cover !important;\n    background-position:center !important;\n    cursor:pointer;\n}\n.radio-mini-player__button i {\n    display:block;\n    width:0.2em;\n    height:1em;\n    background-color:#00ff00;\n    margin:0 0.1em;\n    -webkit-animation:sound 0ms -800ms linear infinite alternate;\n    -moz-animation:sound 0ms -800ms linear infinite alternate;\n    -o-animation:sound 0ms -800ms linear infinite alternate;\n    animation:sound 0ms -800ms linear infinite alternate;\n    -webkit-flex-shrink:0;-ms-flex-negative:0;flex-shrink:0;\n    border-radius:1px;\n}\n.radio-mini-player__button i:nth-child(1){-webkit-animation-duration:474ms;-moz-animation-duration:474ms;-o-animation-duration:474ms;animation-duration:474ms}\n.radio-mini-player__button i:nth-child(2){-webkit-animation-duration:433ms;-moz-animation-duration:433ms;-o-animation-duration:433ms;animation-duration:433ms}\n.radio-mini-player__button i:nth-child(3){-webkit-animation-duration:407ms;-moz-animation-duration:407ms;-o-animation-duration:407ms;animation-duration:407ms}\n.radio-mini-player__button i:nth-child(4){-webkit-animation-duration:458ms;-moz-animation-duration:458ms;-o-animation-duration:458ms;animation-duration:458ms}\n.radio-mini-player.stop .radio-mini-player__button i{display:none}\n.radio-mini-player.stop .radio-mini-player__button:after{\n    content:\"\";\n    width:0.6em;\n    height:0.6em;\n    background-color:rgba(255,255,255,0.9);\n    border-radius:0.1em;\n}\n.radio-mini-player.loading .radio-mini-player__button i{display:none}\n.radio-mini-player.loading .radio-mini-player__button:before{\n    content:\"\";\n    display:block;\n    border-top:0.2em solid rgba(0,255,0,0.9);\n    border-left:0.2em solid transparent;\n    border-right:0.2em solid transparent;\n    border-bottom:0.2em solid transparent;\n    -webkit-animation:sound-loading 1s linear infinite;\n    -moz-animation:sound-loading 1s linear infinite;\n    -o-animation:sound-loading 1s linear infinite;\n    animation:sound-loading 1s linear infinite;\n    width:0.9em;height:0.9em;\n    -webkit-border-radius:100%;-moz-border-radius:100%;border-radius:100%;\n    -webkit-flex-shrink:0;-ms-flex-negative:0;flex-shrink:0;\n}\n.radio-mini-player.focus{background-color:#fff;color:#000}\n.radio-mini-player.focus .radio-mini-player__button{border-color:#000}\n.radio-mini-player.focus .radio-mini-player__button i,\n.radio-mini-player.focus .radio-mini-player__button:after{background-color:#000}\n.radio-mini-player.focus .radio-mini-player__button:before{border-top-color:#000}\n.radio-mini-player.hide{display:none}\n\n@-webkit-keyframes sound{0%{-webkit-transform:scaleY(0.1)}100%{-webkit-transform:scaleY(1)}}\n@-moz-keyframes sound{0%{-moz-transform:scaleY(0.1)}100%{-moz-transform:scaleY(1)}}\n@-o-keyframes sound{0%{-o-transform:scaleY(0.1)}100%{-o-transform:scaleY(1)}}\n@keyframes sound{0%{transform:scaleY(0.1)}100%{transform:scaleY(1)}}\n@-webkit-keyframes sound-loading{0%{-webkit-transform:rotate(0deg);transform:rotate(0deg)}100%{-webkit-transform:rotate(360deg);transform:rotate(360deg)}}\n@-moz-keyframes sound-loading{0%{-moz-transform:rotate(0deg);transform:rotate(0deg)}100%{-moz-transform:rotate(360deg);transform:rotate(360deg)}}\n@-o-keyframes sound-loading{0%{-o-transform:rotate(0deg);transform:rotate(0deg)}100%{-o-transform:rotate(360deg);transform:rotate(360deg)}}\n@keyframes sound-loading{0%{-webkit-transform:rotate(0deg);-moz-transform:rotate(0deg);-o-transform:rotate(0deg);transform:rotate(0deg)}100%{-webkit-transform:rotate(360deg);-moz-transform:rotate(360deg);-o-transform:rotate(360deg);transform:rotate(360deg)}}\n\n@-webkit-keyframes radioAnimationWaveLoading{0%{-webkit-transform:scale3d(1,0.3,1);transform:scale3d(1,0.3,1);opacity:0.5}10%{-webkit-transform:scale3d(1,1.5,1);transform:scale3d(1,1.5,1);opacity:1}20%{-webkit-transform:scale3d(1,0.3,1);transform:scale3d(1,0.3,1);opacity:0.5}100%{-webkit-transform:scale3d(1,0.3,1);transform:scale3d(1,0.3,1);opacity:0.5}}\n@-moz-keyframes radioAnimationWaveLoading{0%{-moz-transform:scale3d(1,0.3,1);transform:scale3d(1,0.3,1);opacity:0.5}10%{-moz-transform:scale3d(1,1.5,1);transform:scale3d(1,1.5,1);opacity:1}20%{-moz-transform:scale3d(1,0.3,1);transform:scale3d(1,0.3,1);opacity:0.5}100%{-moz-transform:scale3d(1,0.3,1);transform:scale3d(1,0.3,1);opacity:0.5}}\n@-o-keyframes radioAnimationWaveLoading{0%{transform:scale3d(1,0.3,1);opacity:0.5}10%{transform:scale3d(1,1.5,1);opacity:1}20%{transform:scale3d(1,0.3,1);opacity:0.5}100%{transform:scale3d(1,0.3,1);opacity:0.5}}\n@keyframes radioAnimationWaveLoading{0%{-webkit-transform:scale3d(1,0.3,1);-moz-transform:scale3d(1,0.3,1);transform:scale3d(1,0.3,1);opacity:0.5}10%{-webkit-transform:scale3d(1,1.5,1);-moz-transform:scale3d(1,1.5,1);transform:scale3d(1,1.5,1);opacity:1}20%{-webkit-transform:scale3d(1,0.3,1);-moz-transform:scale3d(1,0.3,1);transform:scale3d(1,0.3,1);opacity:0.5}100%{-webkit-transform:scale3d(1,0.3,1);-moz-transform:scale3d(1,0.3,1);transform:scale3d(1,0.3,1);opacity:0.5}}\n@-webkit-keyframes radioAnimationWavePlay{0%{-webkit-transform:scale3d(1,0.3,1);transform:scale3d(1,0.3,1);opacity:0.3}100%{-webkit-transform:scale3d(1,2,1);transform:scale3d(1,2,1);opacity:1}}\n@-moz-keyframes radioAnimationWavePlay{0%{-moz-transform:scale3d(1,0.3,1);transform:scale3d(1,0.3,1);opacity:0.3}100%{-moz-transform:scale3d(1,2,1);transform:scale3d(1,2,1);opacity:1}}\n@-o-keyframes radioAnimationWavePlay{0%{transform:scale3d(1,0.3,1);opacity:0.3}100%{transform:scale3d(1,2,1);opacity:1}}\n@keyframes radioAnimationWavePlay{0%{-webkit-transform:scale3d(1,0.3,1);-moz-transform:scale3d(1,0.3,1);transform:scale3d(1,0.3,1);opacity:0.3}100%{-webkit-transform:scale3d(1,2,1);-moz-transform:scale3d(1,2,1);transform:scale3d(1,2,1);opacity:1}}\n\n        /* ===== ТЕКСТ У ПЛЕЄРІ - БЕЗ ОКРЕМИХ ПІДКЛАДОК ===== */\n        .radio-cover__title,\n        .radio-cover__tooltip {\n            background: transparent !important;\n            padding: 0.2em 0 !important;\n            border-radius: 0 !important;\n            display: block !important;\n            text-shadow: 0 2px 8px rgba(0,0,0,0.9) !important;\n        }\n        .radio-cover__title {\n            font-size: 1.8em !important;\n            margin-top: 0.8em !important;\n        }\n        .radio-cover__tooltip {\n            font-size: 1.2em !important;\n            margin-top: 0.3em !important;\n            opacity: 0.9 !important;\n        }\n\n        /* ===== КНОПКИ ПОПЕРЕДНЯ / НАСТУПНА + СВАЙПИ (МОБІЛЬНІ) ===== */\n        .radio-player__controls{display:none;-webkit-box-pack:center;-webkit-justify-content:center;justify-content:center;gap:2em;margin-top:.5em}body.true--mobile .radio-player__controls{display:-webkit-box;display:-webkit-flex;display:flex}.radio-player__btn{width:3.4em;height:3.4em;padding:.9em;border-radius:100%;background-color:rgba(255,255,255,0.12);-webkit-tap-highlight-color:transparent;transition:background-color .15s ease,transform .15s ease}.radio-player__btn:active{background-color:rgba(0,255,0,0.3);transform:scale(.92)}.radio-player__btn>svg{width:100%;height:100%}.radio-player{touch-action:none}\n/* ===== ПЕРЕМИКАЧ ВИГЛЯДУ: СПИСОК / ПЛИТКИ ===== */\n.radio-content__head{-webkit-flex-wrap:wrap;flex-wrap:wrap}\n.radio-content .view-ico--list{display:none}\n.radio-content--tiles .view-ico--list{display:inline-block}\n.radio-content--tiles .view-ico--tiles{display:none}\n.view-ico--logos{display:none}\n.radio-content--tiles .view-ico--list{display:none}\n.radio-content--tiles .view-ico--logos{display:inline-block}\n.radio-content--logos .view-ico--logos{display:none}\n.radio-content--logos .view-ico--list{display:inline-block}\n.radio-content--logos .radio-item__body{display:none !important}\n.radio-content--logos .radio-grid,.radio-content--logos .scroll__body{grid-gap:2.4vw 3.6%;gap:2.4vw 3.6%}\n.radio-content--logos .radio-item__cover,.radio-content--logos .radio-item__shade{border-radius:.8em}\n\n.radio-item__cover{position:relative}\n.radio-item__shade{display:none;position:absolute;top:0;left:0;right:0;bottom:0;background:rgba(0,0,0,0.62);border-radius:1em;-webkit-box-align:center;-webkit-align-items:center;align-items:center;-webkit-box-pack:center;-webkit-justify-content:center;justify-content:center}\n.radio-item__shade i{display:block;width:.35em;margin:0 .13em;border-radius:2px;background-color:#00ff00;-webkit-animation:wavePlay .8s ease-in-out infinite alternate;animation:wavePlay .8s ease-in-out infinite alternate}\n.radio-item__shade i:nth-child(1){height:.9em;-webkit-animation-delay:0s;animation-delay:0s}\n.radio-item__shade i:nth-child(2){height:1.9em;-webkit-animation-delay:.1s;animation-delay:.1s}\n.radio-item__shade i:nth-child(3){height:2.8em;-webkit-animation-delay:.2s;animation-delay:.2s}\n.radio-item__shade i:nth-child(4){height:1.6em;-webkit-animation-delay:.3s;animation-delay:.3s}\n.radio-item__shade i:nth-child(5){height:1em;-webkit-animation-delay:.4s;animation-delay:.4s}\n\n.radio-content--tiles .radio-grid,.radio-content--tiles .scroll__body{display:-ms-grid;display:grid;grid-template-columns:repeat(var(--radio-cols,3),minmax(0,1fr));grid-gap:3.4vw 5.4%;gap:3.4vw 5.4%;padding:1vw 3% 2.5vw}\n.radio-content--tiles .radio-item{position:relative;display:block;min-width:0;padding:0;text-align:center;border:0;border-radius:0;background:transparent}\n.radio-content--tiles .radio-item__num,.radio-content--tiles .radio-item__tooltip,.radio-content--tiles .radio-item__wave{display:none !important}\n.radio-content--tiles .radio-item__cover{width:100%;margin:0}\n.radio-content--tiles .radio-item__body{max-width:100%;margin-top:.6em;padding:0}\n.radio-content--tiles .radio-item__title{font-size:1.2em;line-height:1.2;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;word-break:break-word}\n.radio-content--tiles .radio-item__icons{position:absolute;z-index:1;top:.5em;right:.5em;margin:0;padding:0}\n.radio-content--tiles .radio-item__icons svg{width:1.5em !important;height:1.5em !important}\n.radio-content--tiles .radio-item__icon-play{display:none !important}\n.radio-content--tiles .radio-item.playing{background:transparent;border:0}\n.radio-content--tiles .radio-item.playing .radio-item__shade{display:-webkit-box;display:-webkit-flex;display:flex}\n/* ФОКУС У ПЛИТКАХ: тонка рамка навколо обкладинки замість білої картки */\n.radio-content--tiles .radio-item.focus{background:transparent;color:#fff}\n.radio-content--tiles .radio-item__cover{border-radius:1em;-webkit-transition:-webkit-transform .15s ease;transition:transform .15s ease}\n.radio-content--tiles .radio-item.focus .radio-item__cover{-webkit-transform:scale(1.04);transform:scale(1.04);box-shadow:0 0 0 2px rgba(255,255,255,0.85)}\n.radio-content--tiles .radio-item.focus .radio-item__title{opacity:1}\n@media screen and (max-width:600px){.radio-content--tiles .radio-grid,.radio-content--tiles .scroll__body{grid-gap:1.6em 5%;gap:1.6em 5%;padding:.5em 3% 1em}.radio-content--tiles .radio-item__title{font-size:1em}}\n@media screen and (min-width:601px) and (max-width:1099px){.radio-content--tiles .radio-item__title{font-size:.95em;word-break:normal;overflow-wrap:break-word}}@media screen and (min-width:1100px){.radio-content--tiles .radio-grid,.radio-content--tiles .scroll__body{grid-gap:3.4vw 5.4%;gap:3.4vw 5.4%;padding:1vw 3% 2.5vw}.radio-content--tiles .radio-item.focus .radio-item__cover{box-shadow:0 0 0 2px rgba(255,255,255,0.8)}}\n\n\n        \n.radio-nowbar{display:flex;align-items:center;flex:1;min-width:0;margin:0 1em;padding:.3em 1em .3em .3em;border-radius:1em;background:rgba(255,255,255,0.07);border:1px solid rgba(255,255,255,0.12)}\n.radio-nowbar.hide{display:none}\n.radio-nowbar>img{width:2.6em;height:2.6em;border-radius:.7em;object-fit:cover;flex-shrink:0;margin-right:1em;background:rgba(0,0,0,.3)}\n.radio-nowbar__text{min-width:0;flex:1}\n.radio-nowbar__track{font-size:1.2em;line-height:1.4;font-weight:600;white-space:nowrap;overflow:hidden;-webkit-mask-image:linear-gradient(90deg,#000 94%,transparent);mask-image:linear-gradient(90deg,#000 94%,transparent)}\n.radio-nowbar__track:empty{display:none}\n.radio-nowbar__in{display:inline-block;white-space:nowrap;color:#fff}\n.radio-nowbar__in.run{-webkit-animation:radioTrackRun 12s linear infinite;animation:radioTrackRun 12s linear infinite;will-change:transform}\n@keyframes radioFadeIn{from{opacity:0}to{opacity:1}}\n@keyframes radioPulse{0%,100%{box-shadow:0 0 0 2px rgba(0,255,0,.35),0 0 0 rgba(0,255,0,0)}50%{box-shadow:0 0 0 2px rgba(0,255,0,.8),0 0 16px rgba(0,255,0,.45)}}\n.radio-content--tiles .radio-item{animation:radioFadeIn .35s ease both}\n.radio-content--tiles .radio-item__cover-box{background-color:rgba(255,255,255,0.07)}\n.radio-content--tiles .radio-item__cover-box>img{transition:opacity .35s ease}\n.radio-content--tiles .radio-item.playing .radio-item__cover{box-shadow:0 0 0 2px rgba(0,255,0,.6)}\n.radio-content--tiles .radio-item.focus .radio-item__cover,.radio-content--tiles .radio-item.playing.focus .radio-item__cover{box-shadow:0 0 0 2px rgba(255,255,255,.9) !important;animation:none !important}\n@media screen and (max-width:900px),screen and (max-height:500px){.radio-nowbar{display:none !important}}\n</style>\n    ");
+    Lampa.Template.add('radio_style', "\n        <style>\n        .radio-content{padding:0 1.5em}.radio-content__head{display:-webkit-box;display:-webkit-flex;display:-moz-box;display:-ms-flexbox;display:flex;padding:1.5em 0}.radio-content__body{display:-webkit-box;display:-webkit-flex;display:-moz-box;display:-ms-flexbox;display:flex}.radio-content__list{width:100%}@media screen and (max-width:576px){.radio-content__list{width:100%}}.radio-cover{text-align:center;line-height:1.4}.radio-cover__img-container{max-width:20em;margin:0 auto}.radio-cover__img-box{position:relative;padding-bottom:100%;background-color:rgba(0,0,0,0.3);-webkit-border-radius:1em;-moz-border-radius:1em;border-radius:1em}.radio-cover__img-box>img{position:absolute;top:0;left:0;width:100%;height:100%;-webkit-border-radius:1em;-moz-border-radius:1em;border-radius:1em;opacity:0}.radio-cover__img-box.loaded{background-color:transparent}.radio-cover__img-box.loaded>img{opacity:1}.radio-cover__img-box.loaded-icon{background-color:rgba(0,0,0,0.3)}.radio-cover__img-box.loaded-icon>img{left:20%;top:20%;width:60%;height:60%;opacity:.2}.radio-cover__title{font-weight:700;font-size:1.5em;margin-top:1em}.radio-cover__tooltip{font-weight:300;font-size:1.3em;margin-top:.2em}.radio-item{padding:1em;display:-webkit-box;display:-webkit-flex;display:-moz-box;display:-ms-flexbox;display:flex;-webkit-box-align:center;-webkit-align-items:center;-moz-box-align:center;-ms-flex-align:center;align-items:center;line-height:1.4}.radio-item__num{font-weight:700;margin-right:1em;font-size:1.3em;opacity:.4;-webkit-flex-shrink:0;-ms-flex-negative:0;flex-shrink:0}@media screen and (max-width:400px){.radio-item__num{display:none}}.radio-item__body{max-width:60%}.radio-item__cover{width:5em;-webkit-flex-shrink:0;-ms-flex-negative:0;flex-shrink:0;margin-right:2em}.radio-item__cover-box{position:relative;padding-bottom:100%;background-color:rgba(0,0,0,0.3);-webkit-border-radius:1em;-moz-border-radius:1em;border-radius:1em}.radio-item__cover-box>img{position:absolute;top:0;left:0;width:100%;height:100%;-webkit-border-radius:1em;-moz-border-radius:1em;border-radius:1em;opacity:0}.radio-item__cover-box.loaded{background-color:transparent}.radio-item__cover-box.loaded>img{opacity:1}.radio-item__cover-box.loaded-icon{background-color:rgba(0,0,0,0.3)}.radio-item__cover-box.loaded-icon>img{left:20%;top:20%;width:60%;height:60%;opacity:.2}\n\n\n.radio-item__title {\n    font-weight:700;\n    font-size:1.2em;\n    text-shadow: 0 1px 2px rgba(0,0,0,0.7);\n    transition: color 0.3s ease;\n}\n.radio-item__tooltip {\n    opacity:.5;\n    margin-top:.5em;\n    font-size:1.1em;\n    text-shadow: 0 1px 2px rgba(0,0,0,0.7);\n    transition: color 0.3s ease;\n}\n.radio-item__num {\n    transition: color 0.3s ease, opacity 0.3s ease;\n}\n\n\n.radio-item.playing .radio-item__title {\n    color: #00ff00 !important;\n    text-shadow: 0 1px 2px rgba(0,0,0,0.7) !important;\n}\n.radio-item.playing .radio-item__tooltip {\n    color: #66ff66 !important;\n    text-shadow: 0 1px 2px rgba(0,0,0,0.7) !important;\n    opacity: 0.9 !important;\n}\n.radio-item.playing .radio-item__num {\n    color: #00ff00 !important;\n    opacity: 1 !important;\n}\n\n.radio-item__icons{margin-left:auto;padding-left:1em;-webkit-flex-shrink:0;-ms-flex-negative:0;flex-shrink:0;display:-webkit-box;display:-webkit-flex;display:-moz-box;display:-ms-flexbox;display:flex}.radio-item__icons svg{width:1.4em !important;height:1.4em !important}.radio-item__icons>*+*{margin-left:1.5em}.radio-item__icons .radio-item__icon-favorite{display:none}.radio-item__icons .radio-item__icon-play{display:none}.radio-item.focus{background:white;color:#000;-webkit-border-radius:1em;-moz-border-radius:1em;border-radius:1em}.radio-item.focus .radio-item__icon-play{display:block}.radio-item.favorite .radio-item__icon-favorite{display:block}.radio-item.playing{background:rgba(0,255,0,0.08);border:1px solid rgba(0,255,0,0.25);border-radius:1em}.radio-item.empty--item .radio-item__title,.radio-item.empty--item .radio-item__num,.radio-item.empty--item .radio-item__tooltip{background-color:rgba(255,255,255,0.3);height:1.2em;-webkit-border-radius:.3em;-moz-border-radius:.3em;border-radius:.3em}.radio-item.empty--item .radio-item__num{width:1.4em}.radio-item.empty--item .radio-item__title{width:7em}.radio-item.empty--item .radio-item__tooltip{width:16em}.radio-item.empty--item .radio-item__icons{display:none}.radio-item.empty--item .radio-item__cover-box{background-color:rgba(255,255,255,0.3)}.radio-item.empty--item.focus{background-color:transparent;color:#fff}\n\n\n.radio-item__wave {\n    display: none;\n    -webkit-box-align: center;\n    -webkit-align-items: center;\n    -moz-box-align: center;\n    -ms-flex-align: center;\n    align-items: center;\n    -webkit-box-pack: center;\n    -webkit-justify-content: center;\n    -moz-box-pack: center;\n    -ms-flex-pack: center;\n    justify-content: center;\n    margin-left: auto;\n    padding-left: 0.5em;\n    -webkit-flex-shrink: 0;\n    -ms-flex-negative: 0;\n    flex-shrink: 0;\n    height: 2.5em;\n    gap: 2px;\n}\n\n.radio-item.playing .radio-item__wave {\n    display: -webkit-box;\n    display: -webkit-flex;\n    display: -moz-box;\n    display: -ms-flexbox;\n    display: flex;\n}\n\n.radio-item__wave i {\n    display: block;\n    width: 3px;\n    background-color: #00ff00;\n    border-radius: 1px;\n    height: 0.8em;\n    -webkit-animation: wavePlay 0.8s ease-in-out infinite alternate;\n    -moz-animation: wavePlay 0.8s ease-in-out infinite alternate;\n    -o-animation: wavePlay 0.8s ease-in-out infinite alternate;\n    animation: wavePlay 0.8s ease-in-out infinite alternate;\n}\n\n.radio-item__wave i:nth-child(1) { -webkit-animation-delay: 0s; animation-delay: 0s; height: 0.5em; }\n.radio-item__wave i:nth-child(2) { -webkit-animation-delay: 0.1s; animation-delay: 0.1s; height: 1.2em; }\n.radio-item__wave i:nth-child(3) { -webkit-animation-delay: 0.2s; animation-delay: 0.2s; height: 1.8em; }\n.radio-item__wave i:nth-child(4) { -webkit-animation-delay: 0.3s; animation-delay: 0.3s; height: 1.0em; }\n.radio-item__wave i:nth-child(5) { -webkit-animation-delay: 0.4s; animation-delay: 0.4s; height: 0.6em; }\n\n@-webkit-keyframes wavePlay {\n    0% { -webkit-transform: scaleY(0.3); transform: scaleY(0.3); opacity: 0.4; }\n    100% { -webkit-transform: scaleY(1); transform: scaleY(1); opacity: 1; }\n}\n@-moz-keyframes wavePlay {\n    0% { -moz-transform: scaleY(0.3); transform: scaleY(0.3); opacity: 0.4; }\n    100% { -moz-transform: scaleY(1); transform: scaleY(1); opacity: 1; }\n}\n@-o-keyframes wavePlay {\n    0% { -o-transform: scaleY(0.3); transform: scaleY(0.3); opacity: 0.4; }\n    100% { -o-transform: scaleY(1); transform: scaleY(1); opacity: 1; }\n}\n@keyframes wavePlay {\n    0% { -webkit-transform: scaleY(0.3); -moz-transform: scaleY(0.3); -o-transform: scaleY(0.3); transform: scaleY(0.3); opacity: 0.4; }\n    100% { -webkit-transform: scaleY(1); -moz-transform: scaleY(1); -o-transform: scaleY(1); transform: scaleY(1); opacity: 1; }\n}\n\n\n.radio-player {\n    position:fixed;\n    z-index:100;\n    left:0;\n    top:0;\n    width:100%;\n    height:100%;\n    display:-webkit-box;\n    display:-webkit-flex;\n    display:-moz-box;\n    display:-ms-flexbox;\n    display:flex;\n    -webkit-box-align:center;\n    -webkit-align-items:center;\n    -moz-box-align:center;\n    -ms-flex-align:center;\n    align-items:center;\n    -webkit-box-pack:center;\n    -webkit-justify-content:center;\n    -moz-box-pack:center;\n    -ms-flex-pack:center;\n    justify-content:center;\n}\n\n\n.radio-player {\n    background: rgba(0,0,0,0.85);\n}\n\n\n.radio-player__content {\n    position:relative;\n    background: rgba(0, 0, 0, 0.65);\n    padding: 2em 3em;\n    border-radius: 1.5em;\n    max-width: 30em;\n    width: 100%;\n    box-shadow: 0 8px 24px rgba(0,0,0,0.6);\n    border: 1px solid rgba(255,255,255,0.08);\n}\n\n.radio-player__cover{width:100%}.radio-player__track{margin:.7em auto 0;padding:0;width:88%;max-width:88%;text-align:center;font-size:1.2em;line-height:1.4;font-weight:600;overflow:hidden;white-space:nowrap;-webkit-mask-image:linear-gradient(90deg,transparent,#000 7%,#000 93%,transparent);mask-image:linear-gradient(90deg,transparent,#000 7%,#000 93%,transparent)}.radio-player__track-in{display:inline-block;white-space:nowrap;color:#ffd700}.radio-player__track-in i{font-style:normal;font-size:1.3em;line-height:1;vertical-align:-.08em;color:#4da3ff}.radio-player__track-in.run{-webkit-animation:radioTrackRun 12s linear infinite;animation:radioTrackRun 12s linear infinite;will-change:transform}@-webkit-keyframes radioTrackRun{0%{-webkit-transform:translateX(0)}100%{-webkit-transform:translateX(-50%)}}@keyframes radioTrackRun{0%{transform:translateX(0)}100%{transform:translateX(-50%)}}.radio-player__track:empty{display:none}.radio-player__track+.radio-player__controls{margin-top:1.3em}.radio-player__wave{margin-top:1em;padding:.6em 0}.radio-player__wave>div.live{opacity:1;will-change:transform,opacity;-webkit-transform:scaleY(.15);transform:scaleY(.15)}.radio-player__wave{display:-webkit-box;display:-webkit-flex;display:-moz-box;display:-ms-flexbox;display:flex;-webkit-box-align:center;-webkit-align-items:center;-moz-box-align:center;-ms-flex-align:center;align-items:center;-webkit-box-pack:center;-webkit-justify-content:center;-moz-box-pack:center;-ms-flex-pack:center;justify-content:center;margin-top:1.5em;padding:1em 0}.radio-player__wave>div{width:4px;background-color:#00ff00;margin:0 .3em;height:3.4em;opacity:0;border-radius:2px}.radio-player__wave>div.loading{-webkit-animation:radioAnimationWaveLoading 400ms ease infinite;-moz-animation:radioAnimationWaveLoading 400ms ease infinite;-o-animation:radioAnimationWaveLoading 400ms ease infinite;animation:radioAnimationWaveLoading 400ms ease infinite}.radio-player__wave>div.play{-webkit-animation:radioAnimationWavePlay 50ms linear infinite alternate;-moz-animation:radioAnimationWavePlay 50ms linear infinite alternate;-o-animation:radioAnimationWavePlay 50ms linear infinite alternate;animation:radioAnimationWavePlay 50ms linear infinite alternate}.radio-player__close{position:fixed;top:1.5em;right:50%;margin-right:-2em;-webkit-border-radius:100%;-moz-border-radius:100%;border-radius:100%;padding:1em;display:none;background-color:rgba(255,255,255,0.1)}.radio-player__close>svg{width:1.5em;height:1.5em}body.true--mobile .radio-player__close{display:block}\n\n\n.radio-mini-player {\n    display:-webkit-box;display:-webkit-flex;display:-moz-box;display:-ms-flexbox;display:flex;\n    -webkit-box-align:center;-webkit-align-items:center;-moz-box-align:center;-ms-flex-align:center;align-items:center;\n    -webkit-border-radius:0.3em;-moz-border-radius:0.3em;border-radius:0.3em;\n    padding:0.2em 0.4em;\n    margin-left:0.5em;\n    margin-right:0.5em;\n    cursor:pointer;\n}\n.radio-mini-player__name {\n    display:none !important;\n}\n.radio-mini-player__button {\n    position:relative;\n    width:2.2em;\n    height:2.2em;\n    display:-webkit-box;display:-webkit-flex;display:-moz-box;display:-ms-flexbox;display:flex;\n    -webkit-box-align:center;-webkit-align-items:center;-moz-box-align:center;-ms-flex-align:center;align-items:center;\n    -webkit-box-pack:center;-webkit-justify-content:center;-moz-box-pack:center;-ms-flex-pack:center;justify-content:center;\n    -webkit-flex-shrink:0;-ms-flex-negative:0;flex-shrink:0;\n    -webkit-border-radius:0.3em;-moz-border-radius:0.3em;border-radius:0.3em;\n    border:0.15em solid rgba(255,255,255,0.8);\n    background-size:cover !important;\n    background-position:center !important;\n    cursor:pointer;\n}\n.radio-mini-player__button i {\n    display:block;\n    width:0.2em;\n    height:1em;\n    background-color:#00ff00;\n    margin:0 0.1em;\n    -webkit-animation:sound 0ms -800ms linear infinite alternate;\n    -moz-animation:sound 0ms -800ms linear infinite alternate;\n    -o-animation:sound 0ms -800ms linear infinite alternate;\n    animation:sound 0ms -800ms linear infinite alternate;\n    -webkit-flex-shrink:0;-ms-flex-negative:0;flex-shrink:0;\n    border-radius:1px;\n}\n.radio-mini-player__button i:nth-child(1){-webkit-animation-duration:474ms;-moz-animation-duration:474ms;-o-animation-duration:474ms;animation-duration:474ms}\n.radio-mini-player__button i:nth-child(2){-webkit-animation-duration:433ms;-moz-animation-duration:433ms;-o-animation-duration:433ms;animation-duration:433ms}\n.radio-mini-player__button i:nth-child(3){-webkit-animation-duration:407ms;-moz-animation-duration:407ms;-o-animation-duration:407ms;animation-duration:407ms}\n.radio-mini-player__button i:nth-child(4){-webkit-animation-duration:458ms;-moz-animation-duration:458ms;-o-animation-duration:458ms;animation-duration:458ms}\n.radio-mini-player.stop .radio-mini-player__button i{display:none}\n.radio-mini-player.stop .radio-mini-player__button:after{\n    content:\"\";\n    width:0.6em;\n    height:0.6em;\n    background-color:rgba(255,255,255,0.9);\n    border-radius:0.1em;\n}\n.radio-mini-player.loading .radio-mini-player__button i{display:none}\n.radio-mini-player.loading .radio-mini-player__button:before{\n    content:\"\";\n    display:block;\n    border-top:0.2em solid rgba(0,255,0,0.9);\n    border-left:0.2em solid transparent;\n    border-right:0.2em solid transparent;\n    border-bottom:0.2em solid transparent;\n    -webkit-animation:sound-loading 1s linear infinite;\n    -moz-animation:sound-loading 1s linear infinite;\n    -o-animation:sound-loading 1s linear infinite;\n    animation:sound-loading 1s linear infinite;\n    width:0.9em;height:0.9em;\n    -webkit-border-radius:100%;-moz-border-radius:100%;border-radius:100%;\n    -webkit-flex-shrink:0;-ms-flex-negative:0;flex-shrink:0;\n}\n.radio-mini-player.focus{background-color:#fff;color:#000}\n.radio-mini-player.focus .radio-mini-player__button{border-color:#000}\n.radio-mini-player.focus .radio-mini-player__button i,\n.radio-mini-player.focus .radio-mini-player__button:after{background-color:#000}\n.radio-mini-player.focus .radio-mini-player__button:before{border-top-color:#000}\n.radio-mini-player.hide{display:none}\n\n@-webkit-keyframes sound{0%{-webkit-transform:scaleY(0.1)}100%{-webkit-transform:scaleY(1)}}\n@-moz-keyframes sound{0%{-moz-transform:scaleY(0.1)}100%{-moz-transform:scaleY(1)}}\n@-o-keyframes sound{0%{-o-transform:scaleY(0.1)}100%{-o-transform:scaleY(1)}}\n@keyframes sound{0%{transform:scaleY(0.1)}100%{transform:scaleY(1)}}\n@-webkit-keyframes sound-loading{0%{-webkit-transform:rotate(0deg);transform:rotate(0deg)}100%{-webkit-transform:rotate(360deg);transform:rotate(360deg)}}\n@-moz-keyframes sound-loading{0%{-moz-transform:rotate(0deg);transform:rotate(0deg)}100%{-moz-transform:rotate(360deg);transform:rotate(360deg)}}\n@-o-keyframes sound-loading{0%{-o-transform:rotate(0deg);transform:rotate(0deg)}100%{-o-transform:rotate(360deg);transform:rotate(360deg)}}\n@keyframes sound-loading{0%{-webkit-transform:rotate(0deg);-moz-transform:rotate(0deg);-o-transform:rotate(0deg);transform:rotate(0deg)}100%{-webkit-transform:rotate(360deg);-moz-transform:rotate(360deg);-o-transform:rotate(360deg);transform:rotate(360deg)}}\n\n@-webkit-keyframes radioAnimationWaveLoading{0%{-webkit-transform:scale3d(1,0.3,1);transform:scale3d(1,0.3,1);opacity:0.5}10%{-webkit-transform:scale3d(1,1.5,1);transform:scale3d(1,1.5,1);opacity:1}20%{-webkit-transform:scale3d(1,0.3,1);transform:scale3d(1,0.3,1);opacity:0.5}100%{-webkit-transform:scale3d(1,0.3,1);transform:scale3d(1,0.3,1);opacity:0.5}}\n@-moz-keyframes radioAnimationWaveLoading{0%{-moz-transform:scale3d(1,0.3,1);transform:scale3d(1,0.3,1);opacity:0.5}10%{-moz-transform:scale3d(1,1.5,1);transform:scale3d(1,1.5,1);opacity:1}20%{-moz-transform:scale3d(1,0.3,1);transform:scale3d(1,0.3,1);opacity:0.5}100%{-moz-transform:scale3d(1,0.3,1);transform:scale3d(1,0.3,1);opacity:0.5}}\n@-o-keyframes radioAnimationWaveLoading{0%{transform:scale3d(1,0.3,1);opacity:0.5}10%{transform:scale3d(1,1.5,1);opacity:1}20%{transform:scale3d(1,0.3,1);opacity:0.5}100%{transform:scale3d(1,0.3,1);opacity:0.5}}\n@keyframes radioAnimationWaveLoading{0%{-webkit-transform:scale3d(1,0.3,1);-moz-transform:scale3d(1,0.3,1);transform:scale3d(1,0.3,1);opacity:0.5}10%{-webkit-transform:scale3d(1,1.5,1);-moz-transform:scale3d(1,1.5,1);transform:scale3d(1,1.5,1);opacity:1}20%{-webkit-transform:scale3d(1,0.3,1);-moz-transform:scale3d(1,0.3,1);transform:scale3d(1,0.3,1);opacity:0.5}100%{-webkit-transform:scale3d(1,0.3,1);-moz-transform:scale3d(1,0.3,1);transform:scale3d(1,0.3,1);opacity:0.5}}\n@-webkit-keyframes radioAnimationWavePlay{0%{-webkit-transform:scale3d(1,0.3,1);transform:scale3d(1,0.3,1);opacity:0.3}100%{-webkit-transform:scale3d(1,2,1);transform:scale3d(1,2,1);opacity:1}}\n@-moz-keyframes radioAnimationWavePlay{0%{-moz-transform:scale3d(1,0.3,1);transform:scale3d(1,0.3,1);opacity:0.3}100%{-moz-transform:scale3d(1,2,1);transform:scale3d(1,2,1);opacity:1}}\n@-o-keyframes radioAnimationWavePlay{0%{transform:scale3d(1,0.3,1);opacity:0.3}100%{transform:scale3d(1,2,1);opacity:1}}\n@keyframes radioAnimationWavePlay{0%{-webkit-transform:scale3d(1,0.3,1);-moz-transform:scale3d(1,0.3,1);transform:scale3d(1,0.3,1);opacity:0.3}100%{-webkit-transform:scale3d(1,2,1);-moz-transform:scale3d(1,2,1);transform:scale3d(1,2,1);opacity:1}}\n\n        \n        .radio-cover__title,\n        .radio-cover__tooltip {\n            background: transparent !important;\n            padding: 0.2em 0 !important;\n            border-radius: 0 !important;\n            display: block !important;\n            text-shadow: 0 2px 8px rgba(0,0,0,0.9) !important;\n        }\n        .radio-cover__title {\n            font-size: 1.8em !important;\n            margin-top: 0.8em !important;\n        }\n        .radio-cover__tooltip {\n            font-size: 1.2em !important;\n            margin-top: 0.3em !important;\n            opacity: 0.9 !important;\n        }\n\n        \n        .radio-player__controls{display:none;-webkit-box-pack:center;-webkit-justify-content:center;justify-content:center;gap:2em;margin-top:.5em}body.true--mobile .radio-player__controls{display:-webkit-box;display:-webkit-flex;display:flex}.radio-player__btn{width:3.4em;height:3.4em;padding:.9em;border-radius:100%;background-color:rgba(255,255,255,0.12);-webkit-tap-highlight-color:transparent;transition:background-color .15s ease,transform .15s ease}.radio-player__btn:active{background-color:rgba(0,255,0,0.3);transform:scale(.92)}.radio-player__btn>svg{width:100%;height:100%}.radio-player{touch-action:none}\n\n.radio-content__head{-webkit-flex-wrap:wrap;flex-wrap:wrap}\n.radio-content .view-ico--list{display:none}\n.radio-content--tiles .view-ico--list{display:inline-block}\n.radio-content--tiles .view-ico--tiles{display:none}\n.view-ico--logos{display:none}\n.radio-content--tiles .view-ico--list{display:none}\n.radio-content--tiles .view-ico--logos{display:inline-block}\n.radio-content--logos .view-ico--logos{display:none}\n.radio-content--logos .view-ico--list{display:inline-block}\n.radio-content--logos .radio-item__body{display:none !important}\n.radio-content--logos .radio-grid,.radio-content--logos .scroll__body{grid-gap:2.4vw 3.6%;gap:2.4vw 3.6%}\n.radio-content--logos .radio-item__cover,.radio-content--logos .radio-item__shade{border-radius:.8em}\n\n.radio-item__cover{position:relative}\n.radio-item__shade{display:none;position:absolute;top:0;left:0;right:0;bottom:0;background:rgba(0,0,0,0.62);border-radius:1em;-webkit-box-align:center;-webkit-align-items:center;align-items:center;-webkit-box-pack:center;-webkit-justify-content:center;justify-content:center}\n.radio-item__shade i{display:block;width:.35em;margin:0 .13em;border-radius:2px;background-color:#00ff00;-webkit-animation:wavePlay .8s ease-in-out infinite alternate;animation:wavePlay .8s ease-in-out infinite alternate}\n.radio-item__shade i:nth-child(1){height:.9em;-webkit-animation-delay:0s;animation-delay:0s}\n.radio-item__shade i:nth-child(2){height:1.9em;-webkit-animation-delay:.1s;animation-delay:.1s}\n.radio-item__shade i:nth-child(3){height:2.8em;-webkit-animation-delay:.2s;animation-delay:.2s}\n.radio-item__shade i:nth-child(4){height:1.6em;-webkit-animation-delay:.3s;animation-delay:.3s}\n.radio-item__shade i:nth-child(5){height:1em;-webkit-animation-delay:.4s;animation-delay:.4s}\n\n.radio-content--tiles .radio-grid,.radio-content--tiles .scroll__body{display:-ms-grid;display:grid;grid-template-columns:repeat(var(--radio-cols,3),minmax(0,1fr));grid-gap:3.4vw 5.4%;gap:3.4vw 5.4%;padding:1vw 3% 2.5vw}\n.radio-content--tiles .radio-item{position:relative;display:block;min-width:0;padding:0;text-align:center;border:0;border-radius:0;background:transparent}\n.radio-content--tiles .radio-item__num,.radio-content--tiles .radio-item__tooltip,.radio-content--tiles .radio-item__wave{display:none !important}\n.radio-content--tiles .radio-item__cover{width:100%;margin:0}\n.radio-content--tiles .radio-item__body{max-width:100%;margin-top:.6em;padding:0}\n.radio-content--tiles .radio-item__title{font-size:1.2em;line-height:1.2;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;word-break:break-word}\n.radio-content--tiles .radio-item__icons{position:absolute;z-index:1;top:.5em;right:.5em;margin:0;padding:0}\n.radio-content--tiles .radio-item__icons svg{width:1.5em !important;height:1.5em !important}\n.radio-content--tiles .radio-item__icon-play{display:none !important}\n.radio-content--tiles .radio-item.playing{background:transparent;border:0}\n.radio-content--tiles .radio-item.playing .radio-item__shade{display:-webkit-box;display:-webkit-flex;display:flex}\n\n.radio-content--tiles .radio-item.focus{background:transparent;color:#fff}\n.radio-content--tiles .radio-item__cover{border-radius:1em;-webkit-transition:-webkit-transform .15s ease;transition:transform .15s ease}\n.radio-content--tiles .radio-item.focus .radio-item__cover{-webkit-transform:scale(1.04);transform:scale(1.04);box-shadow:0 0 0 2px rgba(255,255,255,0.85)}\n.radio-content--tiles .radio-item.focus .radio-item__title{opacity:1}\n@media screen and (max-width:600px){.radio-content--tiles .radio-grid,.radio-content--tiles .scroll__body{grid-gap:1.6em 5%;gap:1.6em 5%;padding:.5em 3% 1em}.radio-content--tiles .radio-item__title{font-size:1em}}\n@media screen and (min-width:601px) and (max-width:1099px){.radio-content--tiles .radio-item__title{font-size:.95em;word-break:normal;overflow-wrap:break-word}}@media screen and (min-width:1100px){.radio-content--tiles .radio-grid,.radio-content--tiles .scroll__body{grid-gap:3.4vw 5.4%;gap:3.4vw 5.4%;padding:1vw 3% 2.5vw}.radio-content--tiles .radio-item.focus .radio-item__cover{box-shadow:0 0 0 2px rgba(255,255,255,0.8)}}\n\n\n        \n.radio-nowbar{display:flex;align-items:center;flex:1;min-width:0;margin:0 1em;padding:.3em 1em .3em .3em;border-radius:1em;background:rgba(255,255,255,0.07);border:1px solid rgba(255,255,255,0.12)}\n.radio-nowbar.hide{display:none}\n.radio-nowbar>img{width:2.6em;height:2.6em;border-radius:.7em;object-fit:cover;flex-shrink:0;margin-right:1em;background:rgba(0,0,0,.3)}\n.radio-nowbar__text{min-width:0;flex:1}\n.radio-nowbar__track{font-size:1.2em;line-height:1.4;font-weight:600;white-space:nowrap;overflow:hidden;-webkit-mask-image:linear-gradient(90deg,#000 94%,transparent);mask-image:linear-gradient(90deg,#000 94%,transparent)}\n.radio-nowbar__track:empty{display:none}\n.radio-nowbar__in{display:inline-block;white-space:nowrap;color:#fff}\n.radio-nowbar__in.run{-webkit-animation:radioTrackRun 12s linear infinite;animation:radioTrackRun 12s linear infinite;will-change:transform}\n@keyframes radioFadeIn{from{opacity:0}to{opacity:1}}\n@keyframes radioPulse{0%,100%{box-shadow:0 0 0 2px rgba(0,255,0,.35),0 0 0 rgba(0,255,0,0)}50%{box-shadow:0 0 0 2px rgba(0,255,0,.8),0 0 16px rgba(0,255,0,.45)}}\n.radio-content--tiles .radio-item{animation:radioFadeIn .35s ease both}\n.radio-content--tiles .radio-item__cover-box{background-color:rgba(255,255,255,0.07)}\n.radio-content--tiles .radio-item__cover-box>img{transition:opacity .35s ease}\n.radio-content--tiles .radio-item.playing .radio-item__cover{box-shadow:0 0 0 2px rgba(0,255,0,.6)}\n.radio-content--tiles .radio-item.focus .radio-item__cover,.radio-content--tiles .radio-item.playing.focus .radio-item__cover{box-shadow:0 0 0 2px rgba(255,255,255,.9) !important;animation:none !important}\n@media screen and (max-width:900px),screen and (max-height:500px){.radio-nowbar{display:none !important}}\n</style>\n    ");
 
     function add() {
       var button = $("<li class=\"menu__item selector\">\n            <div class=\"menu__ico\">\n                <svg width=\"38\" height=\"31\" viewBox=\"0 0 48 48\" fill=\"none\" xmlns=\"http://www.w3.org/2000/svg\"><rect x=\"5\" y=\"13\" width=\"38\" height=\"28\" rx=\"2\" fill=\"#0057B7\" stroke=\"#FFD700\" stroke-width=\"4\"/><circle cx=\"18\" cy=\"28\" r=\"6\" fill=\"#FFD700\" stroke=\"#0057B7\" stroke-width=\"4\"/><path d=\"M30 24L36 24\" stroke=\"#FFD700\" stroke-width=\"4\" stroke-linecap=\"round\" stroke-linejoin=\"round\"/><path d=\"M30 32L36 32\" stroke=\"#FFD700\" stroke-width=\"4\" stroke-linecap=\"round\" stroke-linejoin=\"round\"/><path d=\"M7 13L25 4\" stroke=\"#FFD700\" stroke-width=\"4\" stroke-linecap=\"round\" stroke-linejoin=\"round\"/></svg>\n            </div>\n            <div class=\"menu__text\">".concat(manifest.name, "</div>\n        </li>"));
@@ -2322,7 +2188,6 @@
       });
       $('.menu .menu__list').eq(0).append(button);
       $('body').append(Lampa.Template.get('radio_style', {}, true));
-      // Градієнт синьо-жовтого сердечка (один раз на сторінку; не display:none, інакше градієнт не працює)
       $('body').append('<svg width="0" height="0" style="position:absolute;pointer-events:none" aria-hidden="true"><defs><linearGradient id="radio-ua-grad" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#0057b7"/><stop offset="0.5" stop-color="#0057b7"/><stop offset="0.5" stop-color="#ffd500"/><stop offset="1" stop-color="#ffd500"/></linearGradient></defs></svg>');
       $('body').append('<style>.radio-player__track-in{color:' + TRACK_COLOR_TEXT + '}.radio-player__track-in i{color:' + TRACK_COLOR_NOTE + '}</style>');
       $('body').append('<style>' + accentCss() + '</style>');
