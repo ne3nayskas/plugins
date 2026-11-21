@@ -162,6 +162,13 @@
       genre: [{ id: 'news', name: 'Новини' }]
     },
     {
+      id: 'lvivfm',
+      title: 'Львівська Хвиля',
+      tooltip: '100.8 FM',
+      stream: 'https://onair.lviv.fm/lviv.fm.hd',
+      genre: [{ id: 'ukr', name: 'Українське' }]
+    },
+    {
       id: 'radiobayraktar',
       title: 'Radio Bayraktar',
       tooltip: 'Музика української перемоги',
@@ -251,13 +258,6 @@
       tooltip: 'Digital',
       stream: 'https://tavr.tvstitch.com/KissFM_Digital',
       genre: [{ id: 'dance', name: 'Dance' }]
-    },
-    {
-      id: 'lvivfm',
-      title: 'Львівська Хвиля',
-      tooltip: '100.8 FM',
-      stream: 'https://onair.lviv.fm/lviv.fm.hd',
-      genre: [{ id: 'ukr', name: 'Українське' }]
     },
     {
       id: 'nostalgie',
