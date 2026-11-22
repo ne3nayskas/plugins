@@ -102,10 +102,10 @@
       genre: [{ id: 'culture', name: 'Культура' }]
     },
     {
-      id: 'edyninovyny',
-      title: 'Єдині Новини',
-      tooltip: 'Телемарафон',
-      stream: 'https://online-news.radioplayer.ua/RadioNews',
+      id: 'radiokyiv',
+      title: 'Радіо Київ',
+      tooltip: 'Радіо Київ – 98 FM',
+      stream: 'https://cdn.vsnw.net:8943/kyiv_fm_128k',
       genre: [{ id: 'news', name: 'Новини' }]
     },
     {
