@@ -116,6 +116,13 @@
       genre: [{ id: 'news', name: 'Новини' }]
     },
     {
+      id: 'nakypilo',
+      title: 'Накипіло Радіо',
+      tooltip: 'Харків 96.7 FM',
+      stream: 'https://radiostream.nakypilo.ua/full',
+      genre: [{ id: 'news', name: 'Новини' }]
+    },
+    {
       id: 'nv',
       title: 'Radio NV',
       tooltip: '96.0 Київ - Аналітика і новини',
