@@ -2174,7 +2174,7 @@
 
     var manifest = {
       type: 'audio',
-      version: '1.17.1',
+      version: '1.18.0',
       name: Lampa.Lang.translate('radio_station'),
       description: 'Українські радіостанції',
       component: 'radio'
