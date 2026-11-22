@@ -117,7 +117,7 @@
     },
     {
       id: 'nakypilo',
-      title: 'Накипіло Радіо',
+      title: 'Накипіло',
       tooltip: 'Харків 96.7 FM',
       stream: 'https://radiostream.nakypilo.ua/full',
       genre: [{ id: 'news', name: 'Новини' }]
