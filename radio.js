@@ -1,5 +1,5 @@
 // Радіо для Lampa
-// Версія: 1.17.1 | 2026.11.21
+// Версія: 1.18.0 | 2026.11.22
 // Автор: @ne3nayskas
 
 (function () {
@@ -60,25 +60,18 @@
 
   var UKRAINIAN_STATIONS = [
     {
-      id: 'replaynews',
-      title: 'Replay News UA',
-      tooltip: 'Новини кожні п’ять хвилин 24/7',
-      stream: 'https://replaynewsuk.ice.infomaniak.ch/replaynewsuk-128.mp3',
-      genre: [{ id: 'news', name: 'Новини' }]
-    },
-    {
-      id: 'pryamyi',
-      title: 'Прямий FM',
-      tooltip: 'Прямий 88.4 FM',
-      stream: 'https://cast.mediaonline.net.ua/prmfm',
-      genre: [{ id: 'news', name: 'Новини' }]
-    },
-    {
       id: 'ukrpisnia',
       title: 'Українська пісня',
       tooltip: 'Радіо пісенної класики України',
       stream: 'https://listen6.myradio24.com/50904',
       genre: [{ id: 'ukr', name: 'Українське' }]
+    },
+    {
+      id: 'replaynews',
+      title: 'Replay News UA',
+      tooltip: 'Новини кожні п’ять хвилин 24/7',
+      stream: 'https://replaynewsuk.ice.infomaniak.ch/replaynewsuk-128.mp3',
+      genre: [{ id: 'news', name: 'Новини' }]
     },
     {
       id: 'ukrradio',
@@ -117,24 +110,10 @@
     },
     {
       id: 'nakypilo',
-      title: 'Накипіло',
+      title: 'Накипіло FM',
       tooltip: 'Харків 96.7 FM',
       stream: 'https://radiostream.nakypilo.ua/full',
       genre: [{ id: 'news', name: 'Новини' }]
-    },
-    {
-      id: 'nv',
-      title: 'Radio NV',
-      tooltip: '96.0 Київ - Аналітика і новини',
-      stream: 'https://online-radio.nv.ua/radionv.mp3',
-      genre: [{ id: 'news', name: 'Новини' }]
-    },
-    {
-      id: 'lvivfm',
-      title: 'Львівська Хвиля',
-      tooltip: '100.8 FM',
-      stream: 'https://onair.lviv.fm/lviv.fm',
-      genre: [{ id: 'ukr', name: 'Українське' }]
     },
     {
       id: 'radiobayraktar',
