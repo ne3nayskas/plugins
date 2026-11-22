@@ -70,7 +70,7 @@
       id: 'pryamyi',
       title: 'Прямий FM',
       tooltip: 'Прямий 88.4 FM',
-      stream: 'https://cast.mediaonline.net.ua/prmfm320',
+      stream: 'https://cast.mediaonline.net.ua/prmfm',
       genre: [{ id: 'news', name: 'Новини' }]
     },
     {
