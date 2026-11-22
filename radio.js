@@ -109,6 +109,13 @@
       genre: [{ id: 'news', name: 'Новини' }]
     },
     {
+      id: 'hromadske',
+      title: 'Громадське радіо',
+      tooltip: 'Громадське радіо 99.4 FM',
+      stream: 'https://hromadske.radio/radio_https_upstream',
+      genre: [{ id: 'news', name: 'Новини' }]
+    },
+    {
       id: 'nv',
       title: 'Radio NV',
       tooltip: '96.0 Київ - Аналітика і новини',
