@@ -67,10 +67,10 @@
       genre: [{ id: 'news', name: 'Новини' }]
     },
     {
-      id: 'replaynewsen',
-      title: 'Replay News EN',
-      tooltip: 'News every five minutes, 24/7',
-      stream: 'https://replaynewsen.ice.infomaniak.ch/replaynewsen-128.mp3',
+      id: 'pryamyi',
+      title: 'Прямий FM',
+      tooltip: 'Прямий 88.4 FM',
+      stream: 'https://cast.mediaonline.net.ua/prmfm320',
       genre: [{ id: 'news', name: 'Новини' }]
     },
     {
