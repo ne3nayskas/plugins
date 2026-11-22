@@ -119,7 +119,7 @@
       id: 'lvivfm',
       title: 'Львівська Хвиля',
       tooltip: '100.8 FM',
-      stream: 'https://onair.lviv.fm/lviv.fm.hd',
+      stream: 'https://onair.lviv.fm/lviv.fm',
       genre: [{ id: 'ukr', name: 'Українське' }]
     },
     {
