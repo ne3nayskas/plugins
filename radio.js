@@ -209,13 +209,6 @@
       genre: [{ id: 'pop', name: 'Pop' }]
     },
     {
-      id: '109fm',
-      title: '109 FM Ukraine',
-      tooltip: 'Stand With Ukraine',
-      stream: 'http://solid48.streamupsolutions.com:8077/109fm_live',
-      genre: [{ id: 'ukr', name: 'Українське' }]
-    },
-    {
       id: 'urcradio',
       title: 'URC Radio US',
       tooltip: 'Інноваційне медіа, яке об’єднує українців',
